@@ -15,53 +15,53 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Table(name = "Auction")
 public class Auction {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id_auction")
 	Long id;
 	
-	@Column(nullable = false, name = "id_account_created")
-	Long idAccountCreated;
+	@Column(nullable = false, name = "owner_id")
+	Long ownerId;
 	
-	@Column(nullable = false, name = "id_account_buyer")
-	Long idAccountBuyer;
+	@Column(nullable = false, name = "buyer_id")
+	Long buyerId;
 	
 	@Column(nullable = false ,name = "title")
 	String title;
-	
-	@Column(name = "description")
+
+	@Column(name = "description", length = 100000)
 	String description;
 	
 	@Column(name = "status")
-	String statusAuction;
-	
-	LocalDateTime createdDate; // ngay nguoi ban tao
-	
-	LocalDateTime startDate; // ngay bat dau phien dau gia
-	
-	LocalDateTime endDate;
-	
-	Long startingBid; // gia khoi diem
-	
-	Long pricePerStep; // buoc nhay gia
-	
-	Long endingBid; // gia da chot
-	
-	LocalDateTime confirmDate; // ngay mo dang ky
-	
-	LocalDateTime endConfirmDate; // ngay dong dang ky
-	
-	String productType;
-	
-	String productName;
-	
-	String productDescription;
-	
-	String productImages;
-	
-	@ManyToMany(mappedBy = "auctions")
-	Set<Account> accounts;
+	String status;
 
+	@Column(nullable = false, name = "create_at")
+	LocalDateTime createdAt; // ngay nguoi ban tao
+
+	@Column(nullable = false, name = "start_time")
+	LocalDateTime startTime; // ngay bat dau phien dau gia
+
+	@Column(nullable = false, name = "end_time")
+	LocalDateTime endTime;
+
+	@Column(nullable = false, name = "start_bid")
+	Long startBid; // gia khoi diem
+
+	@Column(nullable = false, name = "price_per_step")
+	Long pricePerStep; // buoc nhay gia
+
+	@Column(name = "end_bid")
+	Long endBid; // gia da chot
+
+	@Column(nullable = false, name = "confirm_date")
+	LocalDateTime confirmDate; // ngay mo dang ky
+
+	@Column(nullable = false, name = "end_registration")
+	LocalDateTime endRegistration; // ngay dong dang ky
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false)
+	Product product;
 }

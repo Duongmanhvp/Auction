@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -15,14 +14,14 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Account {
-	
+@Table(name = "User")
+public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, name = "id_account")
 	Long id;
-	@Column(nullable = false, unique = true, length = 10, name = "phone_number")
-	String phoneNumber;
+
+	@Column(nullable = false, unique = true, name = "email")
+	String email;
 	
 	@Column(nullable = false, name = "password")
 	String password;
@@ -50,14 +49,5 @@ public class Account {
 	
 	@Column(name = "role")
 	String role;
-	
-	@ManyToMany
-	@JoinTable(
-			name = "account_auction",
-			joinColumns = @JoinColumn(name = "id_account"),
-			inverseJoinColumns = @JoinColumn(name = "id_auction")
-	)
-	Set<Auction> auctions;
-	
 
 }
