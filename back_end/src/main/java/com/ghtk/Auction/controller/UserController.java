@@ -1,21 +1,29 @@
 package com.ghtk.Auction.controller;
 
 
+import com.ghtk.Auction.dto.request.UserCreationRequest;
+import com.ghtk.Auction.dto.response.UserResponse;
+import com.ghtk.Auction.service.UserService;
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserController {
 	
+	@Autowired
+	UserService userService;
+	
 	@PostMapping("/register")
-	public Object register() {
-		return null;
+	public ResponseEntity<UserResponse> register(@RequestBody UserCreationRequest request) {
+		
+		return ResponseEntity.ok(userService.createUser(request));
+		
 	}
 	
 	@PostMapping("/verify-otp")
