@@ -49,5 +49,8 @@ public class User {
 	
 	@Column(name = "role")
 	String role;
+	
+	@Column(name = "is_verified")
+	Boolean isVerified;
 
 }
