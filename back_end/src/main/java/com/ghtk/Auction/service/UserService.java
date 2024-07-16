@@ -1,29 +1,30 @@
 package com.ghtk.Auction.service;
 
-import org.springframework.stereotype.Service;
+import com.ghtk.Auction.dto.request.UserCreationRequest;
+import com.ghtk.Auction.dto.response.UserResponse;
+import com.ghtk.Auction.entity.User;
 
 import java.util.Objects;
 
-@Service
-public class UserService {
+public interface UserService {
 	
-	public Objects createUser(Object user) {
-		return null;
-	}
+	UserResponse createUser(UserCreationRequest request);
 	
-	public Objects login(Object user) {
-		return null;
-	}
+	Objects forgetPassword();
 	
-	public Objects getMyInfo(Object user) {
-		return null;
-	}
+	Objects updatePassword();
 	
-	public Objects getAnotherInfo(Object user) {
-		return null;
-	}
+	Objects updateMyInfo();
 	
-	public Objects updateMyInfo(Object user) {
-		return null;
-	}
+	Objects updateStatus();
+	
+	Objects getAllInfo();
+	
+	Objects getByPhone();
+	
+	Objects login(Object user) ;
+	
+	Objects getMyInfo(Object user) ;
+	
+	Objects getAnotherInfo(Object user);
 }
