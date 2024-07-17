@@ -2,7 +2,6 @@ package com.ghtk.Auction.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,8 +27,6 @@ public class UserCreationRequest {
 	String fullName;
 	
 //	@JsonFormat(pattern = "dd//MM/yyyy HH:mm:ss")
-	@NotNull
 	LocalDate dateOfBirth;
-	@NotEmpty
 	String phone;
 }
