@@ -47,6 +47,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(AuthenticatedException.class)
+    public ResponseEntity<ErrorResponse> accessException(AuthenticatedException ex) {
+        log.error("NotFoundException: ", ex);
+        ErrorResponse error = ErrorResponse.builder().status(HttpStatus.UNAUTHORIZED).message(ex.getMessage()).build();
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(Exception ex) {
         log.error("Exception", ex);

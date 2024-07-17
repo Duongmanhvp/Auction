@@ -8,6 +8,8 @@ import com.ghtk.Auction.dto.response.AuthenticationResponse;
 import com.ghtk.Auction.dto.response.IntrospectReponse;
 import com.ghtk.Auction.entity.BlackListToken;
 import com.ghtk.Auction.entity.User;
+import com.ghtk.Auction.exception.AlreadyExistsException;
+import com.ghtk.Auction.exception.AuthenticatedException;
 import com.ghtk.Auction.repository.BlackListTokenRepository;
 import com.ghtk.Auction.repository.UserRepository;
 import com.ghtk.Auction.service.AuthenticationService;
@@ -88,7 +90,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // TODO : exception password wrong
         }
         // TODO: exception wrong email
-        throw new RuntimeException("Loi");
+        throw new AlreadyExistsException("user with " + request.getEmail() + " already exists!");
         
     }
 
@@ -179,7 +181,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var verified = signedJWT.verify(verifier);
 
         if (!(verified && expiryTime.after(new Date()))) {
-            //throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new AuthenticatedException("Unauthenticated");
         }
 
 //        if (InvalidTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
