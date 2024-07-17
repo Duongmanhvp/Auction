@@ -1,5 +1,6 @@
 package com.ghtk.Auction.service.impl;
 
+import com.ghtk.Auction.exception.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,7 +21,7 @@ public class EmailServiceImpl {
 			message.setText("Your OTP code is: " + otp);
 			mailSender.send(message);
 		} catch (Exception e) {
-			throw new RuntimeException("OTP service unavailable", e);
+			throw new EmailException("OTP service unavailable", e);
 		}
 	}
 	public void sendDefaultPassword(String to, String password) {

@@ -4,6 +4,7 @@ package com.ghtk.Auction.controller;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
+import com.ghtk.Auction.exception.EmailException;
 import com.ghtk.Auction.service.UserService;
 import com.ghtk.Auction.service.impl.EmailServiceImpl;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class UserController {
 	private EmailServiceImpl emailService;
 	
 	@PostMapping("/test")
-	public String test(@RequestParam String email,@RequestParam String otp) {
+	public String test(@RequestParam String email,@RequestParam String otp) throws EmailException {
 		emailService.sendOtpEmail(email, otp);
 		return "Sent!";
 		

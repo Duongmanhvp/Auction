@@ -4,6 +4,7 @@ import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
+import com.ghtk.Auction.exception.EmailException;
 import com.ghtk.Auction.repository.UserRepository;
 import com.ghtk.Auction.service.UserService;
 import lombok.AccessLevel;
