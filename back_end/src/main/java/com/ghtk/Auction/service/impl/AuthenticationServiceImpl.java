@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,6 +55,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @NonFinal
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
+    
+//    @Autowired
+//    PasswordEncoder passwordEncoder;
+    
     @Override
     public IntrospectReponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
@@ -71,22 +76,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        PasswordEncoder passwordEncoder =new BCryptPasswordEncoder(10);
-        User user =userRepository.findByEmail(request.getEmail());
-//                .orElseThrow(
-//
-//                         xử lý khi Email không tồn tại:
-//                         () -> new AppException(ErrorCode.USER_NOT_EXISTED)
-//                );
-
-        boolean authenticated =passwordEncoder.matches(request.getPassword(),user.getPassword());
-
-        // if (!authenticated) throw new AppException(ErrorCode.UNAUTHENTICATED);
-
-        String token = generateToken(user);
-
-        return AuthenticationResponse.builder().token(token).authenticated(true).build();
-
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        if(userRepository.existsByEmail(request.getEmail())) {
+            User user =userRepository.findByEmail(request.getEmail());
+            boolean authenticated =passwordEncoder.matches(request.getPassword(),user.getPassword());
+            if(authenticated) {
+                String token = generateToken(user);
+                return AuthenticationResponse.builder().token(token).authenticated(true).build();
+                
+            }
+            // TODO : exception password wrong
+        }
+        // TODO: exception wrong email
+        throw new RuntimeException("Loi");
+        
     }
 
     @Override
