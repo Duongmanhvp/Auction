@@ -1,5 +1,6 @@
 package com.ghtk.Auction.service.impl;
 
+import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
@@ -129,11 +130,11 @@ public class UserServiceImpl implements UserService {
 		}
 	
 	}
-		
+	
 	
 	@Override
-	public Objects updatePassword() {
-		return null;
+	public void updatePassword(UserChangePasswordRequest request) {
+	
 	}
 	
 	@Override
