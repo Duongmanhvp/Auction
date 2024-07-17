@@ -20,13 +20,16 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 	
-	private final String[] PUBLIC_POST_ENDPOINTS = {"v1/users/register" };
+	private final String[] PUBLIC_POST_ENDPOINTS =
+			{"v1/users/test","v1/users/register","v1/users/verify-otp"
+					, "v1/users/resend-otp","v1/users/forget-password" };
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
 				.authorizeHttpRequests(req ->
 						req.requestMatchers(HttpMethod.POST , PUBLIC_POST_ENDPOINTS).permitAll()
+								.requestMatchers(HttpMethod.PUT , "v1/users/forget-password").permitAll()
 								.anyRequest().authenticated()
 				);
 		
