@@ -1,8 +1,8 @@
 package com.ghtk.Auction.service;
 
 import com.ghtk.Auction.dto.request.UserCreationRequest;
+import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
-import com.ghtk.Auction.entity.User;
 
 import java.util.Objects;
 
@@ -10,7 +10,11 @@ public interface UserService {
 	
 	UserResponse createUser(UserCreationRequest request);
 	
-	Objects forgetPassword();
+	void reSendOTP(String email);
+	
+	boolean verifyOTP(String email, String otp);
+	
+	boolean forgetPassword(UserForgetPasswordRequest request);
 	
 	Objects updatePassword();
 	
