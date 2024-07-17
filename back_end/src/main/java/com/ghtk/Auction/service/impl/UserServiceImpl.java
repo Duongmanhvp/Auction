@@ -4,7 +4,9 @@ import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
+import com.ghtk.Auction.exception.AlreadyExistsException;
 import com.ghtk.Auction.exception.EmailException;
+import com.ghtk.Auction.exception.NotFoundException;
 import com.ghtk.Auction.repository.UserRepository;
 import com.ghtk.Auction.service.UserService;
 import lombok.AccessLevel;
@@ -43,11 +45,7 @@ public class UserServiceImpl implements UserService {
 		
 		//check username
 		if (userRepository.existsByEmail(request.getEmail())) {
-			try {
-				throw new Exception("Email has been used!");
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
+			throw new AlreadyExistsException("Email has been used!");
 		}
 		
 		User user = new User();
@@ -95,22 +93,21 @@ public class UserServiceImpl implements UserService {
 //		}
 		
 		// Retrieve OTP from Redis
-			String redisOtp = (String) redisTemplate.opsForValue().get(email);
-			if (otp.equals(redisOtp)) {
-			// Verify the user account if OTP is correct
-				
-				User user = userRepository.findByEmail(email);
-				user.setIsVerified(true);
-			
-			//update on db
-				userRepository.save(user);
-			
-			//remove OTP
-				redisTemplate.delete(email);
-			
-				return true;
-			}
-			
+		String redisOtp = (String) redisTemplate.opsForValue().get(email);
+		if (otp.equals(redisOtp)) {
+		// Verify the user account if OTP is correct
+
+			User user = userRepository.findByEmail(email);
+			user.setIsVerified(true);
+
+		//update on db
+			userRepository.save(user);
+
+		//remove OTP
+			redisTemplate.delete(email);
+
+			return true;
+		}
 		return false;
 	}
 
@@ -128,7 +125,7 @@ public class UserServiceImpl implements UserService {
 			return true;
 		}
 		else{
-			return false;
+			throw new AlreadyExistsException("user with " + request.getEmail() + " already exists!");
 		}
 	
 	}

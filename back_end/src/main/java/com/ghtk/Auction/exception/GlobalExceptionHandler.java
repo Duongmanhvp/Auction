@@ -17,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.error("Exception: ", ex);
+        log.error("ValidException: ", ex);
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
@@ -41,10 +41,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ErrorResponse> notFoundException(AccessDeniedException ex) {
+    public ResponseEntity<ErrorResponse> accessException(AccessDeniedException ex) {
         log.error("NotFoundException: ", ex);
         ErrorResponse error = ErrorResponse.builder().status(HttpStatus.FORBIDDEN).message("You do not have access").build();
         return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
     }
-    
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> exception(Exception ex) {
+        log.error("Exception", ex);
+        ErrorResponse error = ErrorResponse.builder().status(HttpStatus.INTERNAL_SERVER_ERROR).message("Server Error").build();
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }

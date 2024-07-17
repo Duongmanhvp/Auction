@@ -33,7 +33,7 @@ public class EmailServiceImpl {
 			message.setText("Your new password is: " + password);
 			mailSender.send(message);
 		} catch (Exception e) {
-			throw new RuntimeException("OTP service unavailable", e);
+			throw new EmailException("OTP service unavailable", e);
 		}
 	}
 }
