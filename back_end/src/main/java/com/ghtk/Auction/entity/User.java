@@ -30,7 +30,7 @@ public class User {
 	String fullName;
 	
 	@Column(nullable = false, name = "birthday")
-	LocalDateTime dateOfBirth;
+	LocalDate dateOfBirth;
 	
 	@Column(name = "gender")
 	boolean gender;
@@ -38,16 +38,21 @@ public class User {
 	@Column(name = "address")
 	String address;
 	
-	@Column(name = "status")
+	@Column(nullable = false, name = "status")
 	String statusAccount;
 	
 	@Column(name = "avatar_url")
 	String avatar;
 	
-	@Column(name = "created_at")
-	LocalDate createdAt;
+	@Column(nullable = false, name = "created_at")
+	LocalDateTime createdAt;
 	
 	@Column(name = "role")
 	String role;
+	
+	@Column(nullable = false, name = "is_verified")
+	Boolean isVerified;
 
+	@Column(nullable = false, name = "phone")
+	String phone;
 }
