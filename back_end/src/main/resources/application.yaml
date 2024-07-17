@@ -3,7 +3,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/auction
     username: root
-    password: root1234
+    password: 123456
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,6 +12,7 @@ spring:
 #    properties:
 #      hibernate:
 #        dialect: org.hibernate.dialect.MySQL8Dialect
+
   mail :
     host : smtp.gmail.com
     port : 587
@@ -28,6 +30,11 @@ spring:
       port: 6379
       ssl:
         enabled: true
+
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  valid-duration: 300
+  refreshable-duration: 3600
 
 server:
   port: 8080

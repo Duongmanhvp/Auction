@@ -7,7 +7,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import java.time.LocalDate;
 
 @Data
 @Builder
@@ -28,6 +30,7 @@ public class UserCreationRequest {
 	
 //	@JsonFormat(pattern = "dd//MM/yyyy HH:mm:ss")
 	LocalDate dateOfBirth;
-	
+
 	String phone;
 }
+

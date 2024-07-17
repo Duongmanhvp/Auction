@@ -20,10 +20,10 @@ public class UserController {
 	
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	private EmailServiceImpl emailService;
-	
+
 	@PostMapping("/test")
 	public String test(@RequestParam String email,@RequestParam String otp) {
 		emailService.sendOtpEmail(email, otp);
@@ -33,11 +33,10 @@ public class UserController {
 	
 	@PostMapping("/register")
 	public ResponseEntity<UserResponse> register(@Valid @RequestBody UserCreationRequest request) {
-		
 		return ResponseEntity.ok(userService.createUser(request));
 		
 	}
-	
+
 	@PostMapping("/resend-otp")
 	public ResponseEntity<String> reSendOtp(@RequestParam String email) {
 		userService.reSendOTP(email);
@@ -48,26 +47,24 @@ public class UserController {
 	@PostMapping("/verify-otp")
 	public ResponseEntity<String> verifyOtp(@RequestParam String email,@RequestParam  String otp ) {
 		
-		
 		if (!userService.verifyOTP(email,otp)){
 			return ResponseEntity.badRequest().body("Invalid OTP or OTP expired.");
 		}
 		return ResponseEntity.ok("Account verified successfully.");
 	}
-	
-	
-	
+
 	@PostMapping("/login")
 	public Object login() {
 		return null;
 	}
-	
+
 	@PutMapping("/forget-password")
 	public ResponseEntity<String> forgetPassword(@RequestBody UserForgetPasswordRequest request) {
 		boolean result = userService.forgetPassword(request);
 		return result ? ResponseEntity.ok("Password reset successfully. Please check your email for the new password.")
 				: ResponseEntity.badRequest().body("Forget password failed. Email not found.");
 	}
+
 	@GetMapping("/getMyInfo")
 	public Object getMyInfo() {
 		return null;

@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	EmailServiceImpl emailService;
 	
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	RedisTemplate redisTemplate;
 	
 	final static String DEFAULT_PASSWORD = "jack97deptrai" ;
-	
+
 	@Override
 	public UserResponse createUser(UserCreationRequest request) {
 		
@@ -49,6 +49,18 @@ public class UserServiceImpl implements UserService {
 			}
 		}
 		
+
+//		User user = new User();
+//		user.setEmail(request.getEmail());
+//		user.setPassword(passwordEncoder.encode(request.getPassword()));
+//		user.setDateOfBirth(request.getDateOfBirth());
+//		user.setFullName(request.getFullName());
+//		user.setCreatedAt(LocalDateTime.now());
+//		user.setIsVerified(false);
+//		user.setStatusAccount("Active");
+//		user.setRole("USER");
+//		userRepository.save(user);
+
 		User user = new User();
 		user.setEmail(request.getEmail());
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -77,13 +89,18 @@ public class UserServiceImpl implements UserService {
 				.isVerified(false)
 				.build();
 	}
-	
+
 	@Override
+
+	public Objects forgetPassword() {
+		return null;
+	}
+
 	public void reSendOTP(String email) {
 		sendOtp(email);
 	}
-	
-	
+
+
 	@Override
 	public boolean verifyOTP(String email, String otp) {
 //		User user = userRepository.findByEmail(email);
@@ -132,7 +149,7 @@ public class UserServiceImpl implements UserService {
 	
 	}
 		
-	
+
 	@Override
 	public Objects updatePassword() {
 		return null;
@@ -174,6 +191,7 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 	
+
 	private String generateOTP() {
 		//return String.valueOf((int) (Math.random() * 900000) + 100000);
 		return  String.format("%06d", new Random().nextInt(999999));
@@ -190,5 +208,5 @@ public class UserServiceImpl implements UserService {
 		//send OTP
 		emailService.sendOtpEmail(email, otpSent);
 	}
-	
+
 }
