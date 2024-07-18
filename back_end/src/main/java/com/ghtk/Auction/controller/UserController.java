@@ -1,6 +1,5 @@
 package com.ghtk.Auction.controller;
 
-
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1/users")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserController {
-	
+
 	@Autowired
 	UserService userService;
 
@@ -25,16 +24,16 @@ public class UserController {
 	private EmailServiceImpl emailService;
 
 	@PostMapping("/test")
-	public String test(@RequestParam String email,@RequestParam String otp) {
+	public String test(@RequestParam String email, @RequestParam String otp) {
 		emailService.sendOtpEmail(email, otp);
 		return "Sent!";
-		
+
 	}
-	
+
 	@PostMapping("/register")
 	public ResponseEntity<UserResponse> register(@Valid @RequestBody UserCreationRequest request) {
 		return ResponseEntity.ok(userService.createUser(request));
-		
+
 	}
 
 	@PostMapping("/resend-otp")
@@ -43,11 +42,11 @@ public class UserController {
 		return ResponseEntity.ok("OTP sent!");
 
 	}
-	
+
 	@PostMapping("/verify-otp")
-	public ResponseEntity<String> verifyOtp(@RequestParam String email,@RequestParam  String otp ) {
-		
-		if (!userService.verifyOTP(email,otp)){
+	public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+
+		if (!userService.verifyOTP(email, otp)) {
 			return ResponseEntity.badRequest().body("Invalid OTP or OTP expired.");
 		}
 		return ResponseEntity.ok("Account verified successfully.");
@@ -69,7 +68,7 @@ public class UserController {
 	public Object getMyInfo() {
 		return null;
 	}
-	
+
 	@GetMapping("/getAnotherInfo")
 	public Object getAnother() {
 		return null;
