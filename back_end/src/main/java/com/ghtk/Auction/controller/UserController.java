@@ -1,9 +1,12 @@
 package com.ghtk.Auction.controller;
 
 
+import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
+import com.ghtk.Auction.dto.request.UserUpdateRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
+import com.ghtk.Auction.entity.User;
 import com.ghtk.Auction.service.UserService;
 import com.ghtk.Auction.service.impl.EmailServiceImpl;
 import jakarta.validation.Valid;
@@ -53,21 +56,28 @@ public class UserController {
 		return ResponseEntity.ok("Account verified successfully.");
 	}
 
-	@PostMapping("/login")
-	public Object login() {
-		return null;
-	}
-
 	@PutMapping("/forget-password")
 	public ResponseEntity<String> forgetPassword(@RequestBody UserForgetPasswordRequest request) {
 		boolean result = userService.forgetPassword(request);
 		return result ? ResponseEntity.ok("Password reset successfully. Please check your email for the new password.")
 				: ResponseEntity.badRequest().body("Forget password failed. Email not found.");
 	}
+	
+	@PutMapping("/change-password")
+	public ResponseEntity<String> changePassword(@RequestBody UserChangePasswordRequest request) {
+		boolean result = userService.updatePassword(request);
+		return result ? ResponseEntity.ok("Password changed successfully.")
+				: ResponseEntity.badRequest().body("Password change failed. ");
+	}
 
 	@GetMapping("/getMyInfo")
-	public Object getMyInfo() {
-		return null;
+	public ResponseEntity<User> getMyInfo() {
+		return ResponseEntity.ok(userService.getMyInfo());
+	}
+	
+	@GetMapping("/updateMyInfo")
+	public ResponseEntity<User> updateMyInfo(UserUpdateRequest request) {
+		return ResponseEntity.ok(userService.updateMyInfo(request));
 	}
 	
 	@GetMapping("/getAnotherInfo")

@@ -25,7 +25,7 @@ public interface UserService {
 	
 	User updateMyInfo(UserUpdateRequest request);
 	
-	Objects getByPhone();
+	Objects getByPhoneorEmail();
 	
 	Objects updateStatus();
 	

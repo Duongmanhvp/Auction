@@ -17,12 +17,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserUpdateRequest {
-
-//	String email;
 	
 	String fullName;
 	
-	String dateOfBirth;
+	LocalDate dateOfBirth;
 	
 	Boolean gender;
 	

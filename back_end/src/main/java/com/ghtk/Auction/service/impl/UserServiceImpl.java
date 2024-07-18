@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
@@ -166,7 +167,12 @@ public class UserServiceImpl implements UserService {
 		String email = context.getAuthentication().getName();
 		
 		User user = userRepository.findByEmail(email);
-		
+		if(request.getFullName() != null){
+			user.setFullName(request.getFullName());
+		}
+		if (request.getDateOfBirth() != null){
+			user.setDateOfBirth(request.getDateOfBirth());
+		}
 		if (request.getGender() != null) {
 			user.setGender(request.getGender());
 		}
@@ -195,11 +201,9 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Objects getByPhone() {
+	public Objects getByPhoneorEmail() {
 		return null;
 	}
-	
-	
 	
 	
 	public Objects getAnotherInfo(Object user) {
