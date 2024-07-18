@@ -68,6 +68,7 @@ const router = createRouter({
     routes
 });
 
+<<<<<<< HEAD
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     const { isAuth, isAdmin, email } = authStore;
@@ -92,3 +93,6 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+=======
+export default router;
+>>>>>>> d39597d (add user interface)
