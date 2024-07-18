@@ -5,7 +5,7 @@ import com.ghtk.Auction.dto.request.IntrospectRequest;
 import com.ghtk.Auction.dto.request.LogoutRequest;
 import com.ghtk.Auction.dto.request.RefreshRequest;
 import com.ghtk.Auction.dto.response.AuthenticationResponse;
-import com.ghtk.Auction.dto.response.IntrospectReponse;
+import com.ghtk.Auction.dto.response.IntrospectResponse;
 import com.ghtk.Auction.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.AccessLevel;
@@ -32,7 +32,7 @@ public class AuthenticateController {
     }
 
     @PostMapping("/introspect")
-    ResponseEntity<IntrospectReponse> introspect(@RequestBody IntrospectRequest request)
+    ResponseEntity<IntrospectResponse> introspect(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
 
         return ResponseEntity.ok( authenticationService.introspect(request));

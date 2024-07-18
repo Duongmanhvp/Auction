@@ -33,7 +33,7 @@ public class User {
 	LocalDate dateOfBirth;
 	
 	@Column(name = "gender")
-	boolean gender;
+	Boolean gender;
 	
 	@Column(name = "address")
 	String address;
