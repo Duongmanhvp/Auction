@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -25,29 +28,36 @@ public class SecurityConfig {
 			{"v1/users/test","v1/users/register","v1/users/verify-otp"
 					, "v1/users/resend-otp","v1/users/forget-password"
 					,"v1/auths/authenticate","v1/auths/introspect","v1/auths/logout","v1/auths/refresh"};
-	
+	private  final String[] PUBLIC_PUT_ENDPOINTS =
+			{"v1/users/forget-password"};
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 		httpSecurity
 				.authorizeHttpRequests(req ->
 						req.requestMatchers(HttpMethod.POST , PUBLIC_POST_ENDPOINTS).permitAll()
-								.requestMatchers(HttpMethod.PUT , "v1/users/forget-password").permitAll()
+								.requestMatchers(HttpMethod.PUT , PUBLIC_PUT_ENDPOINTS).permitAll()
 								.anyRequest().authenticated()
 				);
+		httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
+						.decoder(customJwtDecoder)
+						.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+				.authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 		
-		//httpSecurity.oauth2ResourceServer(oAuth2 -> oAuth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
 		httpSecurity.csrf(AbstractHttpConfigurer::disable);
 		
 		return httpSecurity.build();
 	}
-//	@Bean
-//	JwtDecoder  jwtDecoder() {
-//		SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-//		return NimbusJwtDecoder
-//				.withSecretKey(secretKeySpec)
-//				.macAlgorithm(MacAlgorithm.HS512)
-//				.build();
-//	;
+	@Bean
+	JwtAuthenticationConverter jwtAuthenticationConverter() {
+		JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+		// jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+		jwtGrantedAuthoritiesConverter.setAuthorityPrefix("");
+		
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+		
+		return jwtAuthenticationConverter;
+	}
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);

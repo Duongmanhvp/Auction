@@ -3,6 +3,7 @@ package com.ghtk.Auction.service;
 import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
+import com.ghtk.Auction.dto.request.UserUpdateRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
 
@@ -18,19 +19,17 @@ public interface UserService {
 	
 	boolean forgetPassword(UserForgetPasswordRequest request);
 	
-	void updatePassword( UserChangePasswordRequest request);
+	boolean updatePassword( UserChangePasswordRequest request);
 	
-	Objects updateMyInfo();
+	User getMyInfo() ;
+	
+	User updateMyInfo(UserUpdateRequest request);
+	
+	Objects getByPhone();
 	
 	Objects updateStatus();
 	
 	Objects getAllInfo();
-	
-	Objects getByPhone();
-	
-	Objects login(Object user) ;
-	
-	Objects getMyInfo(Object user) ;
 	
 	Objects getAnotherInfo(Object user);
 }
