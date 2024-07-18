@@ -1,5 +1,32 @@
-# Vue 3 + Vite
+# Vue 3 + Vite: Front-end installation
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
++ Step 0: Setup Node.js version 18+ or 20+ in https://nodejs.org/en/
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+
++ Step 1: Access https://vitejs.dev/guide/ 
+    
+    - Run `npm create vite@latest` in your terminal at front_end project
+    
+    - Choosen `Vue`
+    
+    - Run `npm install` for setup node mudules
+
+    - Command `npm run dev` for run front_end project
+
+    - Copy `http://localhost:5173` or put Ctrl + click left mouse for open website
+
+
++ Step 2: Configure a few more
+
+    `npm install @heroicons/vue`
+    `front_end % npm i axios`
+    `npm i -D @types/axios`
+    ...
+
+
+Thank you!! Have a nice day ^^
+
+
+
+
+    
