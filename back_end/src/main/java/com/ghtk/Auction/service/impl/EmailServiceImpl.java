@@ -17,7 +17,7 @@ public class EmailServiceImpl {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setTo(to);
-			message.setSubject("Your OTP Code");
+			message.setSubject("Auction System OTP");
 			message.setText("Your OTP code is: " + otp);
 			mailSender.send(message);
 		} catch (Exception e) {
@@ -29,7 +29,7 @@ public class EmailServiceImpl {
 		try {
 			SimpleMailMessage message = new SimpleMailMessage();
 			message.setTo(to);
-			message.setSubject("Your New PassWord");
+			message.setSubject("Auction System Password");
 			message.setText("Your new password is: " + password);
 			mailSender.send(message);
 		} catch (Exception e) {

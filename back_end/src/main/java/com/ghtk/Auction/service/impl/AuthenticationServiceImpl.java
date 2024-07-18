@@ -5,7 +5,7 @@ import com.ghtk.Auction.dto.request.IntrospectRequest;
 import com.ghtk.Auction.dto.request.LogoutRequest;
 import com.ghtk.Auction.dto.request.RefreshRequest;
 import com.ghtk.Auction.dto.response.AuthenticationResponse;
-import com.ghtk.Auction.dto.response.IntrospectReponse;
+import com.ghtk.Auction.dto.response.IntrospectResponse;
 import com.ghtk.Auction.entity.BlackListToken;
 import com.ghtk.Auction.entity.User;
 import com.ghtk.Auction.exception.AlreadyExistsException;
@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -35,6 +36,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 
 @Service
@@ -42,121 +44,131 @@ import java.util.Date;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationServiceImpl implements AuthenticationService {
-
+    
     UserRepository userRepository;
     BlackListTokenRepository blackListTokenRepository;
-
+    
     @NonFinal
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
-
+    
     @NonFinal
     @Value("${jwt.valid-duration}")
     protected long VALID_DURATION;
-
+    
     @NonFinal
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
-    
+
 //    @Autowired
 //    PasswordEncoder passwordEncoder;
     
     @Override
-    public IntrospectReponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
+    public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
         var token = request.getToken();
         boolean isValid = true;
 
-        //try {
+        try {
             verifyToken(token, false);
-        //}
-//        catch (AppException e) {
-//            isValid = false;
-//        }
+        }
+        catch (AuthenticatedException e) {
+            isValid = false;
+        }
 
-        return IntrospectReponse.builder().valid(isValid).build();
+        return IntrospectResponse.builder().valid(isValid).build();
     }
-
+    
+    
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        if(userRepository.existsByEmail(request.getEmail())) {
-            User user =userRepository.findByEmail(request.getEmail());
-            boolean authenticated =passwordEncoder.matches(request.getPassword(),user.getPassword());
-            if(authenticated) {
+        if (userRepository.existsByEmail(request.getEmail())) {
+            User user = userRepository.findByEmail(request.getEmail());
+            if(!user.getIsVerified())
+            {
+                throw new AuthenticatedException("Account is not verified");
+            }
+            boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
+            if (authenticated) {
                 String token = generateToken(user);
                 return AuthenticationResponse.builder().token(token).authenticated(true).build();
-                
             }
-            throw new AuthenticatedException("Password or email is wrong");
+            else {
+                throw new AuthenticatedException("Password is incorrect");
+            }
         }
-        throw new AuthenticatedException("Password or email is wrong");
-        
+       
+        throw new AlreadyExistsException("user with " + request.getEmail() + " does not exists!");
     }
-
+    
     @Override
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         //try {
-            var signToken = verifyToken(request.getToken(), true);
-
-            String jit = signToken.getJWTClaimsSet().getJWTID();
-            LocalDateTime expiryTime = (signToken.getJWTClaimsSet().getExpirationTime())
-                                        .toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDateTime();
-
-
-            BlackListToken blackListToken =
-                    BlackListToken.builder().token(request.getToken()).createAt(LocalDateTime.now()).expiryTime(expiryTime).build();
-
-            blackListTokenRepository.save(blackListToken);
+        var signToken = verifyToken(request.getToken(), true);
+        
+        String jit = signToken.getJWTClaimsSet().getJWTID();
+        LocalDateTime expiryTime = (signToken.getJWTClaimsSet().getExpirationTime())
+              .toInstant()
+              .atZone(ZoneId.systemDefault())
+              .toLocalDateTime();
+        
+        
+        BlackListToken blackListToken =
+              BlackListToken.builder()
+                    .token(request.getToken())
+                    .createAt(LocalDateTime.now())
+                    .expiryTime(expiryTime)
+                    .build();
+        
+        blackListTokenRepository.save(blackListToken);
 
 //        } catch (AppException exception){
 //            log.info("Token already expired");
 //        }
-
+    
     }
-
+    
     @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
         var signedJWT = verifyToken(request.getToken(), true);
-
+        
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
         LocalDateTime expiryTime = (signedJWT.getJWTClaimsSet().getExpirationTime())
-                                .toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDateTime();
-
+              .toInstant()
+              .atZone(ZoneId.systemDefault())
+              .toLocalDateTime();
+        
         BlackListToken blackListToken =
-                BlackListToken.builder().createAt(LocalDateTime.now()).token(request.getToken()).expiryTime(expiryTime).build();
-
+              BlackListToken.builder().createAt(LocalDateTime.now()).token(request.getToken()).expiryTime(expiryTime).build();
+        
         blackListTokenRepository.save(blackListToken);
-
+        
         var email = signedJWT.getJWTClaimsSet().getSubject();
-
+        
         User user =
-                userRepository.findByEmail(email);
+              userRepository.findByEmail(email);
 //                        .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED)
 //                        );
-
+        
         var token = generateToken(user);
-
+        
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
+    
+    private String generateToken(User user) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
-    private String generateToken(User user){
-        JWSHeader header =new JWSHeader(JWSAlgorithm.HS512);
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+              .subject(user.getEmail())
+              .issuer("Aution")
+              .issueTime(new Date())
+              .claim("Role", user.getRole())
+              .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+              )).build();
 
-        JWTClaimsSet jwtClaimsSet =new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
-                .issuer("Aution")
-                .issueTime(new Date())
-                .claim("Role",user.getRole())
-                .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
-                )).build();
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
 
-        Payload payload=new Payload(jwtClaimsSet.toJSONObject());
-
-        JWSObject jwsObject=new JWSObject(header,payload);
+        JWSObject jwsObject = new JWSObject(header, payload);
 
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
@@ -173,9 +185,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         SignedJWT signedJWT = SignedJWT.parse(token);
 
         Date expiryTime = (isRefresh)
-                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
-                .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
-                : signedJWT.getJWTClaimsSet().getExpirationTime();
+              ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
+              .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
+              : signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);
 
@@ -183,9 +195,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticatedException("Unauthenticated");
         }
 
-//        if (InvalidTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-//            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        if (blackListTokenRepository.existsByToken(token))
+            throw new AuthenticatedException("Unauthenticated");
 
         return signedJWT;
     }
+    
 }

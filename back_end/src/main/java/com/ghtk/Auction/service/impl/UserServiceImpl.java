@@ -3,6 +3,7 @@ package com.ghtk.Auction.service.impl;
 import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
+import com.ghtk.Auction.dto.request.UserUpdateRequest;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
 import com.ghtk.Auction.exception.AlreadyExistsException;
@@ -15,10 +16,13 @@ import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
@@ -133,13 +137,57 @@ public class UserServiceImpl implements UserService {
 	
 	
 	@Override
-	public void updatePassword(UserChangePasswordRequest request) {
-	
+	public boolean updatePassword(UserChangePasswordRequest request) {
+		var context = SecurityContextHolder.getContext();
+		String email = context.getAuthentication().getName();
+		
+		User user = userRepository.findByEmail(email);
+		if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
+			user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+			userRepository.save(user);
+			return true;
+		}
+		else {
+			return false;
+		}
+		
 	}
 	
 	@Override
-	public Objects updateMyInfo() {
-		return null;
+	public User getMyInfo() {
+		var context = SecurityContextHolder.getContext();
+		String email = context.getAuthentication().getName();
+		
+		return userRepository.findByEmail(email);
+	}
+	
+	@Override
+	public User updateMyInfo(UserUpdateRequest request) {
+		var context = SecurityContextHolder.getContext();
+		String email = context.getAuthentication().getName();
+		
+		User user = userRepository.findByEmail(email);
+		if(request.getFullName() != null){
+			user.setFullName(request.getFullName());
+		}
+		if (request.getDateOfBirth() != null){
+			user.setDateOfBirth(request.getDateOfBirth());
+		}
+		if (request.getGender() != null) {
+			user.setGender(request.getGender());
+		}
+		if (request.getAddress() != null) {
+			user.setAddress(request.getAddress());
+		}
+		if (request.getAvatar() != null) {
+			user.setAvatar(request.getAvatar());
+		}
+		if (request.getPhone() != null) {
+			user.setPhone(request.getPhone());
+		}
+		
+		userRepository.save(user);
+		return user;
 	}
 	
 	@Override
@@ -153,23 +201,12 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Objects getByPhone() {
+	public Objects getByPhoneorEmail() {
 		return null;
 	}
 	
-	public Objects login(Object user) {
-		return null;
-	}
-	
-	public Objects getMyInfo(Object user) {
-		return null;
-	}
 	
 	public Objects getAnotherInfo(Object user) {
-		return null;
-	}
-	
-	public Objects updateMyInfo(Object user) {
 		return null;
 	}
 	
@@ -184,7 +221,7 @@ public class UserServiceImpl implements UserService {
 	private void sendOtp(String email) {
 		// gen OTP and save to Redis
 		String otpSent = generateOTP();
-		redisTemplate.opsForValue().set(email,otpSent , Duration.ofMinutes(1));
+		redisTemplate.opsForValue().set(email,otpSent , Duration.ofMinutes(5));
 		
 		//send OTP
 		emailService.sendOtpEmail(email, otpSent);
