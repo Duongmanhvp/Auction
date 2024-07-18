@@ -18,6 +18,8 @@
 
 + Step 2: Configure a few more
 
+    `npm install -D tailwindcss`
+    `npx tailwindcss init`
     `npm install @heroicons/vue`
     `front_end % npm i axios`
     `npm i -D @types/axios`
