@@ -221,7 +221,7 @@ public class UserServiceImpl implements UserService {
 	private void sendOtp(String email) {
 		// gen OTP and save to Redis
 		String otpSent = generateOTP();
-		redisTemplate.opsForValue().set(email,otpSent , Duration.ofMinutes(1));
+		redisTemplate.opsForValue().set(email,otpSent , Duration.ofMinutes(5));
 		
 		//send OTP
 		emailService.sendOtpEmail(email, otpSent);

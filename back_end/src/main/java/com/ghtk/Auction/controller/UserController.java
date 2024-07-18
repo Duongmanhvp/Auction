@@ -75,7 +75,7 @@ public class UserController {
 		return ResponseEntity.ok(userService.getMyInfo());
 	}
 	
-	@GetMapping("/updateMyInfo")
+	@PutMapping("/updateMyInfo")
 	public ResponseEntity<User> updateMyInfo(UserUpdateRequest request) {
 		return ResponseEntity.ok(userService.updateMyInfo(request));
 	}
