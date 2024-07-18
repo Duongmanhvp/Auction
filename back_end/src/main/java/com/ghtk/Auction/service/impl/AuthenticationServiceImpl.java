@@ -87,10 +87,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 return AuthenticationResponse.builder().token(token).authenticated(true).build();
                 
             }
-            // TODO : exception password wrong
+            throw new AuthenticatedException("Password or email is wrong");
         }
-        // TODO: exception wrong email
-        throw new AlreadyExistsException("user with " + request.getEmail() + " already exists!");
+        throw new AuthenticatedException("Password or email is wrong");
         
     }
 
