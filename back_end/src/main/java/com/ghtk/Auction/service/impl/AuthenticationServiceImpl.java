@@ -68,12 +68,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var token = request.getToken();
         boolean isValid = true;
 
-        //try {
+        try {
             verifyToken(token, false);
-        //}
-//        catch (AppException e) {
-//            isValid = false;
-//        }
+        }
+        catch (AuthenticatedException e) {
+            isValid = false;
+        }
 
         return IntrospectResponse.builder().valid(isValid).build();
     }
@@ -84,17 +84,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (userRepository.existsByEmail(request.getEmail())) {
             User user = userRepository.findByEmail(request.getEmail());
+            if(!user.getIsVerified())
+            {
+                throw new AuthenticatedException("Account is not verified");
+            }
             boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
             if (authenticated) {
                 String token = generateToken(user);
                 return AuthenticationResponse.builder().token(token).authenticated(true).build();
-                
             }
-            // TODO : exception password wrong
+            else {
+                throw new AuthenticatedException("Password is incorrect");
+            }
         }
-        // TODO: exception wrong email
-        throw new AlreadyExistsException("user with " + request.getEmail() + " already exists!");
-        
+       
+        throw new AlreadyExistsException("user with " + request.getEmail() + " does not exists!");
     }
     
     @Override
@@ -110,7 +114,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         
         
         BlackListToken blackListToken =
-              BlackListToken.builder().token(request.getToken()).createAt(LocalDateTime.now()).expiryTime(expiryTime).build();
+              BlackListToken.builder()
+                    .token(request.getToken())
+                    .createAt(LocalDateTime.now())
+                    .expiryTime(expiryTime)
+                    .build();
         
         blackListTokenRepository.save(blackListToken);
 
@@ -187,8 +195,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticatedException("Unauthenticated");
         }
 
-//        if (InvalidTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-//            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        if (blackListTokenRepository.existsByToken(token))
+            throw new AuthenticatedException("Unauthenticated");
 
         return signedJWT;
     }

@@ -48,8 +48,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AuthenticatedException.class)
-    public ResponseEntity<ErrorResponse> accessException(AuthenticatedException ex) {
-        log.error("NotFoundException: ", ex);
+    public ResponseEntity<ErrorResponse> authenticateException(AuthenticatedException ex) {
+        log.error("NotAuthenticateException: ", ex);
         ErrorResponse error = ErrorResponse.builder().status(HttpStatus.UNAUTHORIZED).message(ex.getMessage()).build();
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
