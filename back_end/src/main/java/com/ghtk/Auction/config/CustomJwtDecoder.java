@@ -1,5 +1,6 @@
 package com.ghtk.Auction.config;
 
+import com.ghtk.Auction.component.AuthenticationComponent;
 import com.ghtk.Auction.dto.request.IntrospectRequest;
 import com.ghtk.Auction.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
@@ -22,7 +23,8 @@ public class CustomJwtDecoder implements JwtDecoder {
     private String signerKey;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    AuthenticationComponent authenticationComponent;
+
 
     private NimbusJwtDecoder nimbusJwtDecoder = null;
 
@@ -30,7 +32,7 @@ public class CustomJwtDecoder implements JwtDecoder {
     public Jwt decode(String token) throws JwtException {
 
         try {
-            var response = authenticationService.introspect(
+            var response = authenticationComponent.introspect(
                     IntrospectRequest.builder().token(token).build());
 
             if (!response.isValid()) throw new JwtException("Token invalid");

@@ -4,6 +4,7 @@ import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.request.UserUpdateRequest;
+import com.ghtk.Auction.dto.response.PageResponse;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
 
@@ -29,7 +30,7 @@ public interface UserService {
 	
 	Objects updateStatus();
 	
-	Objects getAllInfo();
+	PageResponse<UserResponse> getAllInfo(int pageNo, int pageSize, String sortBy, String sortDir);
 	
 	Objects getAnotherInfo(Object user);
 }

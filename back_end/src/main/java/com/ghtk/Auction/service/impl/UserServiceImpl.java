@@ -4,17 +4,23 @@ import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.request.UserUpdateRequest;
+import com.ghtk.Auction.dto.response.PageResponse;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
 import com.ghtk.Auction.exception.AlreadyExistsException;
 import com.ghtk.Auction.exception.EmailException;
 import com.ghtk.Auction.exception.NotFoundException;
+import com.ghtk.Auction.mapper.UserMapper;
 import com.ghtk.Auction.repository.UserRepository;
 import com.ghtk.Auction.service.UserService;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,8 +30,10 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -42,6 +50,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	RedisTemplate redisTemplate;
+
+	@Autowired
+	UserMapper userMapper;
 	
 	final static String DEFAULT_PASSWORD = "jack97deptrai" ;
 	
@@ -196,8 +207,26 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public Objects getAllInfo() {
-		return null;
+	public PageResponse<UserResponse> getAllInfo(int pageNo, int pageSize, String sortBy, String sortDir) {
+		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+
+		Page<User> users =userRepository.findAll(pageable);
+
+		List<User> listOfUser =users.getContent();
+
+		List<UserResponse> content =listOfUser.stream().map(userMapper::toUserResponse).toList();
+
+		PageResponse<UserResponse> pageUserResponse = new PageResponse<>();
+		pageUserResponse.setPageNo(pageNo);
+		pageUserResponse.setPageSize(pageSize);
+		pageUserResponse.setTotalPages(users.getTotalPages());
+		pageUserResponse.setTotalElements(users.getTotalElements());
+		pageUserResponse.setLast(users.isLast());
+		pageUserResponse.setContent(content);
+		return pageUserResponse;
 	}
 	
 	@Override
