@@ -5,14 +5,17 @@ import com.ghtk.Auction.dto.request.UserChangePasswordRequest;
 import com.ghtk.Auction.dto.request.UserCreationRequest;
 import com.ghtk.Auction.dto.request.UserForgetPasswordRequest;
 import com.ghtk.Auction.dto.request.UserUpdateRequest;
+import com.ghtk.Auction.dto.response.PageResponse;
 import com.ghtk.Auction.dto.response.UserResponse;
 import com.ghtk.Auction.entity.User;
 import com.ghtk.Auction.service.UserService;
 import com.ghtk.Auction.service.impl.EmailServiceImpl;
+import com.ghtk.Auction.utils.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,12 +79,23 @@ public class UserController {
 	}
 	
 	@PutMapping("/updateMyInfo")
-	public ResponseEntity<User> updateMyInfo(UserUpdateRequest request) {
+	public ResponseEntity<User> updateMyInfo(@RequestBody  UserUpdateRequest request) {
 		return ResponseEntity.ok(userService.updateMyInfo(request));
 	}
 	
 	@GetMapping("/getAnotherInfo")
 	public Object getAnother() {
 		return null;
+	}
+
+	@GetMapping("/getAllInfo")
+	public ResponseEntity<PageResponse> getAllInfo(
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+	){
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(userService.getAllInfo(pageNo, pageSize, sortBy, sortDir));
 	}
 }

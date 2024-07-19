@@ -1,5 +1,6 @@
 package com.ghtk.Auction.service.impl;
 
+import com.ghtk.Auction.component.AuthenticationComponent;
 import com.ghtk.Auction.dto.request.AuthenticationRequest;
 import com.ghtk.Auction.dto.request.IntrospectRequest;
 import com.ghtk.Auction.dto.request.LogoutRequest;
@@ -47,6 +48,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     UserRepository userRepository;
     BlackListTokenRepository blackListTokenRepository;
+    AuthenticationComponent authenticationComponent;
     
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -60,28 +62,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Value("${jwt.refreshable-duration}")
     protected long REFRESHABLE_DURATION;
 
-//    @Autowired
-//    PasswordEncoder passwordEncoder;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) throws ParseException, JOSEException {
-        var token = request.getToken();
-        boolean isValid = true;
-
-        try {
-            verifyToken(token, false);
-        }
-        catch (AuthenticatedException e) {
-            isValid = false;
-        }
-
-        return IntrospectResponse.builder().valid(isValid).build();
+        return authenticationComponent.introspect(request);
     }
     
     
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (userRepository.existsByEmail(request.getEmail())) {
             User user = userRepository.findByEmail(request.getEmail());
             if(!user.getIsVerified())
@@ -104,7 +96,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
         //try {
-        var signToken = verifyToken(request.getToken(), true);
+        var signToken = authenticationComponent.verifyToken(request.getToken(), true);
         
         String jit = signToken.getJWTClaimsSet().getJWTID();
         LocalDateTime expiryTime = (signToken.getJWTClaimsSet().getExpirationTime())
@@ -130,7 +122,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
-        var signedJWT = verifyToken(request.getToken(), true);
+        var signedJWT = authenticationComponent.verifyToken(request.getToken(), true);
         
         var jit = signedJWT.getJWTClaimsSet().getJWTID();
         LocalDateTime expiryTime = (signedJWT.getJWTClaimsSet().getExpirationTime())
@@ -179,26 +171,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expiryTime = (isRefresh)
-              ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
-              .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
-              : signedJWT.getJWTClaimsSet().getExpirationTime();
-
-        var verified = signedJWT.verify(verifier);
-
-        if (!(verified && expiryTime.after(new Date()))) {
-            throw new AuthenticatedException("Unauthenticated");
-        }
-
-        if (blackListTokenRepository.existsByToken(token))
-            throw new AuthenticatedException("Unauthenticated");
-
-        return signedJWT;
-    }
+//    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
+//        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+//
+//        SignedJWT signedJWT = SignedJWT.parse(token);
+//
+//        Date expiryTime = (isRefresh)
+//              ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
+//              .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
+//              : signedJWT.getJWTClaimsSet().getExpirationTime();
+//
+//        var verified = signedJWT.verify(verifier);
+//
+//        if (!(verified && expiryTime.after(new Date()))) {
+//            throw new AuthenticatedException("Unauthenticated");
+//        }
+//
+//        if (blackListTokenRepository.existsByToken(token))
+//            throw new AuthenticatedException("Unauthenticated");
+//
+//        return signedJWT;
+//    }
     
 }
