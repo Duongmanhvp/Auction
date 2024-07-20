@@ -25,6 +25,6 @@ public class BlackListToken {
     @Column(name = "expiry_time", nullable = false)
     LocalDateTime expiryTime;
 
-    @Column(name = "create_at", nullable = false)
-    LocalDateTime createAt;
+    @Column(name = "created_at", nullable = false)
+    LocalDateTime createdAt;
 }

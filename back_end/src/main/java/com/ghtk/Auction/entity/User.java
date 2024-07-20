@@ -53,6 +53,6 @@ public class User {
 	@Column(nullable = false, name = "is_verified")
 	Boolean isVerified;
 
-	@Column(nullable = false, name = "phone")
+	@Column(name = "phone")
 	String phone;
 }

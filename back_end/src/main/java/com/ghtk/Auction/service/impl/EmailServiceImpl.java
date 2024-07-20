@@ -4,6 +4,7 @@ import com.ghtk.Auction.exception.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,6 +13,7 @@ public class EmailServiceImpl {
 	@Autowired
 	private JavaMailSender mailSender;
 	
+	@Async
 	public void sendOtpEmail(String to, String otp) {
 
 		try {

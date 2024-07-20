@@ -108,7 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         BlackListToken blackListToken =
               BlackListToken.builder()
                     .token(request.getToken())
-                    .createAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now())
                     .expiryTime(expiryTime)
                     .build();
         
@@ -131,7 +131,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
               .toLocalDateTime();
         
         BlackListToken blackListToken =
-              BlackListToken.builder().createAt(LocalDateTime.now()).token(request.getToken()).expiryTime(expiryTime).build();
+              BlackListToken.builder().createdAt(LocalDateTime.now()).token(request.getToken()).expiryTime(expiryTime).build();
         
         blackListTokenRepository.save(blackListToken);
         
