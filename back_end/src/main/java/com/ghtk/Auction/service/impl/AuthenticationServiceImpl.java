@@ -26,6 +26,7 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     UserRepository userRepository;
     BlackListTokenRepository blackListTokenRepository;
     AuthenticationComponent authenticationComponent;
+    RedisTemplate<String, String> redisTemplate;
     
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -73,7 +75,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (userRepository.existsByEmail(request.getEmail())) {
             User user = userRepository.findByEmail(request.getEmail());
             if(!user.getIsVerified())
@@ -83,6 +84,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             boolean authenticated = passwordEncoder.matches(request.getPassword(), user.getPassword());
             if (authenticated) {
                 String token = generateToken(user);
+                generateRefreshToken(user);
                 return AuthenticationResponse.builder().token(token).authenticated(true).build();
             }
             else {
@@ -95,10 +97,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     
     @Override
     public void logout(LogoutRequest request) throws ParseException, JOSEException {
-        //try {
-        var signToken = authenticationComponent.verifyToken(request.getToken(), true);
-        
-        String jit = signToken.getJWTClaimsSet().getJWTID();
+        var signToken = authenticationComponent.verifyToken(request.getToken());
+
         LocalDateTime expiryTime = (signToken.getJWTClaimsSet().getExpirationTime())
               .toInstant()
               .atZone(ZoneId.systemDefault())
@@ -113,37 +113,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         
         blackListTokenRepository.save(blackListToken);
-
-//        } catch (AppException exception){
-//            log.info("Token already expired");
-//        }
-    
     }
     
     @Override
     public AuthenticationResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
-        var signedJWT = authenticationComponent.verifyToken(request.getToken(), true);
-        
-        var jit = signedJWT.getJWTClaimsSet().getJWTID();
-        LocalDateTime expiryTime = (signedJWT.getJWTClaimsSet().getExpirationTime())
-              .toInstant()
-              .atZone(ZoneId.systemDefault())
-              .toLocalDateTime();
-        
-        BlackListToken blackListToken =
-              BlackListToken.builder().createAt(LocalDateTime.now()).token(request.getToken()).expiryTime(expiryTime).build();
-        
-        blackListTokenRepository.save(blackListToken);
-        
+        SignedJWT signedJWT = SignedJWT.parse(request.getToken());
         var email = signedJWT.getJWTClaimsSet().getSubject();
-        
-        User user =
-              userRepository.findByEmail(email);
-//                        .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED)
-//                        );
-        
+        String accessToken = (String) redisTemplate.opsForValue().get("accessToken: " + email);
+        String refreshToken = (String) redisTemplate.opsForValue().get("refreshToken: " + email);
+        if(!accessToken.equals(request.getToken())) {
+            throw new AuthenticatedException("Unauthenticated");
+        }
+        authenticationComponent.verifyToken(refreshToken);
+        User user = userRepository.findByEmail(email);
         var token = generateToken(user);
-        
+        generateRefreshToken(user);
         return AuthenticationResponse.builder().token(token).authenticated(true).build();
     }
     
@@ -164,6 +148,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            redisTemplate.opsForValue().set("accessToken: " + user.getEmail(), jwsObject.serialize());
             return jwsObject.serialize();
         } catch (JOSEException e) {
             log.error("Cannot create token", e);
@@ -171,26 +156,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
     }
 
-//    private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
-//        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-//
-//        SignedJWT signedJWT = SignedJWT.parse(token);
-//
-//        Date expiryTime = (isRefresh)
-//              ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
-//              .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
-//              : signedJWT.getJWTClaimsSet().getExpirationTime();
-//
-//        var verified = signedJWT.verify(verifier);
-//
-//        if (!(verified && expiryTime.after(new Date()))) {
-//            throw new AuthenticatedException("Unauthenticated");
-//        }
-//
-//        if (blackListTokenRepository.existsByToken(token))
-//            throw new AuthenticatedException("Unauthenticated");
-//
-//        return signedJWT;
-//    }
+    private void generateRefreshToken(User user) {
+        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
+        JWTClaimsSet jwtClaimsSetRefresh = new JWTClaimsSet.Builder()
+                .subject(user.getEmail())
+                .issuer("auction")
+                .issueTime(new Date())
+                .claim("role", user.getRole())
+                .expirationTime(new Date(Instant.now().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli()
+                )).build();
+        Payload payloadRefresh = new Payload(jwtClaimsSetRefresh.toJSONObject());
+        JWSObject jwsObjectRefresh = new JWSObject(header, payloadRefresh);
+        try{
+            jwsObjectRefresh.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            redisTemplate.opsForValue().set("refreshToken: " + user.getEmail(), jwsObjectRefresh.serialize());
+        } catch (JOSEException ex) {
+            log.error("Cannot create refreshToken", ex);
+            throw new RuntimeException(ex);
+        }
+    }
     
 }
