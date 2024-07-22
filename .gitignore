@@ -33,3 +33,6 @@ build/
 .vscode/
 
 front_end/node_modules
+
+## env file
+**/*.env
