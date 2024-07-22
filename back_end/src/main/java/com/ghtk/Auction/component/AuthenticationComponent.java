@@ -38,7 +38,7 @@ public class AuthenticationComponent {
         boolean isValid = true;
 
         try {
-            verifyToken(token, false);
+            verifyToken(token);
         }
         catch (AuthenticatedException e) {
             isValid = false;
@@ -47,15 +47,12 @@ public class AuthenticationComponent {
         return IntrospectResponse.builder().valid(isValid).build();
     }
 
-    public SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
+    public SignedJWT verifyToken(String token) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
 
         SignedJWT signedJWT = SignedJWT.parse(token);
 
-        Date expiryTime = (isRefresh)
-                ? new Date(signedJWT.getJWTClaimsSet().getIssueTime()
-                .toInstant().plus(REFRESHABLE_DURATION, ChronoUnit.SECONDS).toEpochMilli())
-                : signedJWT.getJWTClaimsSet().getExpirationTime();
+        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
 
         var verified = signedJWT.verify(verifier);
 
