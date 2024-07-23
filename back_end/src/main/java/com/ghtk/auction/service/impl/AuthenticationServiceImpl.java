@@ -1,22 +1,21 @@
-package com.ghtk.Auction.service.impl;
+package com.ghtk.auction.service.impl;
 
-import com.ghtk.Auction.component.AuthenticationComponent;
-import com.ghtk.Auction.dto.request.AuthenticationRequest;
-import com.ghtk.Auction.dto.request.IntrospectRequest;
-import com.ghtk.Auction.dto.request.LogoutRequest;
-import com.ghtk.Auction.dto.request.RefreshRequest;
-import com.ghtk.Auction.dto.response.AuthenticationResponse;
-import com.ghtk.Auction.dto.response.IntrospectResponse;
-import com.ghtk.Auction.entity.BlackListToken;
-import com.ghtk.Auction.entity.User;
-import com.ghtk.Auction.exception.AlreadyExistsException;
-import com.ghtk.Auction.exception.AuthenticatedException;
-import com.ghtk.Auction.repository.BlackListTokenRepository;
-import com.ghtk.Auction.repository.UserRepository;
-import com.ghtk.Auction.service.AuthenticationService;
+import com.ghtk.auction.component.AuthenticationComponent;
+import com.ghtk.auction.dto.request.user.AuthenticationRequest;
+import com.ghtk.auction.dto.request.user.IntrospectRequest;
+import com.ghtk.auction.dto.request.user.LogoutRequest;
+import com.ghtk.auction.dto.request.user.RefreshRequest;
+import com.ghtk.auction.dto.response.user.AuthenticationResponse;
+import com.ghtk.auction.dto.response.user.IntrospectResponse;
+import com.ghtk.auction.entity.BlackListToken;
+import com.ghtk.auction.entity.User;
+import com.ghtk.auction.exception.AlreadyExistsException;
+import com.ghtk.auction.exception.AuthenticatedException;
+import com.ghtk.auction.repository.BlackListTokenRepository;
+import com.ghtk.auction.repository.UserRepository;
+import com.ghtk.auction.service.AuthenticationService;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
@@ -27,10 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
@@ -38,7 +35,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.StringJoiner;
 
 
 @Service
@@ -108,7 +104,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         BlackListToken blackListToken =
               BlackListToken.builder()
                     .token(request.getToken())
-                    .createAt(LocalDateTime.now())
+                    .createdAt(LocalDateTime.now())
                     .expiryTime(expiryTime)
                     .build();
         
