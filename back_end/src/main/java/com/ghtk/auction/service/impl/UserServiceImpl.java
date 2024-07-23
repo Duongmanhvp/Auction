@@ -63,11 +63,11 @@ public class UserServiceImpl implements UserService {
 		user.setPassword(passwordEncoder.encode(request.getPassword()));
 		user.setDateOfBirth(request.getDateOfBirth());
 		user.setFullName(request.getFullName());
-//		user.setCreatedAt(LocalDateTime.now());
-//		user.setIsVerified(false);
+		user.setCreatedAt(LocalDateTime.now());
+		user.setIsVerified(false);
 		user.setPhone(request.getPhone());
-//		user.setStatusAccount("Active");
-//		user.setRole("USER");
+		user.setStatusAccount("Active");
+		user.setRole("USER");
 		userRepository.save(user);
 		
 		sendOtp(user.getEmail());
