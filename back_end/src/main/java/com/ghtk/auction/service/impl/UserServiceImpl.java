@@ -7,6 +7,9 @@ import com.ghtk.auction.dto.request.user.UserUpdateRequest;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.dto.response.user.UserResponse;
 import com.ghtk.auction.entity.User;
+import com.ghtk.auction.enums.UserGender;
+import com.ghtk.auction.enums.UserRole;
+import com.ghtk.auction.enums.UserStatus;
 import com.ghtk.auction.exception.AlreadyExistsException;
 import com.ghtk.auction.mapper.UserMapper;
 import com.ghtk.auction.repository.UserRepository;
@@ -66,8 +69,8 @@ public class UserServiceImpl implements UserService {
 		user.setCreatedAt(LocalDateTime.now());
 		user.setIsVerified(false);
 		user.setPhone(request.getPhone());
-		user.setStatusAccount("Active");
-		user.setRole("USER");
+		user.setStatusAccount(UserStatus.ACTIVE);
+		user.setRole(UserRole.USER);
 		userRepository.save(user);
 		
 		sendOtp(user.getEmail());
@@ -178,7 +181,11 @@ public class UserServiceImpl implements UserService {
 			user.setDateOfBirth(request.getDateOfBirth());
 		}
 		if (request.getGender() != null) {
-			user.setGender(request.getGender());
+			if (request.getGender() == UserGender.MALE){
+				user.setGender(UserGender.MALE);
+			} else if (request.getGender() == UserGender.FEMALE){
+				user.setGender(UserGender.FEMALE);
+			}
 		}
 		if (request.getAddress() != null) {
 			user.setAddress(request.getAddress());

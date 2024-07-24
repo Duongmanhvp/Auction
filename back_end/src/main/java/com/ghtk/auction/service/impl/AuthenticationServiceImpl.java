@@ -132,9 +132,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
               .subject(user.getEmail())
-              .issuer("Aution")
+              .issuer("auction")
               .issueTime(new Date())
-              .claim("Role", user.getRole())
+              .claim("id", user.getId())
+              .claim("role", user.getRole())
               .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
               )).build();
 

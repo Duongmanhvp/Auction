@@ -5,6 +5,7 @@ import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.User;
 import com.ghtk.auction.entity.UserProduct;
+import com.ghtk.auction.enums.ProductCategory;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.repository.ProductRepository;
 import com.ghtk.auction.repository.UserProductRepository;
@@ -63,13 +64,13 @@ public class ProductServiceImpl implements ProductService {
 				.map(product -> new ProductResponse(
 						(String) product[0],
 						(String) product[1],
-						(String) product[2],
+						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
 						(String) product[4]
 				)).collect(Collectors.toList());
 	}
 	
-	@PreAuthorize("@productServiceImpl.isProductOwner(#id, principal)")
+	@PreAuthorize("@productComponent.isProductOwner(#id, principal)")
 	@Override
 	public ProductResponse deleteProduct(Jwt principal, Long id) {
 		Product product = productRepository.findById(id).get();
@@ -114,25 +115,11 @@ public class ProductServiceImpl implements ProductService {
 				.map(product -> new ProductResponse(
 						(String) product[0],
 						(String) product[1],
-						(String) product[2],
+						(ProductCategory) product[2],
 						(String) product[3],
 						(String) product[4]
 				)).collect(Collectors.toList());
 		
 	}
 	
-	
-	public boolean isProductOwner(Long productId, Jwt principal) {
-		Long userId = (Long)principal.getClaims().get("id");
-//		return productRepository.findById(productId)
-//				.map(product -> product.getOwnerId().equals(userId))
-//				.orElse(false);
-		Product product = productRepository.findById(productId).
-				orElseThrow(() ->new  NotFoundException("Product not found"));
-		
-		if (!userId.equals(product.getOwnerId())) {
-			return false;
-		}
-		return true;
-	}
 }

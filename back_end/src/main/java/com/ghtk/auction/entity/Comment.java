@@ -13,17 +13,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "user_auction")
-public class UserAuction {
+@Table(name = "comment")
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "auction_id")
-    Auction auction;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    User user;
+    @Column(nullable = false, name = "content")
+    String content;
+    
+    @Column(nullable = false, name = "created_at")
+    LocalDateTime createdAt;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_auction_id")
+    UserAuction userAuctionId;
 }

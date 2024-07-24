@@ -1,5 +1,6 @@
 package com.ghtk.auction.entity;
 
+import com.ghtk.auction.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -37,7 +38,8 @@ public class Product {
     String name;
 
     @Column(name = "category", nullable = false)
-    String category;
+    @Enumerated(EnumType.STRING)
+    ProductCategory category;
 
     @Column(name = "description",nullable = false, length = 100000)
     String description;

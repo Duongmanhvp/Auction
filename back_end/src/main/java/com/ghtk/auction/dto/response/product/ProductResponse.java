@@ -1,6 +1,7 @@
 package com.ghtk.auction.dto.response.product;
 
 
+import com.ghtk.auction.enums.ProductCategory;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,7 +15,7 @@ public class ProductResponse {
 	
 	String name;
 	
-	String category;
+	ProductCategory category;
 	
 	String description;
 	

@@ -1,5 +1,8 @@
 package com.ghtk.auction.entity;
 
+import com.ghtk.auction.enums.UserGender;
+import com.ghtk.auction.enums.UserRole;
+import com.ghtk.auction.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,13 +36,15 @@ public class User {
 	LocalDate dateOfBirth;
 	
 	@Column(name = "gender")
-	Boolean gender;
+	@Enumerated(EnumType.STRING)
+	UserGender gender;
 	
 	@Column(name = "address")
 	String address;
 	
 	@Column(nullable = false, name = "status")
-	String statusAccount;
+	@Enumerated(EnumType.STRING)
+	UserStatus statusAccount;
 	
 	@Column(name = "avatar_url")
 	String avatar;
@@ -48,7 +53,8 @@ public class User {
 	LocalDateTime createdAt;
 	
 	@Column(nullable = false, name = "role")
-	String role;
+	@Enumerated(EnumType.STRING)
+	UserRole role;
 	
 	@Column(nullable = false, name = "is_verified")
 	Boolean isVerified;
