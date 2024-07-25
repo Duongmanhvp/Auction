@@ -19,5 +19,4 @@ public class ProductResponse {
 	String description;
 	
 	String image;
-	
 }
