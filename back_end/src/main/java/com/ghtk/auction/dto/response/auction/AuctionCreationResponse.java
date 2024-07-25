@@ -2,6 +2,8 @@ package com.ghtk.auction.dto.response.auction;
 
 
 import com.ghtk.auction.enums.AuctionStatus;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,18 +16,19 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuctionCreationResponse {
 	
-	Long product_id;
+	Long productId;
 	
 	String title;
 	
 	String description;
 	
-	Long start_bid;
+	Long startBid;
 	
-	Long price_per_step;
+	Long pricePerStep;
 	
-	LocalDateTime created_at;
+	LocalDateTime createdAt;
 	
+	@Enumerated(EnumType.STRING)
 	AuctionStatus status;
 	
 }
