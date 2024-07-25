@@ -1,6 +1,7 @@
 package com.ghtk.auction.dto.response.product;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ghtk.auction.enums.ProductCategory;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponse {
 	String owner;
 	
@@ -20,5 +22,7 @@ public class ProductResponse {
 	String description;
 	
 	String image;
+	
+	String buyer;
 	
 }

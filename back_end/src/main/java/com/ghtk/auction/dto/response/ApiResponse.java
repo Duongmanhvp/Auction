@@ -13,5 +13,5 @@ import lombok.experimental.FieldDefaults;
 public class ApiResponse<T> {
 	Boolean success;
 	String message;
-	T result;
+	T data;
 }

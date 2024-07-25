@@ -1,6 +1,7 @@
 package com.ghtk.auction.service.impl;
 
 import com.ghtk.auction.dto.request.product.ProductCreationRequest;
+import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.User;
@@ -20,8 +21,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.security.Principal;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -52,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	
-	@PreAuthorize("isAuthenticated()")
+	
 	@Override
 	public List<ProductResponse> getAllMyProduct() {
 		String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -66,8 +67,38 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(String) product[5]
 				)).collect(Collectors.toList());
+	}
+	
+	
+	@Override
+	public List<ProductResponse> getMyByCategory(Jwt principal , ProductFilterRequest request) {
+		
+		Long userId = (Long)principal.getClaims().get("id");
+		
+		List<Product> products = productRepository.findAllByOwnerIdAndCategory(userId,request.getProductCategory());
+		
+		Map<Long,String> buyerMap = new HashMap<>();
+		buyerMap.put(null, null);
+		products.forEach(product -> {
+			if (!buyerMap.containsKey(product.getBuyerId())) {
+				buyerMap.put(product.getBuyerId()
+						,userRepository.findById(product.getBuyerId()).get().getFullName());
+			}
+		});
+		
+		return products.stream().map(
+				product -> ProductResponse.builder()
+						.name(product.getName())
+						.category(product.getCategory())
+						.description(product.getDescription())
+						.image(product.getImage())
+						.buyer(buyerMap.get(product.getBuyerId()))
+						.build()
+		).collect(Collectors.toList());
+		
 	}
 	
 	@PreAuthorize("@productComponent.isProductOwner(#id, principal)")
@@ -117,9 +148,41 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory) product[2],
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(String) product[5]
 				)).collect(Collectors.toList());
 		
 	}
+	
+	@Override
+	public List<ProductResponse> searchProductbyCategory(ProductFilterRequest request) {
+		
+		List<Product> products = productRepository.findAllByCategory(request.getProductCategory());
+		
+		products = products.stream().filter(product ->
+			product.getBuyerId() == null
+		).toList();
+		
+		Map<Long,String> ownerMap = new HashMap<>();
+		products.forEach(product -> {
+			if (!ownerMap.containsKey(product.getOwnerId())) {
+				ownerMap.put(product.getOwnerId()
+						,userRepository.findById(product.getOwnerId()).get().getFullName());
+			}
+		});
+		
+		return products.stream().map(
+				product -> ProductResponse.builder()
+						.owner(ownerMap.get(product.getOwnerId()))
+						.name(product.getName())
+						.category(product.getCategory())
+						.description(product.getDescription())
+						.image(product.getImage())
+						.build()
+		).collect(Collectors.toList());
+		
+	}
+	
+	
 	
 }
