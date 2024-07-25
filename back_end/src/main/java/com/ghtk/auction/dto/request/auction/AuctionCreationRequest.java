@@ -1,10 +1,10 @@
-package com.ghtk.auction.dto.request.user;
+package com.ghtk.auction.dto.request.auction;
 
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,14 +14,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserChangePasswordRequest {
+public class AuctionCreationRequest {
 	
-//	String email;
+	Long productId;
 	
-	@NotEmpty(message = "Old password is required")
-	String oldPassword;
+	String title;
 	
-	@NotEmpty(message = "New password is required")
-	@Size(min = 8, message = "New password must be at least 8 characters long")
-	String newPassword;
+	String description;
+	
+	Long startBid;
+	
+	Long pricePerStep;
+	
 }

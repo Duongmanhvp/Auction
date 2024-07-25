@@ -35,7 +35,7 @@ public class ProductController {
 		return ResponseEntity.ok(productService.getAllMyProduct());
 	}
 	
-	@PostMapping("/delete/{id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(
 			@AuthenticationPrincipal Jwt principal,
 			@PathVariable Long id) {

@@ -1,5 +1,6 @@
 package com.ghtk.auction.entity;
 
+import com.ghtk.auction.enums.AuctionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -29,11 +30,14 @@ public class Auction {
 	@Column(name = "description", length = 100000)
 	String description;
 	
-	@Column(name = "status")
-	String status;
-
 	@Column(nullable = false, name = "created_at")
 	LocalDateTime createdAt; // ngay nguoi ban tao
+	
+	@Column(nullable = false, name = "confirm_date")
+	LocalDateTime confirmDate; // ngay mo dang ky
+	
+	@Column(nullable = false, name = "end_registration")
+	LocalDateTime endRegistration; // ngay dong dang ky
 
 	@Column(nullable = false, name = "start_time")
 	LocalDateTime startTime; // ngay bat dau phien dau gia
@@ -49,13 +53,11 @@ public class Auction {
 
 	@Column(name = "end_bid")
 	Long endBid; // gia da chot
-
-	@Column(nullable = false, name = "confirm_date")
-	LocalDateTime confirmDate; // ngay mo dang ky
-
-	@Column(nullable = false, name = "end_registration")
-	LocalDateTime endRegistration; // ngay dong dang ky
-
+	
+	@Column(name = "status")
+	@Enumerated(EnumType.STRING)
+	AuctionStatus status;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id", nullable = false)
 	Product product;

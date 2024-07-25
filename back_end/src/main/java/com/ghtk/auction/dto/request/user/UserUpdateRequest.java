@@ -3,6 +3,9 @@ package com.ghtk.auction.dto.request.user;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.ghtk.auction.enums.UserGender;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -20,7 +23,7 @@ public class UserUpdateRequest {
 	
 	LocalDate dateOfBirth;
 	
-	Boolean gender;
+	UserGender gender;
 	
 	String address;
 	

@@ -36,3 +36,5 @@ front_end/node_modules
 
 ## env file
 **/*.env
+.DS_Store
+**/.DS_Store

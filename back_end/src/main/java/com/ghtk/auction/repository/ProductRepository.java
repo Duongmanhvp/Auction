@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
 	
-	@Query(value = "SELECT \n" +
+	@Query(value =
+			"SELECT \n" +
 			"    u.full_name AS owner,\n" +
 			"    p.name AS name,\n" +
 			"    p.category AS category,\n" +
