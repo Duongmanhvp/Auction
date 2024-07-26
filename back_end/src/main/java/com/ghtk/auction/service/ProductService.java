@@ -16,6 +16,8 @@ public interface ProductService {
 	
 	List<ProductResponse> getAllMyProduct();
 	
+	Product getById(Long id);
+	
 	List<ProductResponse> getMyByCategory(Jwt principle, ProductFilterRequest category);
 	
 	ProductResponse deleteProduct(Jwt principal, Long id);

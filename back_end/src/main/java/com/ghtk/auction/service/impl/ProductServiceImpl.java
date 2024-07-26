@@ -72,6 +72,13 @@ public class ProductServiceImpl implements ProductService {
 				)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public Product getById(Long id) {
+		return productRepository.findById(id).orElseThrow(
+				() -> new NotFoundException("Khong tim thay san pham")
+		);
+	}
+	
 	
 	@Override
 	public List<ProductResponse> getMyByCategory(Jwt principal , ProductFilterRequest request) {
