@@ -90,4 +90,13 @@ public class ProductController {
 				.data(productService.searchProductbyCategory(category))
 				.build();
 	}
+	
+	@GetMapping("/{id}")
+	public ApiResponse<Product> getProduct(@PathVariable Long id) {
+		return ApiResponse.<Product>builder()
+				.success(true)
+				.message("Lay thanh cong")
+				.data(productService.getById(id))
+				.build();
+	}
 }
