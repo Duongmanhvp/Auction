@@ -46,4 +46,7 @@ public class Product {
 
     @Column(name = "image", nullable = false)
     String image;
+    
+    @Column(name = "buyer_id")
+    Long buyerId;
 }

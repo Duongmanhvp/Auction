@@ -2,27 +2,32 @@ package com.ghtk.auction.service;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
+import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
+import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.entity.Auction;
+import com.ghtk.auction.entity.UserAuction;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
 
 public interface AuctionService {
 
-    AuctionCreationResponse addAuction(AuctionCreationRequest request);
-    List<Auction> getMyCreatedAuction();
-    List<Auction> getMyJoinedAuction();
+    AuctionCreationResponse addAuction(Jwt principal, AuctionCreationRequest request);
+    List<AuctionResponse> getMyCreatedAuction(Jwt principal);
+    List<Auction> getMyJoinedAuction(Jwt principal);
     Auction getAuctionById(Long auctionId);
-    void updateStatusAuction(Auction auction);
-    void deleteAuction(Long auctionId);
-    void registerJoinAuction();
-    void joinAuction(Long auctionId);
+    Auction deleteAuction(Jwt principal, Long auctionId);
+    UserAuction registerJoinAuction(Jwt principal, Long auctionId);
+    void joinAuction(Jwt principal, Long auctionId);
     void bid(Long auctionId, Long bid);
     
     // ADMIN
-    List<Auction> getAuctionList();
-    void confirmAuction(Long auctionId);
-    void setStatus(Long auctionId);
+    List<Auction> getAllList();
     
-    
+    // thay doi trang thai PENDING -> OPENING,
+    // them fiels confirm_date, end_regis, start_time, end_time
+    // neu tu choi thi xoa auction.
+    Auction confirmAuction(Long auctionId);
+    void updateStatus(AuctionUpdateStatusRequest request);
 }

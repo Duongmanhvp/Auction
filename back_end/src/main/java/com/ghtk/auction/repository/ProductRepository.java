@@ -1,6 +1,7 @@
 package com.ghtk.auction.repository;
 
 import com.ghtk.auction.entity.Product;
+import com.ghtk.auction.enums.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,18 +13,25 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product,Long> {
 	
 	@Query(value =
-			"SELECT \n" +
-			"    u.full_name AS owner,\n" +
-			"    p.name AS name,\n" +
-			"    p.category AS category,\n" +
-			"    p.description AS description,\n" +
-			"    p.image AS image\n" +
-			"FROM \n" +
-			"    product p\n" +
-			"JOIN \n" +
-			"    User u ON p.owner_id = u.id\n" +
-			"WHERE \n" +
-			"    u.id = :o", nativeQuery = true)
+			"""
+  		  SELECT
+           u.full_name AS OWNER,
+           p.name AS NAME,
+           p.category AS category,
+           p.description AS description,
+           p.image AS image,
+           u2.full_name AS buyer
+       FROM
+           product p
+       JOIN USER u ON
+           p.owner_id = u.id
+       LEFT JOIN USER u2 ON
+           p.buyer_id = u2.id
+       WHERE
+           u.id = :o 	""", nativeQuery = true)
 	List<Object[]> findByOwnerId(@Param("o") Long ownerId);
 	
+	List<Product> findAllByOwnerIdAndCategory(Long userId, ProductCategory category);
+	
+	List<Product> findAllByCategory(ProductCategory productCategory);
 }

@@ -1,12 +1,14 @@
-package com.ghtk.auction.dto.request.auction;
+package com.ghtk.auction.dto.request.product;
 
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.ghtk.auction.entity.Product;
+import com.ghtk.auction.enums.ProductCategory;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,17 +18,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuctionCreationRequest {
+public class ProductFilterRequest {
 	
-	@NotNull
-	Long productId;
+	@Enumerated(EnumType.STRING)
+	ProductCategory productCategory;
 	
-	String title;
-	
-	String description;
-	
-	Long startBid;
-	
-	Long pricePerStep;
+	Long ownerId;
 	
 }
