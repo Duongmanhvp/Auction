@@ -67,8 +67,7 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4],
-						(String) product[5]
+						(String) product[4]
 				)).collect(Collectors.toList());
 	}
 	
@@ -102,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 						.category(product.getCategory())
 						.description(product.getDescription())
 						.image(product.getImage())
-						.buyer(buyerMap.get(product.getBuyerId()))
+//						.buyer(buyerMap.get(product.getBuyerId()))
 						.build()
 		).collect(Collectors.toList());
 		
@@ -150,13 +149,12 @@ public class ProductServiceImpl implements ProductService {
 		
 		List<Object[]> products = userProductRepository.findMyInterestByUserID(userId);
 		return products.stream()
-				.map(product -> new ProductResponse(
+				.map(product ->new ProductResponse(
 						(String) product[0],
 						(String) product[1],
 						(ProductCategory) product[2],
 						(String) product[3],
-						(String) product[4],
-						(String) product[5]
+						(String) product[4]
 				)).collect(Collectors.toList());
 		
 	}
@@ -189,7 +187,4 @@ public class ProductServiceImpl implements ProductService {
 		).collect(Collectors.toList());
 		
 	}
-	
-	
-	
 }
