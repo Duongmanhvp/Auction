@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Home from '../../../layouts/home.vue';
+import Home from '../../../layouts/PublicLayout.vue';
 import TheCard from '../../../components/Card/index.vue';
 
 export default {

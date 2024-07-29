@@ -6,27 +6,21 @@
                     <img src="../../assets/icon/dashboard.svg" alt="Dashboard" class="w-6 h-6" />
                 </span>
             </div>
-            <div class="w-7/10 flex">
-                <img src="../../assets/logo.png" alt="Logo" class="mt-2 mr-32 ml-6 h-20 w-30">
+            <div class="w-8/10 flex">
+                <img src="../../assets/logo.png" alt="Logo" class="mt-2 mr-40 ml-6 h-20 w-30">
                 <div class="hidden sm:flex items-center justify-center space-x-2 ml-6">
-                    <!--
-                    <a href="#horizontally-part-1" class="anchor-link">Home</a> -->
-                    <!-- <ul class="navbar-item font-bold cursor-pointer">
-                        <li></li>
-                        <router-link to="/home/default" class="hover:text-green-600" active-class="text-green-600">
-                            <div class="w-full h-full flex items-center justify-center">Home</div>
-                        </router-link>
-                    </ul> -->
-
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/home/default" active-class="block w-full h-full hover:text-green-600 rounded">
-                            <div class="w-full h-full p-5 flex items-center justify-center">Home</div>
+                        <router-link to="/user/default" active-class="block w-full h-full hover:text-green-600 rounded">
+                            <div class="w-full h-full p-5 flex items-center justify-center">
+                                <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 inline-block mr-2" />
+                                Home
+                            </div>
                         </router-link>
                     </ul>
 
                     <a-dropdown>
                         <a class="ant-dropdown-link font-bold cursor-pointer hover:text-green-600">
-                            <router-link to="/home/product" class="block w-full h-full hover:text-green-600 rounded"
+                            <router-link to="/user/product" class="block w-full h-full hover:text-green-600 rounded"
                                 active-class="text-green-600">
                                 <div class="w-full h-full p-5 flex items-center justify-center">
                                     Auction Product
@@ -62,7 +56,7 @@
                     </a-dropdown>
                     <a-dropdown>
                         <a class="ant-dropdown-link font-bold cursor-pointer hover:text-green-600">
-                            <router-link to="/home/session" class="block w-full h-full hover:text-green-600 rounded"
+                            <router-link to="/user/session" class="block w-full h-full hover:text-green-600 rounded"
                                 active-class="text-green-600">
                                 <div class="w-full h-full p-5 flex items-center justify-center">
                                     Auction Session
@@ -86,7 +80,7 @@
                     </a-dropdown>
                     <a-dropdown>
                         <a class="ant-dropdown-link font-bold cursor-pointer hover:text-green-600">
-                            <router-link to="/home/news" class="block w-full h-full hover:text-green-600 rounded"
+                            <router-link to="/user/news" class="block w-full h-full hover:text-green-600 rounded"
                                 active-class="text-green-600">
                                 <div class="w-full h-full p-5 flex items-center justify-center">
                                     News
@@ -110,19 +104,19 @@
                     </a-dropdown>
 
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/home/history" class="block w-full h-full hover:text-green-600 rounded"
+                        <router-link to="/user/history" class="block w-full h-full hover:text-green-600 rounded"
                             active-class="text-green-600">
                             <div class="w-full h-full p-5 flex items-center justify-center">History</div>
                         </router-link>
                     </ul>
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/home/introduction"
+                        <router-link to="/user/introduction"
                             class="block w-full h-full p-5 hover:text-green-600 rounded" active-class="text-green-600">
                             <div class="w-full h-full flex items-center justify-center">Introduction</div>
                         </router-link>
                     </ul>
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/home/contact" class="block w-full h-full hover:text-green-600 rounded"
+                        <router-link to="/user/contact" class="block w-full h-full hover:text-green-600 rounded"
                             active-class="text-green-600">
                             <div class="w-full h-full p-5 flex items-center justify-center">Contact</div>
                         </router-link>
@@ -130,16 +124,51 @@
 
                 </div>
             </div>
-            <div class="w-1/5 flex items-center justify-center space-x-4">
-                <button @click="handleLogin"
-                    class="bg-white hover:bg-green-600 text-black hover:text-white font-bold py-1 px-4 rounded shadow-lg outline outline-1 outline-green-600 focus:outline-none">
-                    Login
-                </button>
-                <button @click="handleRegister"
-                    class="hidden sm:block bg-white hover:bg-green-600 text-black hover:text-white font-bold py-1 px-4 rounded shadow-lg outline outline-1 outline-green-600 focus:outline-none">
-                    Register
-                </button>
+
+            <!-- avatar and dropdown-->
+            <div class="w-1/10 flex items-center m-auto">
+                <div @click="toggleDropdown" class="relative flex items-center hover:cursor-pointer">
+                    <a-avatar style="background-color: #87d068">
+                        <img src="../../assets/icon/user.svg" alt="User" class="w-6 h-6" />
+                    </a-avatar>
+                    <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
+                </div>
+                <div v-if="showDropdown"
+                    class="absolute right-0 w-54 mt-36 mr-8 bg-white border border-gray-200 rounded shadow-lg z-20">
+                    <a-menu>
+                        <a-menu-item>
+                            <a class="font-bold flex items-center" href="javascript:;">
+                                <img src="../../assets/icon/profile.svg" alt="Profile"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Profile
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item @click="navigateToAddProduct">
+                            <a class="font-bold flex items-center">
+                                <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Asset Management
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <a class="font-bold" href="javascript:;">
+                                <img src="../../assets/icon/setting.svg" alt="Setting"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Settings
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <router-link to="/" class="font-bold flex items-center">
+                                <img src="../../assets/icon/logout.svg" alt="Logout"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Logout
+                            </router-link>
+                        </a-menu-item>
+                    </a-menu>
+                </div>
+                <!-- <span class="font-bold">{{ username }}</span> -->
             </div>
+
         </div>
         <div>
             <a-drawer v-model:open="open" title="Dashboard" placement="left">
@@ -159,18 +188,20 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const open = ref(false);
+const showDropdown = ref(false);
+// const username = 'USERNAME';
 
-const showDrawer = () => {
-    open.value = true;
-};
-const handleLogin = () => {
-    router.push('/login');
-};
-const handleRegister = () => {
-    router.push('/register');
+const toggleDropdown = () => {
+    showDropdown.value = !showDropdown.value;
 };
 
+const hideDropdown = () => {
+    showDropdown.value = false;
+};
 
-
+const navigateToAddProduct = () => {
+    router.push('/user/addProduct');
+    hideDropdown();
+};
 
 </script>

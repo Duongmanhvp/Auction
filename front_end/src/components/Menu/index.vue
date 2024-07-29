@@ -1,15 +1,16 @@
 <template>
     <div>
-        <div class=" flex fixed left-0 top-1/2 transform -translate-y-1/2 w-64 bg-gray-100 shadow-lg rounded-lg transition-all duration-300 z-20"
-            :class="menuCollapsed ? '-left-64' : 'left-0'">
+        <div class="flex fixed left-0 top-1/2 transform -translate-y-1/2 w-64 bg-gray-100 shadow-lg rounded-lg transition-all duration-300 z-20"
+            :class="menuCollapsed ? '-left-72' : 'left-0'">
             <a-menu v-model:openKeys="state.openKeys" v-model:selectedKeys="state.selectedKeys" mode="inline"
-                :items="items"></a-menu>
-            <button @click="toggleMenu"
-                class="fixed left-56 top-1/2 transform -translate-y-1/2 w-4 h-12 flex items-center justify-center bg-gray-300 hover:bg-gray-400 rounded-full ml-5 z-30">
-                <span v-if="menuCollapsed"></span>
-                <span v-else class="mb-1">||</span>
-            </button>
+                :items="items">
+            </a-menu>
         </div>
+        <button @click="toggleMenu"
+            class="fixed -left-6 top-1/2 transform -translate-y-1/2 w-4 h-12 flex items-center justify-center bg-gray-300 hover:bg-gray-400 rounded-full ml-5 z-30">
+            <img v-if="menuCollapsed" src="../../assets/icon/next-arrow-slide.svg" alt="Expand" class="w-6 h-6" />
+            <img v-else src="../../assets/icon/prev-arrow-slide.svg" alt="Collapse" class="w-6 h-6" />
+        </button>
     </div>
 
     <div class="z-10">
@@ -33,9 +34,6 @@
     <div class="z-10">
         <a-card hoverable class="h-auto bg-white shadow-lg rounded-md p-4 mt-4">
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>
@@ -47,9 +45,6 @@
     <div class="z-10">
         <a-card hoverable class="h-auto bg-white shadow-lg rounded-md p-4 mt-4">
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>
@@ -62,13 +57,6 @@
 
 <script setup>
 import { reactive, ref, h } from 'vue';
-import {
-    PieChartOutlined,
-    MailOutlined,
-    DesktopOutlined,
-    InboxOutlined,
-    AppstoreOutlined,
-} from '@ant-design/icons-vue';
 
 const state = reactive({
     selectedKeys: ['1'],
@@ -78,25 +66,21 @@ const state = reactive({
 const items = reactive([
     {
         key: '1',
-        icon: () => h(PieChartOutlined),
         label: 'Option 1',
         title: 'Option 1',
     },
     {
         key: '2',
-        icon: () => h(DesktopOutlined),
         label: 'Option 2',
         title: 'Option 2',
     },
     {
         key: '3',
-        icon: () => h(InboxOutlined),
         label: 'Option 3',
         title: 'Option 3',
     },
     {
         key: 'sub1',
-        icon: () => h(MailOutlined),
         label: 'Navigation One',
         title: 'Navigation One',
         children: [
@@ -124,7 +108,6 @@ const items = reactive([
     },
     {
         key: 'sub2',
-        icon: () => h(AppstoreOutlined),
         label: 'Navigation Two',
         title: 'Navigation Two',
         children: [
@@ -160,9 +143,11 @@ const items = reactive([
 ]);
 
 const menuCollapsed = ref(true);
+
 const toggleMenu = () => {
     menuCollapsed.value = !menuCollapsed.value;
 };
+
 </script>
 
 <style scoped>

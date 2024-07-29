@@ -57,9 +57,6 @@
                 <img alt="example" src="../../../assets/product.jpg" />
             </template>
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>
@@ -73,9 +70,6 @@
                 <img alt="example" src="../../../assets/product.jpg" />
             </template>
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>
@@ -89,9 +83,6 @@
                 <img alt="example" src="../../../assets/product.jpg" />
             </template>
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>
@@ -105,9 +96,6 @@
                 <img alt="example" src="../../../assets/product.jpg" />
             </template>
             <template #actions>
-                <setting-outlined key="setting" />
-                <edit-outlined key="edit" />
-                <ellipsis-outlined key="ellipsis" />
             </template>
             <a-card-meta title="Card title" description="This is the description">
                 <template #avatar>

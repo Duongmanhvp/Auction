@@ -1,7 +1,7 @@
 <template>
-    <div class="container mx-auto max-w-sm p-auto">
+    <div class="container mx-auto max-w-sm p-8">
         <div class="flex">
-            <router-link to="/login" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+            <router-link to="/home/default" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>

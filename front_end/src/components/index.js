@@ -1,4 +1,5 @@
 import {
+    Avatar,
     Empty,
     Card,
     Carousel,
@@ -13,6 +14,7 @@ import {
 } from 'ant-design-vue';
 
 export default {
+    Avatar,
     Empty,
     Card,
     Carousel,

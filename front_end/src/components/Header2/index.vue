@@ -130,16 +130,50 @@
 
                 </div>
             </div>
-            <div class="w-1/5 flex items-center justify-center space-x-4">
-                <button @click="handleLogin"
-                    class="bg-white hover:bg-green-600 text-black hover:text-white font-bold py-1 px-4 rounded shadow-lg outline outline-1 outline-green-600 focus:outline-none">
-                    Login
-                </button>
-                <button @click="handleRegister"
-                    class="hidden sm:block bg-white hover:bg-green-600 text-black hover:text-white font-bold py-1 px-4 rounded shadow-lg outline outline-1 outline-green-600 focus:outline-none">
-                    Register
-                </button>
+
+            <div class="w-1/10 flex items-center m-auto">
+                <div @click="toggleDropdown" class="relative flex items-center hover:cursor-pointer">
+                    <a-avatar style="background-color: #87d068">
+                        <img src="../../assets/icon/user.svg" alt="User" class="w-6 h-6" />
+                    </a-avatar>
+                    <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
+                </div>
+                <div v-if="showDropdown"
+                    class="absolute right-0 w-54 mt-36 mr-8 bg-white border border-gray-200 rounded shadow-lg z-20">
+                    <a-menu>
+                        <a-menu-item>
+                            <a class="font-bold flex items-center" href="javascript:;">
+                                <img src="../../assets/icon/profile.svg" alt="Profile"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Profile
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <router-link to="/productManagement" class="font-bold flex items-center">
+                                <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Asset Management
+                            </router-link>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <a class="font-bold" href="javascript:;">
+                                <img src="../../assets/icon/setting.svg" alt="Setting"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Settings
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item>
+                            <a class="font-bold" href="javascript:;" @click="handleLogout">
+                                <img src="../../assets/icon/logout.svg" alt="Logout"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Logout
+                            </a>
+                        </a-menu-item>
+                    </a-menu>
+                </div>
+                <!-- <span class="font-bold">{{ username }}</span> -->
             </div>
+
         </div>
         <div>
             <a-drawer v-model:open="open" title="Dashboard" placement="left">
@@ -154,22 +188,25 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const open = ref(false);
+const showDropdown = ref(false);
+// const username = 'USERNAME';
 
-const showDrawer = () => {
-    open.value = true;
+const toggleDropdown = () => {
+    showDropdown.value = !showDropdown.value;
 };
-const handleLogin = () => {
+
+const hideDropdown = () => {
+    showDropdown.value = false;
+};
+
+const handleLogout = () => {
     router.push('/login');
 };
-const handleRegister = () => {
-    router.push('/register');
-};
-
 
 
 
