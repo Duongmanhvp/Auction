@@ -135,7 +135,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
               .issuer("auction")
               .issueTime(new Date())
               .claim("id", user.getId())
-              .claim("role", user.getRole())
+              .claim("scope", "ROLE_" + user.getRole())
               .expirationTime(new Date(Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
               )).build();
 
