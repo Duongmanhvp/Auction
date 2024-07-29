@@ -11,6 +11,7 @@ import com.ghtk.auction.enums.UserGender;
 import com.ghtk.auction.enums.UserRole;
 import com.ghtk.auction.enums.UserStatus;
 import com.ghtk.auction.exception.AlreadyExistsException;
+import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.UserMapper;
 import com.ghtk.auction.repository.UserRepository;
 import com.ghtk.auction.service.UserService;
@@ -155,7 +156,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User getMyInfo() {
+	public UserResponse getMyInfo() {
 		Authentication context = SecurityContextHolder.getContext().getAuthentication();
 		String email = context.getName();
 		
@@ -164,13 +165,14 @@ public class UserServiceImpl implements UserService {
 //		log.info(subject);
 //		Map<String, Object> claims = jwt.getClaims();
 //		log.info("claims: {}", claims);
-		
-		return userRepository.findByEmail(email);
+
+		User user = userRepository.findByEmail(email);
+		return userMapper.toUserResponse(user);
 	}
 	
 	
 	@Override
-	public User updateMyInfo(UserUpdateRequest request) {
+	public UserResponse updateMyInfo(UserUpdateRequest request) {
 		var context = SecurityContextHolder.getContext();
 		String email = context.getAuthentication().getName();
 		
@@ -197,14 +199,18 @@ public class UserServiceImpl implements UserService {
 		if (request.getPhone() != null) {
 			user.setPhone(request.getPhone());
 		}
-		
+
 		userRepository.save(user);
-		return user;
+
+		return userMapper.toUserResponse(user);
 	}
 	
 	@Override
-	public Objects updateStatus() {
-		return null;
+	public String updateStatus(UserStatus statusAccount,Long id) {
+		User user = userRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("User not found!"));
+		user.setStatusAccount(statusAccount);
+		return "update status account successfully!";
 	}
 	
 	@Override
@@ -234,10 +240,19 @@ public class UserServiceImpl implements UserService {
 	public Objects getByPhoneorEmail() {
 		return null;
 	}
-	
-	
-	public Objects getAnotherInfo(Object user) {
-		return null;
+
+
+	@Override
+	public UserResponse getAnotherInfo(Long id) {
+		User user =userRepository.findById(id)
+				.orElseThrow(() -> new NotFoundException("User not found!"));
+
+		return UserResponse.builder()
+				.fullName(user.getFullName())
+				.dateOfBirth(user.getDateOfBirth())
+				.gender(user.getGender())
+				.avatar(user.getAvatar())
+				.build();
 	}
 	
 	private String generateOTP() {
