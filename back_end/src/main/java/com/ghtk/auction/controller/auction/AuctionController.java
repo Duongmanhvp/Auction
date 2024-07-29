@@ -36,64 +36,40 @@ public class AuctionController {
 	final AuctionService auctionService;
 	
 	@PostMapping("/")
-	public ApiResponse<AuctionCreationResponse> createAuction(
+	public ResponseEntity<ApiResponse<AuctionCreationResponse>> createAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@RequestBody @Valid AuctionCreationRequest auctionCreationRequest) {
-		return ApiResponse.<AuctionCreationResponse>builder()
-				.success(true)
-				.message("Tao thanh cong")
-				.data(auctionService.addAuction(jwt, auctionCreationRequest))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.addAuction(jwt, auctionCreationRequest)));
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/get-my-created")
-	public ApiResponse<List<AuctionResponse>> getMyCreatedAuctions(@AuthenticationPrincipal Jwt jwt) {
-		return ApiResponse.<List<AuctionResponse>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getMyCreatedAuction(jwt))
-				.build();
+	public ResponseEntity<ApiResponse<List<AuctionResponse>>> getMyCreatedAuctions(@AuthenticationPrincipal Jwt jwt) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyCreatedAuction(jwt)));
 	}
 	
 	@GetMapping("/{id}")
-	public ApiResponse<Auction> getAuctionById(@PathVariable Long id) {
-		return ApiResponse.<Auction>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getAuctionById(id))
-				.build();
+	public ResponseEntity<ApiResponse<Auction>> getAuctionById(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getAuctionById(id)));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ApiResponse<Auction> deleteAuction(
+	public ResponseEntity<ApiResponse<Auction>> deleteAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id) {
-		return ApiResponse.<Auction>builder()
-				.success(true)
-				.message("Xoa thanh cong")
-				.data(auctionService.deleteAuction(jwt,id))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.deleteAuction(jwt,id)));
 	}
 	
 	@GetMapping("/get-my-joined")
-	public ApiResponse<List<Auction>> getMyJoined(@AuthenticationPrincipal Jwt jwt) {
-		return ApiResponse.<List<Auction>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getMyJoinedAuction(jwt))
-				.build();
+	public ResponseEntity<ApiResponse<List<Auction>>> getMyJoined(@AuthenticationPrincipal Jwt jwt) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyJoinedAuction(jwt)));
 	}
 	
 	@PostMapping("/regis-join/{id}")
-	public ApiResponse<UserAuction> regisJoinAuction(
+	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
 	) {
-		return ApiResponse.<UserAuction>builder()
-				.success(true)
-				.message("Ban da dang ky tham gia buoi dau gia thanh cong")
-				.data(auctionService.registerJoinAuction(jwt, id))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
 	}
 }
