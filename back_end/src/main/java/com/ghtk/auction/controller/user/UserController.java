@@ -9,6 +9,7 @@ import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.dto.response.user.UserResponse;
 import com.ghtk.auction.entity.User;
+import com.ghtk.auction.enums.UserStatus;
 import com.ghtk.auction.exception.EmailException;
 import com.ghtk.auction.service.UserService;
 import com.ghtk.auction.service.impl.EmailServiceImpl;
@@ -19,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -74,19 +76,26 @@ public class UserController {
 				: ResponseEntity.badRequest().body(ApiResponse.error("Password change failed."));
 	}
 
+	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/getMyInfo")
-	public ResponseEntity<ApiResponse<User>> getMyInfo() {
+	public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
 		return ResponseEntity.ok(ApiResponse.success(userService.getMyInfo()));
 	}
-	
+
+	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/updateMyInfo")
-	public ResponseEntity<ApiResponse<User>> updateMyInfo(@RequestBody  UserUpdateRequest request) {
+	public ResponseEntity<ApiResponse<UserResponse>> updateMyInfo(@RequestBody  UserUpdateRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(userService.updateMyInfo(request)));
 	}
-	
-	@GetMapping("/getAnotherInfo")
-	public Object getAnother() {
-		return null;
+
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/getAnotherInfo/{id}")
+	public ResponseEntity<ApiResponse<UserResponse>> getAnother(
+			@PathVariable Long id) {
+
+		return ResponseEntity.ok(ApiResponse.success(userService.getAnotherInfo(id)));
+
+
 	}
 
 	@GetMapping("/getAllInfo")
@@ -97,5 +106,13 @@ public class UserController {
 			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
 	){
 		return ResponseEntity.ok(ApiResponse.success(userService.getAllInfo(pageNo, pageSize, sortBy, sortDir)));
+	}
+	@PatchMapping("/updateStatus/{id}")
+	public ResponseEntity<ApiResponse<Object>> updateStatus(
+			@RequestParam UserStatus status,
+			@PathVariable Long id
+	){
+		return ResponseEntity.ok(ApiResponse.success(userService.updateStatus(status,id)));
+
 	}
 }
