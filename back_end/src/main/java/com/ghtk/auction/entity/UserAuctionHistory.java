@@ -26,7 +26,7 @@ public class UserAuctionHistory {
     @Column(name = "time", nullable = false)
     LocalDateTime time;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_auction_id")
     UserAuction userAuction;
 }

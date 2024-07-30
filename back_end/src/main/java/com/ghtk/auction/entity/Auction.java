@@ -1,5 +1,6 @@
 package com.ghtk.auction.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ghtk.auction.enums.AuctionStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -55,7 +56,7 @@ public class Auction {
 	@Enumerated(EnumType.STRING)
 	AuctionStatus status;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "product_id", nullable = false)
 	Product product;
 }

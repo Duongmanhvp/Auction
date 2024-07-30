@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailServiceImpl {
 	
 	@Autowired
+
 	private JavaMailSender mailSender;
 	
 	@Async
@@ -26,6 +28,7 @@ public class EmailServiceImpl {
 			throw new EmailException("OTP service unavailable", e);
 		}
 	}
+	@Async
 	public void sendDefaultPassword(String to, String password) {
 		
 		try {

@@ -9,6 +9,7 @@ import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.dto.response.user.UserResponse;
 import com.ghtk.auction.entity.User;
+import com.ghtk.auction.enums.UserStatus;
 import com.ghtk.auction.exception.EmailException;
 import com.ghtk.auction.service.UserService;
 import com.ghtk.auction.service.impl.EmailServiceImpl;
@@ -19,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,7 +41,7 @@ public class UserController {
 		
 	}
 	
-	@PostMapping("/register")
+	@PostMapping("/")
 	public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserCreationRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(userService.createUser(request)));
 		
@@ -67,6 +69,7 @@ public class UserController {
 				: ResponseEntity.badRequest().body(ApiResponse.error("Forget password failed. Email not found."));
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/change-password")
 	public ResponseEntity<ApiResponse<Object>> changePassword(@RequestBody UserChangePasswordRequest request) {
 		boolean result = userService.updatePassword(request);
@@ -74,22 +77,30 @@ public class UserController {
 				: ResponseEntity.badRequest().body(ApiResponse.error("Password change failed."));
 	}
 
-	@GetMapping("/getMyInfo")
-	public ResponseEntity<ApiResponse<User>> getMyInfo() {
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/get-my-info")
+	public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
 		return ResponseEntity.ok(ApiResponse.success(userService.getMyInfo()));
 	}
-	
-	@PutMapping("/updateMyInfo")
-	public ResponseEntity<ApiResponse<User>> updateMyInfo(@RequestBody  UserUpdateRequest request) {
+
+	@PreAuthorize("isAuthenticated()")
+	@PutMapping("/update-my-info")
+	public ResponseEntity<ApiResponse<UserResponse>> updateMyInfo(@RequestBody  UserUpdateRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(userService.updateMyInfo(request)));
 	}
-	
-	@GetMapping("/getAnotherInfo")
-	public Object getAnother() {
-		return null;
-	}
 
-	@GetMapping("/getAllInfo")
+	@PreAuthorize("isAuthenticated()")
+	@GetMapping("/get-another-info/{id}")
+	public ResponseEntity<ApiResponse<UserResponse>> getAnother(
+			@PathVariable Long id) {
+
+		return ResponseEntity.ok(ApiResponse.success(userService.getAnotherInfo(id)));
+
+
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/get-all-info")
 	public ResponseEntity<ApiResponse<PageResponse>> getAllInfo(
 			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -97,5 +108,15 @@ public class UserController {
 			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
 	){
 		return ResponseEntity.ok(ApiResponse.success(userService.getAllInfo(pageNo, pageSize, sortBy, sortDir)));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PatchMapping("/update-status/{id}")
+	public ResponseEntity<ApiResponse<Object>> updateStatus(
+			@RequestParam UserStatus status,
+			@PathVariable Long id
+	){
+		return ResponseEntity.ok(ApiResponse.success(userService.updateStatus(status,id)));
+
 	}
 }
