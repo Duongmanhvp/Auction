@@ -33,6 +33,13 @@ spring:
       port: 6379
       ssl:
         enabled: true
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+#    properties:
+#      org.quartz.jobStore:
+#        useProperties : true
 
 jwt:
   signerKey: ${JWT_SIGNER_KEY:}

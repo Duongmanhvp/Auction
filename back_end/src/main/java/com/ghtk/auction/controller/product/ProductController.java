@@ -30,18 +30,17 @@ public class ProductController {
 	final ProductService productService;
 	private final ProductServiceImpl productServiceImpl;
 	
+	
 	@PostMapping
 	public ResponseEntity<ApiResponse<Product>> create(@RequestBody ProductCreationRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(productService.createProduct(request)));
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/get-my-all")
 	public ResponseEntity<ApiResponse<List<ProductResponse>>> getAll() {
 		return ResponseEntity.ok(ApiResponse.success(productService.getAllMyProduct()));
 	}
-	
-	@PreAuthorize("isAuthenticated()")
+
 	@GetMapping("/get-my-by-category")
 	public ResponseEntity<ApiResponse<List<ProductResponse>>> getMyAllByCategory(
 			@AuthenticationPrincipal Jwt principal,
