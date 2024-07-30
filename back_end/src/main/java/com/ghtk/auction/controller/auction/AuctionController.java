@@ -67,6 +67,15 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
 	}
 
+  @PostMapping("/{id}")
+  public ApiResponse<Void> joinAuction(
+      @PathVariable Long auctionId,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    auctionService.joinAuction(jwt, auctionId);
+    return ApiResponse.success(null);
+  }
+
   @GetMapping("/{id}/current-price")
   public ApiResponse<Long> getCurrentPrice(
       @PathVariable Long auctionId,

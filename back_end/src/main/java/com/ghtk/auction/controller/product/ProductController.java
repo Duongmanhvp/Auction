@@ -55,7 +55,7 @@ public class ProductController {
 	}
 	
 	@PostMapping("/interest/{id}")
-	public ResponseEntity<ApiResponse<Object>> interest(@AuthenticationPrincipal Jwt principal , @PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Void>> interest(@AuthenticationPrincipal Jwt principal , @PathVariable Long id) {
 		productService.interestProduct(principal, id);
 		return ResponseEntity.ok(ApiResponse.success("Da thich"));
 	}

@@ -35,7 +35,7 @@ public class UserController {
 	private EmailServiceImpl emailService;
 
 	@PostMapping("/test")
-	public ResponseEntity<ApiResponse<Object>> test(@RequestParam String email, @RequestParam String otp) {
+	public ResponseEntity<ApiResponse<Void>> test(@RequestParam String email, @RequestParam String otp) {
 		emailService.sendOtpEmail(email, otp);
 		return ResponseEntity.ok(ApiResponse.success("Sent!"));
 		
@@ -48,14 +48,14 @@ public class UserController {
 	}
 
 	@PostMapping("/resend-otp")
-	public ResponseEntity<ApiResponse<Object>> reSendOtp(@RequestParam String email) {
+	public ResponseEntity<ApiResponse<Void>> reSendOtp(@RequestParam String email) {
 		userService.reSendOTP(email);
 		return ResponseEntity.ok(ApiResponse.success("OTP sent!"));
 
 	}
 	
 	@PostMapping("/verify-otp")
-	public ResponseEntity<ApiResponse<Object>> verifyOtp(@RequestParam String email,@RequestParam  String otp ) {
+	public ResponseEntity<ApiResponse<Void>> verifyOtp(@RequestParam String email,@RequestParam  String otp ) {
 		if (!userService.verifyOTP(email,otp)){
 			throw new EmailException("Invalid OTP or OTP expired.");
 		}
@@ -63,14 +63,14 @@ public class UserController {
 	}
 
 	@PutMapping("/forget-password")
-	public ResponseEntity<ApiResponse<Object>> forgetPassword(@RequestBody UserForgetPasswordRequest request) {
+	public ResponseEntity<ApiResponse<Void>> forgetPassword(@RequestBody UserForgetPasswordRequest request) {
 		boolean result = userService.forgetPassword(request);
 		return result ? ResponseEntity.ok(ApiResponse.success("Password reset successfully. Please check your email for the new password."))
 				: ResponseEntity.badRequest().body(ApiResponse.error("Forget password failed. Email not found."));
 	}
 	
 	@PutMapping("/change-password")
-	public ResponseEntity<ApiResponse<Object>> changePassword(@RequestBody UserChangePasswordRequest request) {
+	public ResponseEntity<ApiResponse<Void>> changePassword(@RequestBody UserChangePasswordRequest request) {
 		boolean result = userService.updatePassword(request);
 		return result ? ResponseEntity.ok(ApiResponse.success("Password changed successfully."))
 				: ResponseEntity.badRequest().body(ApiResponse.error("Password change failed."));
@@ -108,7 +108,7 @@ public class UserController {
 		return ResponseEntity.ok(ApiResponse.success(userService.getAllInfo(pageNo, pageSize, sortBy, sortDir)));
 	}
 	@PatchMapping("/updateStatus/{id}")
-	public ResponseEntity<ApiResponse<Object>> updateStatus(
+	public ResponseEntity<ApiResponse<Void>> updateStatus(
 			@RequestParam UserStatus status,
 			@PathVariable Long id
 	){

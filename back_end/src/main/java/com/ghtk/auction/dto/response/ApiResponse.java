@@ -39,11 +39,11 @@ public class ApiResponse<T> {
 		return response;
 	}
 
-	public static ApiResponse<Object> error(String message) {
+	public static ApiResponse<Void> error(String message) {
 		return error(message, null);
 	}
 
-	public static ApiResponse<Object> success(String message) {
+	public static ApiResponse<Void> success(String message) {
 		return ok(message);
 	}
 }
