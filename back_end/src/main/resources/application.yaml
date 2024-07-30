@@ -41,6 +41,11 @@ spring:
 #      org.quartz.jobStore:
 #        useProperties : true
 
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+
+
 jwt:
   signerKey: ${JWT_SIGNER_KEY:}
   valid-duration: ${JWT_VALID_DURATION:}

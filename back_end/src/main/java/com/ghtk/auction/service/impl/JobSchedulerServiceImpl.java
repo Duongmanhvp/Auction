@@ -116,5 +116,4 @@ public class JobSchedulerServiceImpl implements JobSchedulerService {
 				.startAt(initTime)
 				.build();
 	}
-	
 }

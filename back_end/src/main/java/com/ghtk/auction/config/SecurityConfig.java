@@ -25,7 +25,7 @@ public class SecurityConfig {
 	private CustomJwtDecoder customJwtDecoder;
 
 	private final String[] PUBLIC_POST_ENDPOINTS =
-			{"v1/users/test","v1/users/register","v1/users/verify-otp"
+			{"v1/users/test","v1/users/","v1/users/verify-otp"
 					, "v1/users/resend-otp"
 					,"v1/auths/authenticate","v1/auths/introspect","v1/auths/logout","v1/auths/refresh"};
 	private  final String[] PUBLIC_PUT_ENDPOINTS =
