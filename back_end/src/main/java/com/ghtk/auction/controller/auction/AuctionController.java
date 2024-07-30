@@ -2,23 +2,20 @@ package com.ghtk.auction.controller.auction;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductFilterRequest;
+import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
-import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.entity.Auction;
-import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.UserAuction;
+import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
-import com.ghtk.auction.service.ProductService;
-import com.ghtk.auction.service.impl.ProductServiceImpl;
+import com.ghtk.auction.service.JobSchedulerService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.quartz.SchedulerException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,66 +31,57 @@ import java.util.List;
 public class AuctionController {
 	
 	final AuctionService auctionService;
+	final JobSchedulerService jobSchedulerService;
+	final UpdateAuctionStatus updateAuctionStatus;
 	
 	@PostMapping("/")
-	public ApiResponse<AuctionCreationResponse> createAuction(
+	public ResponseEntity<ApiResponse<AuctionCreationResponse>> createAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@RequestBody @Valid AuctionCreationRequest auctionCreationRequest) {
-		return ApiResponse.<AuctionCreationResponse>builder()
-				.success(true)
-				.message("Tao thanh cong")
-				.data(auctionService.addAuction(jwt, auctionCreationRequest))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.addAuction(jwt, auctionCreationRequest)));
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/get-my-created")
-	public ApiResponse<List<AuctionResponse>> getMyCreatedAuctions(@AuthenticationPrincipal Jwt jwt) {
-		return ApiResponse.<List<AuctionResponse>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getMyCreatedAuction(jwt))
-				.build();
+	public ResponseEntity<ApiResponse<List<AuctionResponse>>> getMyCreatedAuctions(@AuthenticationPrincipal Jwt jwt) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyCreatedAuction(jwt)));
 	}
 	
 	@GetMapping("/{id}")
-	public ApiResponse<Auction> getAuctionById(@PathVariable Long id) {
-		return ApiResponse.<Auction>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getAuctionById(id))
-				.build();
+	public ResponseEntity<ApiResponse<Auction>> getAuctionById(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getAuctionById(id)));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ApiResponse<Auction> deleteAuction(
+	public ResponseEntity<ApiResponse<Auction>> deleteAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id) {
-		return ApiResponse.<Auction>builder()
-				.success(true)
-				.message("Xoa thanh cong")
-				.data(auctionService.deleteAuction(jwt,id))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.deleteAuction(jwt,id)));
 	}
 	
 	@GetMapping("/get-my-joined")
-	public ApiResponse<List<Auction>> getMyJoined(@AuthenticationPrincipal Jwt jwt) {
-		return ApiResponse.<List<Auction>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(auctionService.getMyJoinedAuction(jwt))
-				.build();
+	public ResponseEntity<ApiResponse<List<Auction>>> getMyJoined(@AuthenticationPrincipal Jwt jwt) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyJoinedAuction(jwt)));
 	}
 	
 	@PostMapping("/regis-join/{id}")
-	public ApiResponse<UserAuction> regisJoinAuction(
+	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
 	) {
-		return ApiResponse.<UserAuction>builder()
-				.success(true)
-				.message("Ban da dang ky tham gia buoi dau gia thanh cong")
-				.data(auctionService.registerJoinAuction(jwt, id))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/confirm/{id}")
+	public ResponseEntity<ApiResponse<Auction>> confirmAuction(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.confirmAuction(id)));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/update-status")
+	public ResponseEntity<ApiResponse<Auction>> updateAuction(@RequestBody AuctionUpdateStatusRequest request) throws SchedulerException {
+		jobSchedulerService.updateAuctionStatus(request);
+		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
 	}
 }

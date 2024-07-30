@@ -30,73 +30,56 @@ public class ProductController {
 	final ProductService productService;
 	private final ProductServiceImpl productServiceImpl;
 	
+	
 	@PostMapping
-	public ResponseEntity<Product> create(@RequestBody ProductCreationRequest request) {
-		return ResponseEntity.ok(productService.createProduct(request));
+	public ResponseEntity<ApiResponse<Product>> create(@RequestBody ProductCreationRequest request) {
+		return ResponseEntity.ok(ApiResponse.success(productService.createProduct(request)));
 	}
 	
-	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/get-my-all")
-	public ResponseEntity<List<ProductResponse>> getAll() {
-		return ResponseEntity.ok(productService.getAllMyProduct());
+	public ResponseEntity<ApiResponse<List<ProductResponse>>> getAll() {
+		return ResponseEntity.ok(ApiResponse.success(productService.getAllMyProduct()));
 	}
-	
-	@PreAuthorize("isAuthenticated()")
+
 	@GetMapping("/get-my-by-category")
-	public ApiResponse<List<ProductResponse>> getMyAllByCategory(
+	public ResponseEntity<ApiResponse<List<ProductResponse>>> getMyAllByCategory(
 			@AuthenticationPrincipal Jwt principal,
 			@RequestBody ProductFilterRequest request) {
-		return ApiResponse.<List<ProductResponse>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(productService.getMyByCategory(principal,request))
-				.build();
+		return ResponseEntity.ok(ApiResponse.success(productService.getMyByCategory(principal,request)));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> delete(
+	public ResponseEntity<ApiResponse<ProductDeletedResponse>> delete(
 			@AuthenticationPrincipal Jwt principal,
 			@PathVariable Long id) {
-		System.out.println(principal);
 		ProductResponse deleted = productService.deleteProduct(principal, id);
-		return ResponseEntity.ok().body(new ProductDeletedResponse("Product was deleted!", deleted));
+		return ResponseEntity.ok(ApiResponse.success(ProductDeletedResponse.builder().message("Product was deleted!").product(deleted).build()));
 	}
 	
 	@PostMapping("/interest/{id}")
-	public ApiResponse<?> interest(@AuthenticationPrincipal Jwt principal , @PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Object>> interest(@AuthenticationPrincipal Jwt principal , @PathVariable Long id) {
 		productService.interestProduct(principal, id);
-		return ApiResponse.builder()
-				.success(true)
-				.message("Da thich")
-				.build();
+		return ResponseEntity.ok(ApiResponse.success("Da thich"));
 	}
 	
 	@GetMapping("/interest/{id}")
-	public ResponseEntity<Long> getAllInterest(@PathVariable Long id) {
-		return ResponseEntity.ok(productService.getInterestProduct(id));
+	public ResponseEntity<ApiResponse<Long>> getAllInterest(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(productService.getInterestProduct(id)));
 	}
 	
 	@PreAuthorize("isAuthenticated()")
 	@GetMapping("/getAllMyInterest")
-	public ResponseEntity<List<ProductResponse>> getAllMyInterest(@AuthenticationPrincipal Jwt principal) {
-		return ResponseEntity.ok(productService.getMyInterestProduct(principal));
+	public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllMyInterest(@AuthenticationPrincipal Jwt principal) {
+		return ResponseEntity.ok(ApiResponse.success(productService.getMyInterestProduct(principal)));
 	}
 	
 	@GetMapping("/")
-	public ApiResponse<List<ProductResponse>> getAllProductByCategory(@RequestBody ProductFilterRequest category) {
-		return ApiResponse.<List<ProductResponse>>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(productService.searchProductbyCategory(category))
-				.build();
+	public ResponseEntity<ApiResponse<List<ProductResponse>>> getAllProductByCategory(@RequestBody ProductFilterRequest category) {
+		return ResponseEntity.ok(ApiResponse.success(productService.searchProductbyCategory(category)));
 	}
 	
 	@GetMapping("/{id}")
-	public ApiResponse<Product> getProduct(@PathVariable Long id) {
-		return ApiResponse.<Product>builder()
-				.success(true)
-				.message("Lay thanh cong")
-				.data(productService.getById(id))
-				.build();
+	public ResponseEntity<ApiResponse<Product>> getProduct(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(productService.getById(id)));
 	}
 }

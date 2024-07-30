@@ -4,6 +4,7 @@ import com.ghtk.auction.dto.request.user.AuthenticationRequest;
 import com.ghtk.auction.dto.request.user.IntrospectRequest;
 import com.ghtk.auction.dto.request.user.LogoutRequest;
 import com.ghtk.auction.dto.request.user.RefreshRequest;
+import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.user.AuthenticationResponse;
 import com.ghtk.auction.dto.response.user.IntrospectResponse;
 import com.ghtk.auction.service.AuthenticationService;
@@ -27,28 +28,26 @@ public class AuthenticateController {
     AuthenticationService authenticationService;
 
     @PostMapping("/authenticate")
-    ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request){
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> authenticate(@RequestBody AuthenticationRequest request){
+        return ResponseEntity.ok(ApiResponse.success(authenticationService.authenticate(request)));
     }
 
     @PostMapping("/introspect")
-    ResponseEntity<IntrospectResponse> introspect(@RequestBody IntrospectRequest request)
+    public ResponseEntity<ApiResponse<IntrospectResponse>> introspect(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {
 
-        return ResponseEntity.ok( authenticationService.introspect(request));
+        return ResponseEntity.ok(ApiResponse.success(authenticationService.introspect(request)));
     }
 
     @PostMapping("/refresh")
-    ResponseEntity<AuthenticationResponse> authenticate(@RequestBody RefreshRequest request)
+    public ResponseEntity<ApiResponse<AuthenticationResponse>> authenticate(@RequestBody RefreshRequest request)
             throws ParseException, JOSEException {
-        var result = authenticationService.refreshToken(request);
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(ApiResponse.success(authenticationService.refreshToken(request)));
     }
 
     @PostMapping("/logout")
-    ResponseEntity<String> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+    ResponseEntity<ApiResponse<Object>> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
-        return ResponseEntity.ok("logout successfully");
+        return ResponseEntity.ok(ApiResponse.success("logout successfully"));
     }
-
 }
