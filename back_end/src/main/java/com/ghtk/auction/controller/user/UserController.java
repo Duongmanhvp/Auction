@@ -41,7 +41,7 @@ public class UserController {
 		
 	}
 	
-	@PostMapping("/register")
+	@PostMapping("/")
 	public ResponseEntity<ApiResponse<UserResponse>> register(@Valid @RequestBody UserCreationRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(userService.createUser(request)));
 		
@@ -69,6 +69,7 @@ public class UserController {
 				: ResponseEntity.badRequest().body(ApiResponse.error("Forget password failed. Email not found."));
 	}
 	
+	@PreAuthorize("isAuthenticated()")
 	@PutMapping("/change-password")
 	public ResponseEntity<ApiResponse<Object>> changePassword(@RequestBody UserChangePasswordRequest request) {
 		boolean result = userService.updatePassword(request);
@@ -77,19 +78,19 @@ public class UserController {
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/getMyInfo")
+	@GetMapping("/get-my-info")
 	public ResponseEntity<ApiResponse<UserResponse>> getMyInfo() {
 		return ResponseEntity.ok(ApiResponse.success(userService.getMyInfo()));
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@PutMapping("/updateMyInfo")
+	@PutMapping("/update-my-info")
 	public ResponseEntity<ApiResponse<UserResponse>> updateMyInfo(@RequestBody  UserUpdateRequest request) {
 		return ResponseEntity.ok(ApiResponse.success(userService.updateMyInfo(request)));
 	}
 
 	@PreAuthorize("isAuthenticated()")
-	@GetMapping("/getAnotherInfo/{id}")
+	@GetMapping("/get-another-info/{id}")
 	public ResponseEntity<ApiResponse<UserResponse>> getAnother(
 			@PathVariable Long id) {
 
@@ -97,8 +98,9 @@ public class UserController {
 
 
 	}
-
-	@GetMapping("/getAllInfo")
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/get-all-info")
 	public ResponseEntity<ApiResponse<PageResponse>> getAllInfo(
 			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
@@ -107,7 +109,9 @@ public class UserController {
 	){
 		return ResponseEntity.ok(ApiResponse.success(userService.getAllInfo(pageNo, pageSize, sortBy, sortDir)));
 	}
-	@PatchMapping("/updateStatus/{id}")
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PatchMapping("/update-status/{id}")
 	public ResponseEntity<ApiResponse<Object>> updateStatus(
 			@RequestParam UserStatus status,
 			@PathVariable Long id

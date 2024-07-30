@@ -2,23 +2,20 @@ package com.ghtk.auction.controller.auction;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductFilterRequest;
+import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
-import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.entity.Auction;
-import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.UserAuction;
+import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
-import com.ghtk.auction.service.ProductService;
-import com.ghtk.auction.service.impl.ProductServiceImpl;
+import com.ghtk.auction.service.JobSchedulerService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.quartz.SchedulerException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,6 +31,8 @@ import java.util.List;
 public class AuctionController {
 	
 	final AuctionService auctionService;
+	final JobSchedulerService jobSchedulerService;
+	final UpdateAuctionStatus updateAuctionStatus;
 	
 	@PostMapping("/")
 	public ResponseEntity<ApiResponse<AuctionCreationResponse>> createAuction(
@@ -71,5 +70,18 @@ public class AuctionController {
 			@PathVariable Long id
 	) {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/confirm/{id}")
+	public ResponseEntity<ApiResponse<Auction>> confirmAuction(@PathVariable Long id) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.confirmAuction(id)));
+	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/update-status")
+	public ResponseEntity<ApiResponse<Auction>> updateAuction(@RequestBody AuctionUpdateStatusRequest request) throws SchedulerException {
+		jobSchedulerService.updateAuctionStatus(request);
+		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
 	}
 }

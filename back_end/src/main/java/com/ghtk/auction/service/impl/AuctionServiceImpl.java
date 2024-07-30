@@ -188,11 +188,15 @@ public class AuctionServiceImpl implements AuctionService {
 	@Override
 	public Auction confirmAuction(Long auctionId) {
 		
+		Auction auction = auctionRepository.findById(auctionId).orElseThrow(
+				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
+		);
+		
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime endRegistration = now.plusDays(3);
 		
 		LocalDateTime startTime;
-		if (endRegistration.getHour() >= 13 && endRegistration.getHour() < 24) {
+		if (endRegistration.getHour() >= 13) {
 			startTime = endRegistration.plusDays(1).withHour(9).withMinute(0).withSecond(0);
 		} else {
 			startTime = endRegistration.withHour(15).withMinute(0).withSecond(0);
@@ -200,25 +204,24 @@ public class AuctionServiceImpl implements AuctionService {
 		
 		LocalDateTime endTime = startTime.plusMinutes(60);
 		
-		return Auction.builder()
-				.confirmDate(now)
-				.endRegistration(endRegistration)
-				.startTime(startTime)
-				.endTime(endTime)
-				.status(AuctionStatus.OPENING)
-				.build();
+		auction.setConfirmDate(now);
+		auction.setEndRegistration(endRegistration);
+		auction.setStartTime(startTime);
+		auction.setEndTime(endTime);
+		auction.setStatus(AuctionStatus.OPENING);
+		
+		auctionRepository.save(auction);
+		
+		return  auction;
+		
 	}
 	
 	@Override
 	public void updateStatus(AuctionUpdateStatusRequest request) {
-	
 		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
-		
-		Auction.builder()
-				.status(request.getAuctionStatus())
-				.build();
-		
+		auction.setStatus(request.getAuctionStatus());
+		auctionRepository.save(auction);
 	}
 }
