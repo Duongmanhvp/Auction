@@ -74,14 +74,14 @@ public class AuctionController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/confirm/{id}")
-	public ResponseEntity<ApiResponse<Auction>> confirmAuction(@PathVariable Long id) {
+	public ResponseEntity<ApiResponse<Auction>> confirmAuction(@PathVariable Long id) throws SchedulerException {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.confirmAuction(id)));
 	}
 	
-	@PreAuthorize("hasRole('ADMIN')")
-	@PostMapping("/update-status")
-	public ResponseEntity<ApiResponse<Auction>> updateAuction(@RequestBody AuctionUpdateStatusRequest request) throws SchedulerException {
-		jobSchedulerService.updateAuctionStatus(request);
-		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
-	}
+//	@PreAuthorize("hasRole('ADMIN')")
+//	@PostMapping("/update-status")
+//	public ResponseEntity<ApiResponse<Auction>> updateAuction(@RequestBody AuctionUpdateStatusRequest request) throws SchedulerException {
+//		jobSchedulerService.updateAuctionStatus(request);
+//		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
+//	}
 }
