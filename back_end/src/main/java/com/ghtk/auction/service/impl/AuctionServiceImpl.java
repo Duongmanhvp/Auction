@@ -9,18 +9,23 @@ import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.AuctionMapper;
 import com.ghtk.auction.repository.*;
+import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
+import com.ghtk.auction.service.JobSchedulerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.coyote.BadRequestException;
+import org.quartz.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +40,8 @@ public class AuctionServiceImpl implements AuctionService {
 	final AuctionMapper auctionMapper;
 	final UserRepository userRepository;
 	final TimeHistoryRepository timeHistoryRepository;
-	
+	final Scheduler scheduler;
+	final JobSchedulerService jobSchedulerService;
 	
 	@PreAuthorize("@productComponent.isProductOwner(#request.productId, principal)")
 	@Override
@@ -185,24 +191,30 @@ public class AuctionServiceImpl implements AuctionService {
 		return List.of();
 	}
 	
-	@Override
-	public Auction confirmAuction(Long auctionId) {
-		
+	//////////////////////////////////////////////////
+	public Auction confirmAuction(Long auctionId) throws SchedulerException {
 		Auction auction = auctionRepository.findById(auctionId).orElseThrow(
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
 		
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime endRegistration = now.plusDays(3);
-		
+
 		LocalDateTime startTime;
 		if (endRegistration.getHour() >= 13) {
 			startTime = endRegistration.plusDays(1).withHour(9).withMinute(0).withSecond(0);
 		} else {
 			startTime = endRegistration.withHour(15).withMinute(0).withSecond(0);
 		}
-		
+
 		LocalDateTime endTime = startTime.plusMinutes(60);
+//		LocalDateTime now = LocalDateTime.now();
+//
+//		LocalDateTime endRegistration = now.plusMinutes(1);
+//
+//		LocalDateTime startTime = now.plusMinutes(2);
+//
+//		LocalDateTime endTime = now.plusMinutes(3);
 		
 		auction.setConfirmDate(now);
 		auction.setEndRegistration(endRegistration);
@@ -212,16 +224,20 @@ public class AuctionServiceImpl implements AuctionService {
 		
 		auctionRepository.save(auction);
 		
-		return  auction;
+		// Lên lịch cho các trạng thái tiếp theo
+		jobSchedulerService.scheduleStatusUpdates(auction);
 		
+		return auction;
 	}
 	
-	@Override
+	
 	public void updateStatus(AuctionUpdateStatusRequest request) {
 		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
+		
 		auction.setStatus(request.getAuctionStatus());
 		auctionRepository.save(auction);
+		
 	}
 }
