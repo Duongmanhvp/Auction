@@ -3,8 +3,10 @@ package com.ghtk.auction.service;
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
+import com.ghtk.auction.dto.request.auction.BidFilter;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.response.auction.BidResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -20,7 +22,9 @@ public interface AuctionService {
     Auction deleteAuction(Jwt principal, Long auctionId);
     UserAuction registerJoinAuction(Jwt principal, Long auctionId);
     void joinAuction(Jwt principal, Long auctionId);
-    void bid(Long auctionId, Long bid);
+    Long getCurrentPrice(Jwt principal, Long auctionId);
+    BidResponse bid(Jwt principal, Long auctionId, Long bid);
+    List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);
     
     // ADMIN
     List<Auction> getAllList();

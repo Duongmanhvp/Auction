@@ -53,6 +53,18 @@ public class AuctionComponent {
         );
         return userAuctionRepository.existsByUserAndAuction(user,auction);
     }
+
+    public boolean canParticipateAuction(Long auctionId, Jwt principal) {
+        Long userId = (Long)principal.getClaims().get("id");
+        User user = userRepository.findById(userId).orElseThrow(
+              () -> new NotFoundException("User not found")
+        );
+        Auction auction = auctionRepository.findById(auctionId).orElseThrow(
+              () -> new NotFoundException("Auction not found")
+        );
+        return auction.getStatus() == AuctionStatus.IN_PROGRESS 
+            && userAuctionRepository.existsByUserAndAuction(user, auction);
+    }
 }
 
 

@@ -2,8 +2,10 @@ package com.ghtk.auction.service.impl;
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
+import com.ghtk.auction.dto.request.auction.BidFilter;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.response.auction.BidResponse;
 import com.ghtk.auction.entity.*;
 import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.exception.NotFoundException;
@@ -168,20 +170,34 @@ public class AuctionServiceImpl implements AuctionService {
 	@PreAuthorize("@auctionComponent.canJoinAuction(#auctionId,principal)")
 	@Override
 	public void joinAuction(Jwt principal, Long auctionId) {
-		
+		// TODO:
 		TimeHistory timeHistory = new TimeHistory();
 		
 	}
+
+  @Override
+  public Long getCurrentPrice(Jwt principal, Long auctionId) {
+    // TODO:
+    return null;
+  }
 	
 	@Override
-	public void bid(Long auctionId, Long bid) {
-	
+	public BidResponse bid(Jwt principal, Long auctionId, Long bid) {
+    // TODO:
+    return null;
 	}
+
+  @Override
+  public List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter) {
+    // TODO:
+    return null;
+  }
 	
 	
 	// ADMIN
 	@Override
 	public List<Auction> getAllList() {
+    // TODO:
 		return List.of();
 	}
 	

@@ -2,19 +2,14 @@ package com.ghtk.auction.controller.auction;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductCreationRequest;
-import com.ghtk.auction.dto.request.product.ProductFilterRequest;
+import com.ghtk.auction.dto.request.auction.BidFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
-import com.ghtk.auction.dto.response.product.ProductResponse;
+import com.ghtk.auction.dto.response.auction.BidResponse;
 import com.ghtk.auction.entity.Auction;
-import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.UserAuction;
 import com.ghtk.auction.service.AuctionService;
-import com.ghtk.auction.service.ProductService;
-import com.ghtk.auction.service.impl.ProductServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +27,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AuctionController {
-	
 	final AuctionService auctionService;
 	
 	@PostMapping("/")
@@ -72,4 +66,22 @@ public class AuctionController {
 	) {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
 	}
+
+  @GetMapping("/{id}/current-price")
+  public ApiResponse<Long> getCurrentPrice(
+      @PathVariable Long auctionId,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getCurrentPrice(jwt, auctionId));
+  }
+
+  @GetMapping("/{id}/bids")
+  public ApiResponse<List<BidResponse>> getBids(
+      @PathVariable Long auctionId,
+      BidFilter filter,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getBids(jwt, auctionId, filter));
+  }
+
 }

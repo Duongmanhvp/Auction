@@ -7,9 +7,7 @@ import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
 import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.entity.Product;
-import com.ghtk.auction.enums.ProductCategory;
 import com.ghtk.auction.service.ProductService;
-import com.ghtk.auction.service.impl.ProductServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +26,6 @@ import java.util.List;
 public class ProductController {
 	
 	final ProductService productService;
-	private final ProductServiceImpl productServiceImpl;
 	
 	@PostMapping
 	public ResponseEntity<ApiResponse<Product>> create(@RequestBody ProductCreationRequest request) {
