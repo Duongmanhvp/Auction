@@ -134,7 +134,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   @Override
   public void startAuction(Long auctionId) {
     //  thêm các dữ liệu auction vào redis
-   setAuctionPrepareActive(auctionId);
+   setAuctionActive(auctionId);
   }
 
   @Override
