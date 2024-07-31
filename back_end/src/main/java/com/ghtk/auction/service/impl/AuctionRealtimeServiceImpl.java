@@ -1,10 +1,15 @@
 package com.ghtk.auction.service.impl;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.ghtk.auction.dto.redis.AuctionRedisResponse;
+import org.springframework.data.redis.connection.Message;
+import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +46,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   final AuctionRepository auctionRepository;
 
   final RedisTemplate<String, String> redisTemplate;
+  final RedisTemplate<String, Object> objectRedisTemplate;
 
   
   @Override
@@ -122,14 +128,13 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
 
   @Override
   public void openAuctionRoom(Long auctionId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'openAuctionRoom'");
+    setAuctionPrepareActive(auctionId);
   }
 
   @Override
   public void startAuction(Long auctionId) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'startAuction'");
+    //  thêm các dữ liệu auction vào redis
+   setAuctionActive(auctionId);
   }
 
   @Override
@@ -137,8 +142,35 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'endAuction'");
   }
+  
+  private void setAuctionPrepareActive(Long auctionId) {
+    String key = String.format("auction:%d:prepare_active", auctionId);
+    redisTemplate.opsForValue().set(key,"prepare",Duration.ofMinutes(10));
+    
+  }
+  private boolean getAuctionPrepareActive(Long auctionId) {
+    String key = String.format("auction:%d:prepare_active", auctionId);
+    return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+  }
+  
+  private void setAuctionActive(Long auctionId) {
+    Auction auction = auctionRepository.findById(auctionId).orElseThrow(
+          () -> new NotFoundException("Khong tim thay auction hop le voi Id")
+    );
+    AuctionRedisResponse value = AuctionRedisResponse.builder()
+          .startBid(auction.getStartBid())
+          .pricePerStep(auction.getPricePerStep())
+          .build();
+    String key = String.format("auction:%d:active", auctionId);
+    objectRedisTemplate.opsForValue().set(key,value);
+    
+  }
 
-
+  private Optional<AuctionResponse> getAuctionActive(Long auctionId) {
+    String key = String.format("auction:%d:active", auctionId);
+    return Optional.ofNullable((AuctionResponse) objectRedisTemplate.opsForValue().get(key));
+  }
+  
   private Optional<LocalDateTime> getUserLastJoinAuction(Long userId, Long auctionId) {
     String key = String.format("user:%d:auction:%d:last_join", userId, auctionId);
     return Optional.ofNullable(redisTemplate.opsForValue().get(key))
@@ -178,7 +210,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     long auctionId;
     long userId;
     long bid;
-    LocalDateTime time;
   }
 
+  
 }

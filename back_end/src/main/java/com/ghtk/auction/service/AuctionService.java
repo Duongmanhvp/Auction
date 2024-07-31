@@ -36,4 +36,5 @@ public interface AuctionService {
     // neu tu choi thi xoa auction.
     Auction confirmAuction(Long auctionId) throws SchedulerException;
     void updateStatus(AuctionUpdateStatusRequest request);
+    void rejectAuction(Long auctionId);
 }

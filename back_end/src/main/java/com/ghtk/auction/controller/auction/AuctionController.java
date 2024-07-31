@@ -31,6 +31,7 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AuctionController {
+	
 	final AuctionService auctionService;
 	final JobSchedulerService jobSchedulerService;
 	final UpdateAuctionStatus updateAuctionStatus;
@@ -67,7 +68,6 @@ public class AuctionController {
 	}
 	
 	@PostMapping("/{id}/regis-join")
-  @PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
@@ -87,6 +87,13 @@ public class AuctionController {
 //		jobSchedulerService.updateAuctionStatus(request);
 //		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
 //	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/reject/{id}")
+	public ResponseEntity<ApiResponse<?>> rejectAuction(@PathVariable Long id) {
+		auctionService.rejectAuction(id);
+		return  ResponseEntity.ok(ApiResponse.ok("Tu choi phien dau gia nay"));
+	}
 
   @GetMapping("/active")
   @PreAuthorize("isAuthenticated()")
@@ -101,7 +108,7 @@ public class AuctionController {
   public ApiResponse<List<AuctionResponse>> getJoinableAuctions(
     @AuthenticationPrincipal Jwt jwt
   ) {
-    return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
+    return ApiResponse.success(auctionRealtimeService.getJoinableNotis(jwt));
   }
 
   @PostMapping("/{id}/join")

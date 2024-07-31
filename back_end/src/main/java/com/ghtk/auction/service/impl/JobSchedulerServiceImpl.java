@@ -3,8 +3,9 @@ package com.ghtk.auction.service.impl;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.enums.AuctionStatus;
-import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.repository.AuctionRepository;
+import com.ghtk.auction.scheduler.jobs.RedisActiveAuction;
+import com.ghtk.auction.scheduler.jobs.RedisOpenAuction;
 import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.JobSchedulerService;
 import lombok.AccessLevel;
@@ -16,10 +17,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.UUID;
 
 import static org.quartz.JobBuilder.newJob;
-import static org.quartz.TriggerBuilder.newTrigger;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class JobSchedulerServiceImpl implements JobSchedulerService {
 	final Scheduler scheduler;
 	final AuctionRepository auctionRepository;
 	
+	@Override
 	public void scheduleStatusUpdates(Auction auction) throws SchedulerException {
 		// Lên lịch chuyển sang trạng thái CLOSED
 		scheduleStatusUpdate(auction, AuctionStatus.CLOSED, auction.getEndRegistration());
@@ -39,7 +39,16 @@ public class JobSchedulerServiceImpl implements JobSchedulerService {
 		// Lên lịch chuyển sang trạng thái FINISHED
 		scheduleStatusUpdate(auction, AuctionStatus.FINISHED, auction.getEndTime());
 	}
-	
+	@Override
+	public void scheduleRedisAuction(Auction auction) throws SchedulerException {
+		LocalDateTime time = auction.getStartTime().minusMinutes(10);
+		
+		// Lên lịch thêm vào redis OpenAuction : preparing
+		scheduleRedisAuction(auction,time);
+		
+		// Lên lịch thêm vào redis thông tin Auction khi bắt đầu start
+		scheduleRedisActiveAuction(auction,auction.getStartTime());
+	}
 	private void scheduleStatusUpdate(Auction auction, AuctionStatus newStatus, LocalDateTime scheduledTime) throws SchedulerException {
 		AuctionUpdateStatusRequest request = new AuctionUpdateStatusRequest();
 		request.setAuctionId(auction.getId());
@@ -51,19 +60,53 @@ public class JobSchedulerServiceImpl implements JobSchedulerService {
 		scheduler.scheduleJob(job, trigger);
 	}
 	
+	private  void scheduleRedisAuction(Auction auction, LocalDateTime scheduledTime) throws SchedulerException {
+		Long auctionId = auction.getId();
+		JobDetail job = buildRedisAuctionJobDetail(RedisOpenAuction.class,auctionId);
+		Trigger trigger = buildRedisAuctionJobTrigger(RedisOpenAuction.class,auctionId,scheduledTime);
+		
+		scheduler.scheduleJob(job, trigger);
+	}
+	
+	private void scheduleRedisActiveAuction(Auction auction, LocalDateTime scheduledTime) throws SchedulerException {
+		Long auctionId = auction.getId();
+		JobDetail job = buildRedisAuctionJobDetail(RedisActiveAuction.class,auctionId);
+		Trigger trigger = buildRedisAuctionJobTrigger(RedisActiveAuction.class,auctionId,scheduledTime);
+		
+		scheduler.scheduleJob(job, trigger);
+	}
+	
 	private JobDetail buildAuctionJobDetail(Class className, AuctionUpdateStatusRequest request) {
 		return JobBuilder.newJob(className)
-				.withIdentity(className.getName() + "-" + request.getAuctionId()+ "-" + request.getAuctionStatus(), "auction-jobs")
+				.withIdentity(className.getName() + "-" + request.getAuctionId()+ "-" + request.getAuctionStatus(), "auction-status-jobs")
 				.usingJobData("auctionId", request.getAuctionId())
 				.usingJobData("auctionStatus", String.valueOf(request.getAuctionStatus()))
 				.storeDurably(true)
 				.build();
 	}
+	
+	private JobDetail buildRedisAuctionJobDetail(Class className,Long auctionId) {
+		return JobBuilder.newJob(className)
+				.withIdentity(className.getName() + "-" + auctionId, "auction-redis-jobs")
+				.usingJobData("auctionId", String.valueOf(auctionId))
+				.storeDurably(true)
+				.build();
+	}
+	
 	private Trigger buildAuctionJobTrigger(Class className, AuctionUpdateStatusRequest request, LocalDateTime scheduledTime) {
 		ZoneId zoneId = ZoneId.systemDefault();
 		Date initTime = Date.from(scheduledTime.atZone(zoneId).toInstant());
 		return TriggerBuilder.newTrigger()
 				.withIdentity(className.getName() + "-" + request.getAuctionId() + "-" + request.getAuctionStatus(), "auction-trigger-jobs")
+				.startAt(initTime)
+				.build();
+	}
+	
+	private Trigger buildRedisAuctionJobTrigger(Class className, Long auctionId, LocalDateTime scheduledTime) {
+		ZoneId zoneId = ZoneId.systemDefault();
+		Date initTime = Date.from(scheduledTime.atZone(zoneId).toInstant());
+		return TriggerBuilder.newTrigger()
+				.withIdentity(className.getName() + "-" + auctionId, "auction-trigger-redis-jobs")
 				.startAt(initTime)
 				.build();
 	}
