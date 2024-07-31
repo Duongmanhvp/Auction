@@ -15,4 +15,6 @@ public interface JobSchedulerService {
 //	public void updateAuctionStatus(AuctionUpdateStatusRequest request) throws SchedulerException;
 	
 	public void scheduleStatusUpdates(Auction auction) throws SchedulerException;
+	
+	public void scheduleRedisAuction(Auction auction) throws SchedulerException;
 }

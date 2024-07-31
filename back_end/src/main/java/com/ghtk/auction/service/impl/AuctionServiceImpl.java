@@ -248,6 +248,7 @@ public class AuctionServiceImpl implements AuctionService {
 		
 		// Lên lịch cho các trạng thái tiếp theo
 		jobSchedulerService.scheduleStatusUpdates(auction);
+		jobSchedulerService.scheduleRedisAuction(auction);
 		
 		return auction;
 	}
@@ -262,4 +263,14 @@ public class AuctionServiceImpl implements AuctionService {
 		auction.setStatus(request.getAuctionStatus());
 		auctionRepository.save(auction);
 	}
+	
+	@Override
+	public void rejectAuction(Long auctionId) {
+		Auction auction = auctionRepository.findById(auctionId).orElseThrow(
+				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
+		);
+		auctionRepository.deleteById(auctionId);
+		
+	}
+	
 }
