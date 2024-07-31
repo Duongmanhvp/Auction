@@ -11,6 +11,8 @@ import com.ghtk.auction.entity.UserAuction;
 import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.JobSchedulerService;
+import com.ghtk.auction.service.AuctionRealtimeService;
+import com.ghtk.auction.service.AuctionService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +31,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AuctionController {
-	
 	final AuctionService auctionService;
 	final JobSchedulerService jobSchedulerService;
 	final UpdateAuctionStatus updateAuctionStatus;
+  final AuctionRealtimeService auctionRealtimeService;
 	
 	@PostMapping("/")
 	public ResponseEntity<ApiResponse<AuctionCreationResponse>> createAuction(
@@ -64,7 +66,8 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyJoinedAuction(jwt)));
 	}
 	
-	@PostMapping("/regis-join/{id}")
+	@PostMapping("/{id}/regis-join")
+  @PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
@@ -84,4 +87,58 @@ public class AuctionController {
 //		jobSchedulerService.updateAuctionStatus(request);
 //		return ResponseEntity.ok(ApiResponse.ok("Update trang thai thanh cong"));
 //	}
+
+  @GetMapping("/active")
+  @PreAuthorize("isAuthenticated()")
+  public ApiResponse<List<AuctionResponse>> getRegisActiveAuctions(
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
+  }
+
+  @GetMapping("/joinable")
+  @PreAuthorize("isAuthenticated()")
+  public ApiResponse<List<AuctionResponse>> getJoinableAuctions(
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
+  }
+
+  @PostMapping("/{id}/join")
+  @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
+  public ApiResponse<Void> joinAuction(
+      @PathVariable Long auctionId,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    auctionRealtimeService.joinAuction(jwt, auctionId);
+    return ApiResponse.success(null);
+  }
+
+  @PostMapping("/{id}/leave")
+  public ApiResponse<Void> leaveAuction(
+      @PathVariable Long auctionId,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    auctionRealtimeService.leaveAuction(jwt, auctionId);
+    return ApiResponse.success(null);
+  }
+
+  // @GetMapping("/{id}/current-price")
+  // public ApiResponse<Long> getCurrentPrice(
+  //     @PathVariable Long auctionId,
+  //     @AuthenticationPrincipal Jwt jwt
+  // ) {
+  //   return ApiResponse.success(auctionService.getCurrentPrice(jwt, auctionId));
+  // }
+
+  // @GetMapping("/{id}/bids")
+  // @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
+  // public ApiResponse<List<BidResponse>> getBids(
+  //     @PathVariable Long auctionId,
+  //     BidFilter filter,
+  //     @AuthenticationPrincipal Jwt jwt
+  // ) {
+  //   return ApiResponse.success(auctionService.getBids(jwt, auctionId, filter));
+  // }
+
 }
