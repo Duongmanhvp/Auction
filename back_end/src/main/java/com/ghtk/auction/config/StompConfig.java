@@ -29,7 +29,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-      registry.enableSimpleBroker("/topic");
+      registry.enableSimpleBroker("/topic", "/user");
       registry.setApplicationDestinationPrefixes("/app");
     }
 
@@ -44,6 +44,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
       var authBuilder = new MessageMatcherDelegatingAuthorizationManager.Builder();
       authBuilder.nullDestMatcher().authenticated() 
                   .simpSubscribeDestMatchers("/topic/errors").permitAll() 
+                  .simpSubscribeDestMatchers("/user/queue/notification").authenticated() 
                   .simpSubscribeDestMatchers("/topic/auction/**").authenticated()
                   .simpDestMatchers("/app/auction/**").hasRole("USER")
                   //.simpTypeMatchers(MessageType.MESSAGE).denyAll()

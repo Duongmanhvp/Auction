@@ -22,13 +22,13 @@ public class AuctionStompController {
   private final AuctionService auctionService;
   private final StompService stompService;
 
-  @SubscribeMapping("/auctions/{id}/comment")
-  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
-  public void joinAuctionComment(
-      @DestinationVariable Long auctionId, 
-      @AuthenticationPrincipal Jwt principal) {
-    auctionService.joinAuction(principal, auctionId);  
-  }
+  // @SubscribeMapping("/auctions/{id}/comment")
+  // @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
+  // public void joinAuctionComment(
+  //     @DestinationVariable Long auctionId, 
+  //     @AuthenticationPrincipal Jwt principal) {
+  //   auctionService.joinAuction(principal, auctionId);  
+  // }
 
   @MessageMapping("/auctions/{id}/bid")
   @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")

@@ -13,17 +13,23 @@ import com.ghtk.auction.mapper.AuctionMapper;
 import com.ghtk.auction.repository.*;
 import com.ghtk.auction.service.AuctionService;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -166,30 +172,41 @@ public class AuctionServiceImpl implements AuctionService {
 		userAuctionRepository.save(userAuction);
 		return userAuction;
 	}
-	
-	@PreAuthorize("@auctionComponent.canJoinAuction(#auctionId,principal)")
-	@Override
-	public void joinAuction(Jwt principal, Long auctionId) {
-		// TODO:
-		TimeHistory timeHistory = new TimeHistory();
-		
-	}
 
   @Override
-  public Long getCurrentPrice(Jwt principal, Long auctionId) {
+  public List<AuctionResponse> getRegisActiveAuctions(Jwt principal) {
+    // TODO change this
+    //throw new UnsupportedOperationException("Unimplemented method 'getRegisActiveAuctions'");
+    Long userId = (Long)principal.getClaims().get("id");
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new NotFoundException("Khong tim thay nguoi dung")
+    );
+    List<UserAuction> userAuctions 
+        = userAuctionRepository.findAllByUserAndAuctionStatus(user, AuctionStatus.IN_PROGRESS);
     // TODO:
-    return null;
-  }
-	
-	@Override
-	public BidResponse bid(Jwt principal, Long auctionId, Long bid) {
-    // TODO:
-    return null;
-	}
-
-  @Override
-  public List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter) {
-    // TODO:
+    // return userAuctions.stream().map(
+    //     userAuction -> {
+    //       AuctionResponse response = AuctionResponse.builder()
+    //           .auction_id(userAuction.getAuction().getId())
+    //           .title(userAuction.getAuction().getTitle())
+    //           .description(userAuction.getAuction().getDescription())
+    //           .created_at(userAuction.getAuction().getCreatedAt().)
+    //           .startBid(userAuction.getAuction().getStartBid())
+    //           .pricePerStep(userAuction.getAuction().getPricePerStep())
+    //           .status(userAuction.getAuction().getStatus())
+    //           .build();
+    //       return response;
+    //     //  AuctionResponse.builder()
+    //     //     .id(userAuction.getAuction().getId())
+    //     //     .title(userAuction.getAuction().getTitle())
+    //     //     .description(userAuction.getAuction().getDescription())
+    //     //     .createdAt(userAuction.getAuction().getCreatedAt())
+    //     //     .startBid(userAuction.getAuction().getStartBid())
+    //     //     .pricePerStep(userAuction.getAuction().getPricePerStep())
+    //     //     .status(userAuction.getAuction().getStatus())
+    //     //     .build()
+    //     }
+    // ).collect(Collectors.toList());
     return null;
   }
 	
@@ -227,7 +244,7 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	@Override
 	public void updateStatus(AuctionUpdateStatusRequest request) {
-	
+    // TODO: update logic
 		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
@@ -235,6 +252,5 @@ public class AuctionServiceImpl implements AuctionService {
 		Auction.builder()
 				.status(request.getAuctionStatus())
 				.build();
-		
 	}
 }

@@ -16,15 +16,16 @@ import java.util.List;
 public interface AuctionService {
 
     AuctionCreationResponse addAuction(Jwt principal, AuctionCreationRequest request);
-    List<AuctionResponse> getMyCreatedAuction(Jwt principal);
-    List<Auction> getMyJoinedAuction(Jwt principal);
-    Auction getAuctionById(Long auctionId);
     Auction deleteAuction(Jwt principal, Long auctionId);
+    List<AuctionResponse> getMyCreatedAuction(Jwt principal);
+
+    Auction getAuctionById(Long auctionId);
+
+    List<Auction> getMyJoinedAuction(Jwt principal);
     UserAuction registerJoinAuction(Jwt principal, Long auctionId);
-    void joinAuction(Jwt principal, Long auctionId);
-    Long getCurrentPrice(Jwt principal, Long auctionId);
-    BidResponse bid(Jwt principal, Long auctionId, Long bid);
-    List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);
+
+    List<AuctionResponse> getRegisActiveAuctions(Jwt principal);
+    // List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);//
     
     // ADMIN
     List<Auction> getAllList();

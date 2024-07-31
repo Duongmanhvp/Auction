@@ -3,7 +3,7 @@ package com.ghtk.auction.service;
 import com.ghtk.auction.dto.response.auction.BidResponse;
 
 public interface StompService {
-  public void notifyOpenAuction(Long auctionId);
+  public void notifyJoinableAuction(Long auctionId);
 
   public void broadcastAuctionNotification(Long auctionId);
 

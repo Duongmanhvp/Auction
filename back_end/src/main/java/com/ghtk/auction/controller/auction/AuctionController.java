@@ -59,7 +59,8 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyJoinedAuction(jwt)));
 	}
 	
-	@PostMapping("/regis-join/{id}")
+	@PostMapping("/{id}/regis-join")
+  @PreAuthorize("isAuthenticated()")
 	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
@@ -67,12 +68,30 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
 	}
 
-  @PostMapping("/{id}")
+  @GetMapping("/active/regis")
+  @PreAuthorize("isAuthenticated()")
+  public ApiResponse<List<AuctionResponse>> getRegisActiveAuctions(
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
+  }
+
+  @PostMapping("/{id}/join")
+  @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
   public ApiResponse<Void> joinAuction(
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
     auctionService.joinAuction(jwt, auctionId);
+    return ApiResponse.success(null);
+  }
+
+  @PostMapping("/{id}/leave")
+  public ApiResponse<Void> leaveAuction(
+      @PathVariable Long auctionId,
+      @AuthenticationPrincipal Jwt jwt
+  ) {
+    auctionService.leaveAuction(jwt, auctionId);
     return ApiResponse.success(null);
   }
 
@@ -85,6 +104,7 @@ public class AuctionController {
   }
 
   @GetMapping("/{id}/bids")
+  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
   public ApiResponse<List<BidResponse>> getBids(
       @PathVariable Long auctionId,
       BidFilter filter,

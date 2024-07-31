@@ -23,10 +23,8 @@ import lombok.AccessLevel;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentFilter {
   @Nullable
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   LocalDateTime from;
 
   @Nullable
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   LocalDateTime to;
 }
