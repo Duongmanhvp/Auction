@@ -7,6 +7,7 @@ import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
+import org.quartz.SchedulerException;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
@@ -28,6 +29,6 @@ public interface AuctionService {
     // thay doi trang thai PENDING -> OPENING,
     // them fiels confirm_date, end_regis, start_time, end_time
     // neu tu choi thi xoa auction.
-    Auction confirmAuction(Long auctionId);
+    Auction confirmAuction(Long auctionId) throws SchedulerException;
     void updateStatus(AuctionUpdateStatusRequest request);
 }
