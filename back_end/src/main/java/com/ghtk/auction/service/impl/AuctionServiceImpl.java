@@ -4,12 +4,13 @@ import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.response.user.PageResponse;
+import com.ghtk.auction.dto.response.user.UserResponse;
 import com.ghtk.auction.entity.*;
 import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.AuctionMapper;
 import com.ghtk.auction.repository.*;
-import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.JobSchedulerService;
 import lombok.AccessLevel;
@@ -17,15 +18,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.coyote.BadRequestException;
 import org.quartz.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -187,8 +190,24 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	// ADMIN
 	@Override
-	public List<Auction> getAllList() {
-		return List.of();
+	public PageResponse<Auction> getAllList(int pageNo, int pageSize, String sortBy, String sortDir) {
+		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+
+		Page<Auction> auctions =auctionRepository.findAll(pageable);
+
+		List<Auction> listOfAuction =auctions.getContent();
+
+		PageResponse<Auction> pageAuctionResponse = new PageResponse<>();
+		pageAuctionResponse.setPageNo(pageNo);
+		pageAuctionResponse.setPageSize(pageSize);
+		pageAuctionResponse.setTotalPages(auctions.getTotalPages());
+		pageAuctionResponse.setTotalElements(auctions.getTotalElements());
+		pageAuctionResponse.setLast(auctions.isLast());
+		pageAuctionResponse.setContent(listOfAuction);
+		return pageAuctionResponse;
 	}
 	
 	//////////////////////////////////////////////////
