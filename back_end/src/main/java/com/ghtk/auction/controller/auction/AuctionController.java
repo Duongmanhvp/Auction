@@ -2,13 +2,12 @@ package com.ghtk.auction.controller.auction;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
-import com.ghtk.auction.dto.request.auction.BidFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.auction.BidResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
+import com.ghtk.auction.service.AuctionRealtimeService;
 import com.ghtk.auction.service.AuctionService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -28,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuctionController {
 	final AuctionService auctionService;
+  final AuctionRealtimeService auctionRealtimeService;
 	
 	@PostMapping("/")
 	public ResponseEntity<ApiResponse<AuctionCreationResponse>> createAuction(
@@ -68,9 +68,17 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.registerJoinAuction(jwt, id)));
 	}
 
-  @GetMapping("/active/regis")
+  @GetMapping("/active")
   @PreAuthorize("isAuthenticated()")
   public ApiResponse<List<AuctionResponse>> getRegisActiveAuctions(
+    @AuthenticationPrincipal Jwt jwt
+  ) {
+    return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
+  }
+
+  @GetMapping("/joinable")
+  @PreAuthorize("isAuthenticated()")
+  public ApiResponse<List<AuctionResponse>> getJoinableAuctions(
     @AuthenticationPrincipal Jwt jwt
   ) {
     return ApiResponse.success(auctionService.getRegisActiveAuctions(jwt));
@@ -82,7 +90,7 @@ public class AuctionController {
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    auctionService.joinAuction(jwt, auctionId);
+    auctionRealtimeService.joinAuction(jwt, auctionId);
     return ApiResponse.success(null);
   }
 
@@ -91,26 +99,26 @@ public class AuctionController {
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    auctionService.leaveAuction(jwt, auctionId);
+    auctionRealtimeService.leaveAuction(jwt, auctionId);
     return ApiResponse.success(null);
   }
 
-  @GetMapping("/{id}/current-price")
-  public ApiResponse<Long> getCurrentPrice(
-      @PathVariable Long auctionId,
-      @AuthenticationPrincipal Jwt jwt
-  ) {
-    return ApiResponse.success(auctionService.getCurrentPrice(jwt, auctionId));
-  }
+  // @GetMapping("/{id}/current-price")
+  // public ApiResponse<Long> getCurrentPrice(
+  //     @PathVariable Long auctionId,
+  //     @AuthenticationPrincipal Jwt jwt
+  // ) {
+  //   return ApiResponse.success(auctionService.getCurrentPrice(jwt, auctionId));
+  // }
 
-  @GetMapping("/{id}/bids")
-  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
-  public ApiResponse<List<BidResponse>> getBids(
-      @PathVariable Long auctionId,
-      BidFilter filter,
-      @AuthenticationPrincipal Jwt jwt
-  ) {
-    return ApiResponse.success(auctionService.getBids(jwt, auctionId, filter));
-  }
+  // @GetMapping("/{id}/bids")
+  // @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
+  // public ApiResponse<List<BidResponse>> getBids(
+  //     @PathVariable Long auctionId,
+  //     BidFilter filter,
+  //     @AuthenticationPrincipal Jwt jwt
+  // ) {
+  //   return ApiResponse.success(auctionService.getBids(jwt, auctionId, filter));
+  // }
 
 }

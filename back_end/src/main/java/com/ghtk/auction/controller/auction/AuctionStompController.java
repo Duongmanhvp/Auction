@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 
 import com.ghtk.auction.dto.request.auction.BidRequest;
 import com.ghtk.auction.dto.response.auction.BidResponse;
+import com.ghtk.auction.service.AuctionRealtimeService;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.StompService;
 
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuctionStompController {
   private final AuctionService auctionService;
+  private final AuctionRealtimeService auctionRealtimeService;
   private final StompService stompService;
 
   // @SubscribeMapping("/auctions/{id}/comment")
@@ -30,13 +32,23 @@ public class AuctionStompController {
   //   auctionService.joinAuction(principal, auctionId);  
   // }
 
+  @SubscribeMapping("/auctions/{id}/bid")
+  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
+  public void placeBid(
+      @DestinationVariable Long auctionId,
+      @AuthenticationPrincipal Jwt principal) {
+    // TODO:
+     auctionRealtimeService.getCurrentPrice(principal, auctionId);
+    stompService.broadcastBid(null);
+  }
+
   @MessageMapping("/auctions/{id}/bid")
   @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
   public void placeBid(
       @DestinationVariable Long auctionId, 
       @Payload BidRequest bid, 
       @AuthenticationPrincipal Jwt principal) {
-    BidResponse bidinfo = auctionService.bid(principal, auctionId, bid.getBid());  
+    BidResponse bidinfo = auctionRealtimeService.bid(principal, auctionId, bid.getBid());  
     stompService.broadcastBid(bidinfo);
   }
 }

@@ -23,7 +23,7 @@ public class CommentController {
   private final CommentService commentService;
 
   @GetMapping("/")
-  @PreAuthorize("auctionComponent.canJoinAuction(#auctionId, principal)")
+  @PreAuthorize("auctionComponent.canParticipateAuction(#auctionId, principal)")
   public ApiResponse<List<CommentResponse>> getComments(
         @PathVariable("auctionId") Long auctionId, 
         CommentFilter filter,
