@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserAuctionHistoryRepository extends JpaRepository<UserAuction, Long> {
+public interface UserAuctionHistoryRepository extends JpaRepository<UserAuctionHistory, Long> {
   List<UserAuctionHistory> findAllByUserAuction(UserAuction userAuction);
 }
