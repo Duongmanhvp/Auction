@@ -4,8 +4,6 @@ import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.user.PageResponse;
-import com.ghtk.auction.dto.response.user.UserResponse;
 import com.ghtk.auction.entity.*;
 import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.exception.NotFoundException;
@@ -18,10 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.apache.coyote.BadRequestException;
 import org.quartz.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -173,41 +167,50 @@ public class AuctionServiceImpl implements AuctionService {
 		userAuctionRepository.save(userAuction);
 		return userAuction;
 	}
-	
-	@PreAuthorize("@auctionComponent.canJoinAuction(#auctionId,principal)")
-	@Override
-	public void joinAuction(Jwt principal, Long auctionId) {
-		
-		TimeHistory timeHistory = new TimeHistory();
-		
-	}
-	
-	@Override
-	public void bid(Long auctionId, Long bid) {
-	
-	}
+
+  @Override
+  public List<AuctionResponse> getRegisActiveAuctions(Jwt principal) {
+    // TODO change this
+    //throw new UnsupportedOperationException("Unimplemented method 'getRegisActiveAuctions'");
+    Long userId = (Long)principal.getClaims().get("id");
+    User user = userRepository.findById(userId).orElseThrow(
+        () -> new NotFoundException("Khong tim thay nguoi dung")
+    );
+    List<UserAuction> userAuctions 
+        = userAuctionRepository.findAllByUserAndAuctionStatus(user, AuctionStatus.IN_PROGRESS);
+    // TODO:
+    // return userAuctions.stream().map(
+    //     userAuction -> {
+    //       AuctionResponse response = AuctionResponse.builder()
+    //           .auction_id(userAuction.getAuction().getId())
+    //           .title(userAuction.getAuction().getTitle())
+    //           .description(userAuction.getAuction().getDescription())
+    //           .created_at(userAuction.getAuction().getCreatedAt().)
+    //           .startBid(userAuction.getAuction().getStartBid())
+    //           .pricePerStep(userAuction.getAuction().getPricePerStep())
+    //           .status(userAuction.getAuction().getStatus())
+    //           .build();
+    //       return response;
+    //     //  AuctionResponse.builder()
+    //     //     .id(userAuction.getAuction().getId())
+    //     //     .title(userAuction.getAuction().getTitle())
+    //     //     .description(userAuction.getAuction().getDescription())
+    //     //     .createdAt(userAuction.getAuction().getCreatedAt())
+    //     //     .startBid(userAuction.getAuction().getStartBid())
+    //     //     .pricePerStep(userAuction.getAuction().getPricePerStep())
+    //     //     .status(userAuction.getAuction().getStatus())
+    //     //     .build()
+    //     }
+    // ).collect(Collectors.toList());
+    return null;
+  }
 	
 	
 	// ADMIN
 	@Override
-	public PageResponse<Auction> getAllList(int pageNo, int pageSize, String sortBy, String sortDir) {
-		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-
-		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-
-		Page<Auction> auctions =auctionRepository.findAll(pageable);
-
-		List<Auction> listOfAuction =auctions.getContent();
-
-		PageResponse<Auction> pageAuctionResponse = new PageResponse<>();
-		pageAuctionResponse.setPageNo(pageNo);
-		pageAuctionResponse.setPageSize(pageSize);
-		pageAuctionResponse.setTotalPages(auctions.getTotalPages());
-		pageAuctionResponse.setTotalElements(auctions.getTotalElements());
-		pageAuctionResponse.setLast(auctions.isLast());
-		pageAuctionResponse.setContent(listOfAuction);
-		return pageAuctionResponse;
+	public List<Auction> getAllList() {
+    // TODO:
+		return List.of();
 	}
 	
 	//////////////////////////////////////////////////
@@ -249,14 +252,14 @@ public class AuctionServiceImpl implements AuctionService {
 		return auction;
 	}
 	
-	
+	@Override
 	public void updateStatus(AuctionUpdateStatusRequest request) {
+    // TODO: update logic
 		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
 		
 		auction.setStatus(request.getAuctionStatus());
 		auctionRepository.save(auction);
-		
 	}
 }

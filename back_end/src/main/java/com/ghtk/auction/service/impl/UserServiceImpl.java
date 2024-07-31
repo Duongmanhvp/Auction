@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 	
 	final EmailServiceImpl emailService;
 	
-	final RedisTemplate redisTemplate;
+	final RedisTemplate<String, String> redisTemplate;
 	
 	final UserMapper userMapper;
 	

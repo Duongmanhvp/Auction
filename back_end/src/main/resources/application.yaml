@@ -55,4 +55,6 @@ server:
   port: 8080
   servlet:
     context-path: /auction
-
+    
+websocket:
+  endpoint: /ws
