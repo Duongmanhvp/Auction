@@ -1,17 +1,24 @@
 package com.ghtk.auction.service;
 
-import com.ghtk.auction.dto.response.auction.BidResponse;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import com.ghtk.auction.dto.stomp.BidMessage;
+import com.ghtk.auction.dto.stomp.CommentMessage;
 
 public interface StompService {
-  public void notifyJoinableAuction(Long auctionId);
+  public void notifyJoinableAuction(long userId, long auctionId);
 
-  public void broadcastAuctionNotification(Long auctionId);
+  public void broadcastStartAuction(long auctionId);
 
-  public void broadcastStartAuction(Long auctionId);
+  public void broadcastEndAuction(long auctionId);
 
-  public void broadcastEndAuction(Long auctionId);
+  public void broadcastBid(long auctionId, BidMessage bidResponse);
 
-  public void broadcastBid(BidResponse bidResponse);
+  public void broadcastComment(long auctionId, CommentMessage bidResponse);
 
-  public void broadcastComment(BidResponse bidResponse);
+  public void broadcastNotification(long auctionId, String message);
+
+  public void sendAuctionLastPrice(Jwt principal, long auctionId, long lastPrice);
+
+  public void broadcastError(String message);
 }

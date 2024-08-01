@@ -105,7 +105,7 @@ public class AuctionController {
 
   @GetMapping("/joinable")
   @PreAuthorize("isAuthenticated()")
-  public ApiResponse<List<AuctionResponse>> getJoinableAuctions(
+  public ApiResponse<List<Auction>> getJoinableAuctions(
     @AuthenticationPrincipal Jwt jwt
   ) {
     return ApiResponse.success(auctionRealtimeService.getJoinableNotis(jwt));

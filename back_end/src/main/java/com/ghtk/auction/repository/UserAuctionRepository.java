@@ -14,4 +14,5 @@ public interface UserAuctionRepository extends JpaRepository<UserAuction, Long> 
 	boolean existsByUserAndAuction(User user, Auction auction);
 	List<UserAuction> findAllByUser(User user);
   List<UserAuction> findAllByUserAndAuctionStatus(User user, AuctionStatus auctionStatus);
+  List<UserAuction> findAllByAuction(Auction auction);
 }

@@ -6,7 +6,7 @@ import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.request.auction.BidFilter;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
-import com.ghtk.auction.dto.response.auction.BidResponse;
+import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
 import org.quartz.SchedulerException;

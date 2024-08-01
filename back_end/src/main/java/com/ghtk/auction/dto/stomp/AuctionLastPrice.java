@@ -1,8 +1,4 @@
-package com.ghtk.auction.dto.response.comment;
-
-import java.time.LocalDateTime;
-
-import com.ghtk.auction.entity.UserAuction;
+package com.ghtk.auction.dto.stomp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,14 +12,7 @@ import lombok.AccessLevel;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentResponse {
-    Long id;
-
-    String content;
-    
-    LocalDateTime createdAt;
-    
-    Long userId;
-
-    Long auctionId;
+public class AuctionLastPrice {
+  Long auctionId;
+  Long lastPrice;
 }

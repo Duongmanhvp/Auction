@@ -1,4 +1,4 @@
-package com.ghtk.auction.dto.response.auction;
+package com.ghtk.auction.dto.stomp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,14 +15,8 @@ import lombok.AccessLevel;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BidResponse {
-  Long id;
-
+public class BidMessage {
   Long bid;
 
   LocalDateTime createdAt;
-
-  Long auctionId;
-
-  Long userId;
 }

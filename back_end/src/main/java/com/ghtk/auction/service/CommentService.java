@@ -6,12 +6,12 @@ import java.util.List;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.ghtk.auction.dto.request.comment.CommentFilter;
-import com.ghtk.auction.dto.response.comment.CommentResponse;
+import com.ghtk.auction.dto.stomp.CommentMessage;
 
 public interface CommentService {
-    CommentResponse addComment(Jwt principal, Long auctionId, String message);
+    CommentMessage addComment(Jwt principal, Long auctionId, String message);
     // TODO: co nen xoa ko
     void deleteComment();
 
-    List<CommentResponse> getComments(Jwt principal, Long auctionId, CommentFilter filter);
+    List<CommentMessage> getComments(Jwt principal, Long auctionId, CommentFilter filter);
 }

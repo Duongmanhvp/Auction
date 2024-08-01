@@ -58,3 +58,5 @@ server:
     
 websocket:
   endpoint: /ws
+
+alloworigins: http://localhost:3000

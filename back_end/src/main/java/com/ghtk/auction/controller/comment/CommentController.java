@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ghtk.auction.dto.request.comment.CommentFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
-import com.ghtk.auction.dto.response.comment.CommentResponse;
+import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.service.CommentService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class CommentController {
 
   @GetMapping("/")
   @PreAuthorize("auctionComponent.canParticipateAuction(#auctionId, principal)")
-  public ApiResponse<List<CommentResponse>> getComments(
+  public ApiResponse<List<CommentMessage>> getComments(
         @PathVariable("auctionId") Long auctionId, 
         CommentFilter filter,
         @AuthenticationPrincipal Jwt principal) {

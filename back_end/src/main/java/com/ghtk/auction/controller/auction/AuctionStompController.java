@@ -10,17 +10,16 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Controller;
 
 import com.ghtk.auction.dto.request.auction.BidRequest;
-import com.ghtk.auction.dto.response.auction.BidResponse;
+import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.service.AuctionRealtimeService;
-import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.StompService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class AuctionStompController {
-  private final AuctionService auctionService;
   private final AuctionRealtimeService auctionRealtimeService;
   private final StompService stompService;
 
@@ -32,23 +31,38 @@ public class AuctionStompController {
   //   auctionService.joinAuction(principal, auctionId);  
   // }
 
-  @SubscribeMapping("/auctions/{id}/bid")
-  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
-  public void placeBid(
+  @SubscribeMapping("/auctions/{id}/notification")
+  @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
+  public void subscribeNotificationChannel(
       @DestinationVariable Long auctionId,
       @AuthenticationPrincipal Jwt principal) {
-    // TODO:
-     auctionRealtimeService.getCurrentPrice(principal, auctionId);
-    stompService.broadcastBid(null);
+    auctionRealtimeService.checkNotifJoin(principal, auctionId);
+  }
+  
+  @SubscribeMapping("/auctions/{id}/bid")
+  @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
+  public void subscribeBidChannel(
+      @DestinationVariable Long auctionId,
+      @AuthenticationPrincipal Jwt principal) {
+    auctionRealtimeService.checkBidJoin(principal, auctionId);
+    long lastPrice = auctionRealtimeService.getCurrentPrice(principal, auctionId);
+    stompService.sendAuctionLastPrice(principal, auctionId, lastPrice);
+  }
+  
+  @SubscribeMapping("/auctions/{id}/comment")
+  @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
+  public void subscribeCommentChannel(
+      @DestinationVariable Long auctionId,
+      @AuthenticationPrincipal Jwt principal) {
+    auctionRealtimeService.checkCommentJoin(principal, auctionId);
   }
 
   @MessageMapping("/auctions/{id}/bid")
   @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
   public void placeBid(
       @DestinationVariable Long auctionId, 
-      @Payload BidRequest bid, 
+      @Payload @Valid BidRequest bid, 
       @AuthenticationPrincipal Jwt principal) {
-    BidResponse bidinfo = auctionRealtimeService.bid(principal, auctionId, bid.getBid());  
-    stompService.broadcastBid(bidinfo);
+    BidMessage bidinfo = auctionRealtimeService.bid(principal, auctionId, bid.getBid());  
   }
 }
