@@ -18,10 +18,7 @@ import lombok.AccessLevel;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CommentMessage {
     Long id;
-
     String content;
-    
     LocalDateTime createdAt;
-    
     Long userId;
 }

@@ -106,9 +106,8 @@ public class AuctionController {
   @GetMapping("/joinable")
   @PreAuthorize("isAuthenticated()")
   public ApiResponse<List<Auction>> getJoinableAuctions(
-    @AuthenticationPrincipal Jwt jwt
-  ) {
-    return ApiResponse.success(auctionRealtimeService.getJoinableNotis(jwt));
+      @AuthenticationPrincipal Jwt jwt) {
+    return ApiResponse.success(auctionRealtimeService.getJoinableNotis(0L));
   }
 
   @PostMapping("/{id}/join")
@@ -117,7 +116,7 @@ public class AuctionController {
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    auctionRealtimeService.joinAuction(jwt, auctionId);
+    // auctionRealtimeService.joinAuction(jwt, auctionId);
     return ApiResponse.success(null);
   }
 
@@ -126,7 +125,7 @@ public class AuctionController {
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    auctionRealtimeService.leaveAuction(jwt, auctionId);
+    // auctionRealtimeService.leaveAuction(jwt, auctionId);
     return ApiResponse.success(null);
   }
 

@@ -8,17 +8,22 @@ import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.entity.Auction;
 
 public interface AuctionRealtimeService {
-    List<Auction> getJoinableNotis(Jwt principal);
+    List<Auction> getJoinableNotis(Long userId);
 
-    void checkNotifJoin(Jwt principal, Long auctionId);
-    void checkBidJoin(Jwt principal, Long auctionId);
-    void checkCommentJoin(Jwt principal, Long auctionId);
+    void checkControlJoin(Long userId, Long auctionId);
+    void checkNotifJoin(Long userId, Long auctionId);
+    void checkBidJoin(Long userId, Long auctionId);
+    void checkCommentJoin(Long userId, Long auctionId);
 
-    void joinAuction(Jwt principal, Long auctionId);
-    void leaveAuction(Jwt principal, Long auctionId);
+    void joinAuction(Long userId, Long auctionId);
+    void leaveAuction(Long userId, Long auctionId);
 
-    Long getCurrentPrice(Jwt principal, Long auctionId);
-    BidMessage bid(Jwt principal, Long auctionId, Long bid);
+    void checkBidding(Long userId, Long auctionId);
+    void checkCommenting(Long userId, Long auctionId);
+    void checkNotifying(Long userId, Long auctionId);
+
+    Long getCurrentPrice(Long userId, Long auctionId);
+    BidMessage bid(Long userId, Long auctionId, Long bid);
 
     void openAuctionRoom(Long auctionId); // TODO: quartz 10p truoc khi bat dau
     void startAuction(Long auctionId);
