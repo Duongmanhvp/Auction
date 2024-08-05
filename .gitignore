@@ -18,7 +18,10 @@ target/
 *.iws
 *.iml
 *.ipr
-
+*.mvn
+*.log
+.mvn/
+/.mvn
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -31,3 +34,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+front_end/node_modules
+
+## env file
+**/*.env
+.DS_Store
+**/.DS_Store
