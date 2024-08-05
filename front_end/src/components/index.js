@@ -1,4 +1,5 @@
 import {
+    Table,
     Avatar,
     Empty,
     Card,
@@ -14,6 +15,7 @@ import {
 } from 'ant-design-vue';
 
 export default {
+    Table,
     Avatar,
     Empty,
     Card,

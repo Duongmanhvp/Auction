@@ -1,8 +1,9 @@
 <template>
     <div>
         <button v-if="showScrollButton" @click="scrollToTop"
-            class="fixed bottom-4 right-4 bg-green-500 hover:bg-green-600 text-white p-3 rounded-full shadow-lg  focus:outline-none">
-            <svg class="w-6 h-6 pt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            class="fixed bottom-4 right-4 bg-teal-500 hover:bg-teal-600 text-white p-3 rounded-full shadow-lg  focus:outline-none">
+            <svg class="w-6 h-6 pt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7-7-7 7"></path>
             </svg>
         </button>
@@ -31,16 +32,6 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    transition: background-color 0.3s;
-}
-
-button:focus {
-    outline: none;
-}
+<style lang="scss" scoped>
+@import './style.scss';
 </style>

@@ -8,30 +8,39 @@
         </router-link>
         <h1 class="flex items-center justify-center text-2xl font-bold mb-4">Login</h1>
 
-        <form @submit.prevent="submit">
+        <form @submit.prevent="handleSignIn">
             <div class="mb-4">
-                <label for="username" class="block text-gray-700">Email</label>
-                <input type="text" id="username" v-model="credentials.email"
+                <label for="email" class="block text-gray-700">Email</label>
+                <input type="text" id="email" v-model="email"
                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 relative">
                 <label for="password" class="block text-gray-700">Password</label>
-                <input type="password" id="password" v-model="credentials.password"
-                    class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                <div class="relative">
+                    <input :type="passwordType" id="password" v-model="password"
+                        class="form-input w-full border border-gray-300 rounded-md px-2 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600" />
+                    <button type="button" @click="togglePasswordVisibility"
+                        class="absolute inset-y-0 right-2 flex items-center">
+                        <img src="../../../assets/icon/eye-hide.svg" alt="Toggle password visibility"
+                            class="w-4 h-4 cursor-pointer" />
+                    </button>
+                </div>
+                <span v-if="validation.password" class="text-red-500">{{ validation.password }}</span>
             </div>
 
             <div class="flex items-center mb-6">
-                <input type="checkbox" id="rememberMe" v-model="credentials.rememberMe" />
+                <input type="checkbox" id="rememberMe" v-model="rememberMe" />
                 <label for="rememberMe" class="text-gray-700 ml-2">Remember me?</label>
                 <router-link to="/login/forgotPassword" class="text-sm text-blue-600 underline ml-14">Forgot
                     password?</router-link>
             </div>
 
-            <button type="submit"
+            <button type="submit" :disabled="loading"
                 class="btn btn-primary w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                 Login
             </button>
+            <div v-if="loading">Loading...</div>
         </form>
 
         <p class="text-sm text-gray-600 mt-6">
@@ -41,27 +50,62 @@
     </div>
 </template>
 
-<script>
-import baseService from '../../../services/baseService';
+<script setup>
+import { ref, reactive, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../../stores/auth/auth-store'
 
-export default {
-    data() {
-        return {
-            credentials: {
-                email: '',
-                password: '',
-                rememberMe: false,
-            },
-        };
-    },
-    methods: {
-        submit() {
-            baseService.post('/auths/authenticate', this.credentials)
-                .then(response => {
-                    localStorage.setItem('authToken', response.data.token);
-                    this.$router.push('/home/users');
-                });
-        },
-    },
+const email = ref('');
+const password = ref('');
+const rememberMe = ref(false);
+const validation = reactive({ email: null, password: null });
+const router = useRouter();
+const authStore = useAuthStore();
+
+const loading = computed(() => authStore.loading);
+const isPasswordVisible = ref(false);
+const passwordType = computed(() => isPasswordVisible.value ? 'text' : 'password');
+
+function validateEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(String(email).toLowerCase());
+}
+
+const handleSignIn = async () => {
+
+    let isValid = true;
+
+    if (!email.value) {
+        validation.email = 'Email is required.';
+        isValid = false;
+    } else if (!validateEmail(email.value)) {
+        validation.email = 'Email is not valid.';
+        isValid = false;
+    } else {
+        validation.email = null;
+    }
+
+    if (!password.value) {
+        validation.password = 'Password is required.';
+        isValid = false;
+    } else if (password.value.length < 4) {
+        validation.password = 'You need to enter 4 characters or more';
+        isValid = false;
+    } else {
+        validation.password = null;
+    }
+
+    if (!isValid) return;
+
+    try {
+        await authStore.login(email.value, password.value);
+        router.push('/user/default');
+    } catch (error) {
+        console.error('Login failed:', error);
+    }
 };
+
+function togglePasswordVisibility() {
+    isPasswordVisible.value = !isPasswordVisible.value;
+}
 </script>

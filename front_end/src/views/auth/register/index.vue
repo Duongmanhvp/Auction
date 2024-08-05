@@ -8,14 +8,13 @@
                 </svg>
                 <span>Back</span>
             </router-link>
-            <div class="flex justify-center ml-24">
+            <div class="flex justify-center ml-16">
                 <h1 class="flex items-center justify-center text-2xl font-bold -ml-5 mb-4">Register</h1>
-                <img src="../../../assets/logo.png" alt="Logo" class="h-24 h-24 flex items-center justify-center">
+                <img src="../../../assets/logo.png" alt="Logo" class="h-24 flex items-center justify-center">
             </div>
         </div>
 
-
-        <form @submit.prevent="submit">
+        <form @submit.prevent="handleSignUp">
             <div class="mb-4">
                 <label for="email" class="block text-gray-700">Email</label>
                 <input type="email" id="email" v-model="data.email"
@@ -29,25 +28,25 @@
             </div>
 
             <div class="mb-4">
-                <label for="fullName" class="block text-gray-700">Full Name</label>
-                <input type="text" id="fullName" v-model="data.fullName"
+                <label for="full_name" class="block text-gray-700">Full Name</label>
+                <input type="text" id="full_name" v-model="data.full_name"
                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
             </div>
 
             <div class="mb-4">
-                <label for="dateOfBirth" class="block text-gray-700">Date of Birth</label>
-                <input type="date" id="dateOfBirth" v-model="data.dateOfBirth"
+                <label for="date_of_birth" class="block text-gray-700">Date of Birth</label>
+                <input type="date" id="date_of_birth" v-model="data.date_of_birth"
                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
             </div>
 
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <label for="gender" class="block text-gray-700">Gender</label>
                 <select id="gender" v-model="data.gender"
                     class="form-select w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600">
                     <option value="true">Male</option>
                     <option value="false">Female</option>
                 </select>
-            </div>
+            </div> -->
 
             <div class="mb-4">
                 <label for="phone" class="block text-gray-700">Phone</label>
@@ -55,40 +54,71 @@
                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
             </div>
 
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <label for="address" class="block text-gray-700">Address</label>
                 <input type="text" id="address" v-model="data.address"
                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-600" />
-            </div>
+            </div> -->
 
-            <router-link to="/login/verify2" type="submit"
+            <button type="submit"
                 class="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                 Register
-            </router-link>
+            </button>
         </form>
 
     </div>
 </template>
 
 <script setup>
+
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-import baseService from '../../../services/baseService';
+// import authService from '../../../services/auth-service';
+import { message } from 'ant-design-vue';
+import { useAuthStore } from '../../../stores/auth/auth-store';
 
 const data = reactive({
     email: '',
     password: '',
-    fullName: '',
-    dateOfBirth: '',
-    gender: true,
+    full_name: '',
+    date_of_birth: '',
+    // gender: true,
     phone: '',
-    address: '',
+    // address: '',
 });
 
 const router = useRouter();
+const authStore = useAuthStore();
 
-const submit = async () => {
-    await baseService.post('/users/register', data);
-    router.push('/login');
+const handleSignUp = async () => {
+    const isValid = validateForm();
+    if (!isValid) return;
+
+    try {
+        await authStore.register(data);
+        message.success('You have successfully registered');
+        router.push('/login/verify2');
+    } catch (error) {
+        message.error('Registration failed. Please try again.');
+    }
 };
+
+const validateForm = () => {
+    let isValid = true;
+    if (!data.email) {
+        message.error('Email is required');
+        isValid = false;
+    }
+    if (!data.password) {
+        message.error('Password is required');
+        isValid = false;
+    }
+    if (!data.full_name) {
+        message.error('Full name is required');
+        isValid = false;
+    }
+
+    return isValid;
+};
+
 </script>

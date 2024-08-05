@@ -27,7 +27,7 @@
 
 
 <script>
-import baseService from '../../../services/baseService';
+import baseService from '../../../services/base-service';
 
 export default {
     data() {

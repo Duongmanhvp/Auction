@@ -7,20 +7,14 @@
                 </span>
             </div>
             <div class="w-7/10 flex">
-                <img src="../../assets/logo.png" alt="Logo" class="mt-2 mr-32 ml-6 h-20 w-30">
+                <img src="../../assets/logo.png" alt="Logo" class="mt-2 mr-28 ml-6 h-20 w-30">
                 <div class="hidden sm:flex items-center justify-center space-x-2 ml-6">
-                    <!--
-                    <a href="#horizontally-part-1" class="anchor-link">Home</a> -->
-                    <!-- <ul class="navbar-item font-bold cursor-pointer">
-                        <li></li>
-                        <router-link to="/home/default" class="hover:text-green-600" active-class="text-green-600">
-                            <div class="w-full h-full flex items-center justify-center">Home</div>
-                        </router-link>
-                    </ul> -->
-
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/home/default" active-class="block w-full h-full hover:text-green-600 rounded">
-                            <div class="w-full h-full p-5 flex items-center justify-center">Home</div>
+                        <router-link to="/home/default" active-class="text-green-600">
+                            <div class="w-full h-full p-5 flex items-center justify-center">
+                                <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 inline-block mr-2" />
+                                Home
+                            </div>
                         </router-link>
                     </ul>
 
@@ -169,8 +163,5 @@ const handleLogin = () => {
 const handleRegister = () => {
     router.push('/register');
 };
-
-
-
 
 </script>
