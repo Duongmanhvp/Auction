@@ -64,6 +64,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UploadException.class)
+    public ResponseEntity<ApiResponse<Void>> authenticateException(UploadException ex) {
+        log.error("UploadException: ", ex);
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> exception(Exception ex) {
         log.error("Exception", ex);

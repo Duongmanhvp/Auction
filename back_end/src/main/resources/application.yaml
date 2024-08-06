@@ -59,4 +59,9 @@ server:
 websocket:
   endpoint: /ws
 
+cloudinary:
+  name: ${CLOUD_NAME:}
+  key: ${API_KEY:}
+  secret: ${API_SECRET:}
+
 alloworigins: http://localhost:3000
