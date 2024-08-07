@@ -45,6 +45,10 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 
+  devtools:
+    restart:
+      enabled: false
+
 
 jwt:
   signerKey: ${JWT_SIGNER_KEY:}

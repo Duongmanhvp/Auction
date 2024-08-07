@@ -1,13 +1,8 @@
 package com.ghtk.auction.config.stomp;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeFailureException;
@@ -18,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CustomHandshakeHandler implements HandshakeHandler {
-  private final JwtDecoder jwtDecoder;
+  // private final JwtDecoder jwtDecoder;
 
   @Override
   public boolean doHandshake(ServerHttpRequest request, ServerHttpResponse response, 

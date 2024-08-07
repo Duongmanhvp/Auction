@@ -1,15 +1,10 @@
 package com.ghtk.auction.config.stomp;
 
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.server.HandshakeFailureException;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import com.ghtk.auction.config.CustomJwtDecoder;

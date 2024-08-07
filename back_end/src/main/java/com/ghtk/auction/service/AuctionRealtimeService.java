@@ -2,9 +2,10 @@ package com.ghtk.auction.service;
 
 import java.util.List;
 
-import org.springframework.security.oauth2.jwt.Jwt;
-
+import com.ghtk.auction.dto.request.comment.CommentFilter;
 import com.ghtk.auction.dto.stomp.BidMessage;
+import com.ghtk.auction.dto.stomp.CommentMessage;
+import com.ghtk.auction.dto.stomp.NotifyMessage;
 import com.ghtk.auction.entity.Auction;
 
 public interface AuctionRealtimeService {
@@ -23,7 +24,13 @@ public interface AuctionRealtimeService {
     void checkNotifying(Long userId, Long auctionId);
 
     Long getCurrentPrice(Long userId, Long auctionId);
+    List<CommentMessage> getComments(Long userId, Long auctionId, CommentFilter filter);
+
     BidMessage bid(Long userId, Long auctionId, Long bid);
+    CommentMessage comment(Long userId, Long auctionId, String comment);
+    NotifyMessage makeNotification(Long userId, Long auctionId, String message);
+
+
 
     void openAuctionRoom(Long auctionId); // TODO: quartz 10p truoc khi bat dau
     void startAuction(Long auctionId);

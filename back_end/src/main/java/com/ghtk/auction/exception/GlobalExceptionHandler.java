@@ -1,6 +1,8 @@
 package com.ghtk.auction.exception;
 
 import com.ghtk.auction.dto.response.ApiResponse;
+
+import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        log.error("ValidException: ", ex);
+        log.error("ValidException: ", ex.getMessage());
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
@@ -61,6 +63,18 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AlreadyExistsException.class)
     public ResponseEntity<ApiResponse<Void>> authenticateException(AlreadyExistsException ex) {
         log.error("AlreadyExistsException: ", ex);
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiResponse<Void>> forbiddenException(ForbiddenException ex) {
+        log.error("ForbiddenException: ", ex.getMessage());
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ApiResponse<Void>> validationException(ValidationException ex) {
+        log.error("ValidationException: ", ex.getMessage());
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 

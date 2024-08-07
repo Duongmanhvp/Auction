@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -46,7 +47,7 @@ public class InterceptorMatcher {
     this.command = command;
   }
 
-  public Optional<Map<String, String>> tryMatch(StompHeaderAccessor headers) {
+  public Optional<Map<String, Object>> tryMatch(StompHeaderAccessor headers) {
     if (headers.getCommand() != this.command.orElse(headers.getCommand())) {
       return Optional.empty();
     }
@@ -57,7 +58,7 @@ public class InterceptorMatcher {
     if (destination == null) {
       return Optional.of(Map.of());
     }
-    Map<String, String> variables = new HashMap<>();
+    Map<String, Object> variables = new HashMap<>();
     for (SegMatcher segMatcher : this.segMatchers.get()) {
       Optional<String> remaining = segMatcher.match(destination, variables);
       if (remaining.isEmpty()) {
@@ -93,10 +94,10 @@ public class InterceptorMatcher {
     return segMatchers;
   }
 
-  private static interface SegMatcher {
-    Optional<String> match(String segment, Map<String, String> variables);
-  }
 
+  private static interface SegMatcher {
+    Optional<String> match(String segment, Map<String, Object> variables);
+  }
 
   private static class StaticSegMatcher implements SegMatcher {
     private final String dest;
@@ -109,7 +110,7 @@ public class InterceptorMatcher {
     }
 
     @Override
-    public Optional<String> match(String segment, Map<String, String> variables) {
+    public Optional<String> match(String segment, Map<String, Object> variables) {
       if (segment.startsWith(this.dest)) {
         return Optional.of(segment.substring(this.dest.length()));
       } else {
@@ -120,21 +121,51 @@ public class InterceptorMatcher {
 
   private static class VarSegMatcher implements SegMatcher {
     private final String varName;
+    private final Function<? super String, ? extends Object> converter;
 
-    public VarSegMatcher(String varName) {
+    public VarSegMatcher(String varStr) {
+      String[] parts = varStr.split(":");
+
+      if (parts.length == 1) {
+        this.varName = parts[0];
+        this.converter = Function.identity();
+        return;
+      }
+      if (parts.length != 2) {
+        throw new IllegalArgumentException("Invalid converter: " + varStr);
+      }
+
+      String varName = parts[0];
+      String formatSym = parts[1];
+      var converter = converters.get(formatSym);
+      if (converter == null) {
+        throw new IllegalArgumentException("Invalid format specifier: " + formatSym);
+      }
+
       this.varName = varName;
+      this.converter = converter;
     }
 
     @Override
-    public Optional<String> match(String segment, Map<String, String> variables) {
+    public Optional<String> match(String segment, Map<String, Object> variables) {
       int len = lenUntil(segment, '/');
       if (len == 0) {
         return Optional.empty();
       }
-      variables.put(this.varName, segment);
+      String matchSegment = segment.substring(0, len);
+      variables.put(this.varName, this.converter.apply(matchSegment));
       return Optional.of(segment.substring(len));
     }
 
+    private static final 
+    Map<String, Function<? super String, ? extends Object>> converters;
+
+    static {
+      converters = new HashMap<>();
+      converters.put(null, Function.identity());
+      converters.put("d", Long::parseLong);
+      converters.put("s", Function.identity());
+    }
   }
 
   private static int lenUntil(String segment, char c) {

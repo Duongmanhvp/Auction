@@ -2,7 +2,6 @@ package com.ghtk.auction.dto.request.comment;
 
 import java.time.LocalDateTime;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.lang.Nullable;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;

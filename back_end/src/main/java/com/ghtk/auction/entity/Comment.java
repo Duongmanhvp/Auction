@@ -27,5 +27,5 @@ public class Comment {
     
     @ManyToOne
     @JoinColumn(name = "user_auction_id")
-    UserAuction userAuctionId;
+    UserAuction userAuction;
 }

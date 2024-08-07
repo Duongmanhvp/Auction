@@ -19,7 +19,7 @@ public class DispatchAuthHandler implements AuthHandler {
   @Override
   public void intercept(StompHeaderAccessor headers, Object payload) throws MessageHandlingException {
     for (MatcherHandler handler : handlers) { 
-      Optional<Map<String, String>> matchResult = handler.getMatcher().tryMatch(headers);
+      Optional<Map<String, Object>> matchResult = handler.getMatcher().tryMatch(headers);
       if (matchResult.isPresent()) {
         addVarsToHeader(headers, matchResult.get());
         handler.getHandler().intercept(headers, payload);
@@ -39,7 +39,7 @@ public class DispatchAuthHandler implements AuthHandler {
   //   );
   // }
 
-  private static void addVarsToHeader(StompHeaderAccessor headers, Map<String, String> vars) {
+  private static void addVarsToHeader(StompHeaderAccessor headers, Map<String, Object> vars) {
     vars.forEach(headers::setHeader);
   }
 }

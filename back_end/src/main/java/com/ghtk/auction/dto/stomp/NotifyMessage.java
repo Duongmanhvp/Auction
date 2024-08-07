@@ -14,9 +14,7 @@ import lombok.AccessLevel;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentMessage {
-    Long id;
+public class NotifyMessage {
     String content;
     LocalDateTime createdAt;
-    Long userId;
 }

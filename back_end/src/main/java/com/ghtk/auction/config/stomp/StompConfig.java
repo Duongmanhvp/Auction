@@ -20,7 +20,7 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.handler.WebSocketHandlerDecoratorFactory;
-import org.springframework.web.socket.server.HandshakeInterceptor;
+// import org.springframework.web.socket.server.HandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -30,23 +30,23 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     private final String stompEndpoint; 
     // @Value("${allowed-origins}")
     private final String[] allowedOrigins;
-    private final CustomHandshakeHandler customHandshakeHandler;
-    private final HandshakeInterceptor handshakeInterceptor;
+    // private final CustomHandshakeHandler customHandshakeHandler;
+    // private final HandshakeInterceptor handshakeInterceptor;
     private final ChannelInterceptor jwtInterceptor;
     private final ChannelInterceptor authInterceptor;
     private final WebSocketHandlerDecoratorFactory sessionStoringWebDecorFactory;
 
     public StompConfig(@Value("${websocket.endpoint}") String stompEndpoint, 
                        @Value("${allowed-origins}") String[] allowedOrigins,
-                       CustomHandshakeHandler customHandshakeHandler,
-                       HandshakeInterceptor handshakeInterceptor,
+                      //  CustomHandshakeHandler customHandshakeHandler,
+                      //  HandshakeInterceptor handshakeInterceptor,
                        @Qualifier("jwtInterceptor") ChannelInterceptor jwtInterceptor,
                        @Qualifier("authInterceptor") ChannelInterceptor authInterceptor,
                        WebSocketHandlerDecoratorFactory sessionStoringWebDecorFactory) {
       this.stompEndpoint = stompEndpoint;
       this.allowedOrigins = allowedOrigins;
-      this.customHandshakeHandler = customHandshakeHandler;
-      this.handshakeInterceptor = handshakeInterceptor;
+      // this.customHandshakeHandler = customHandshakeHandler;
+      // this.handshakeInterceptor = handshakeInterceptor;
       this.jwtInterceptor = jwtInterceptor;
       this.authInterceptor = authInterceptor;
       this.sessionStoringWebDecorFactory = sessionStoringWebDecorFactory;
@@ -90,11 +90,11 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
       authBuilder.nullDestMatcher().authenticated() 
                   .simpSubscribeDestMatchers("/topic/errors").permitAll() 
                   .simpSubscribeDestMatchers("/user/*/queue/control").authenticated() 
-                  .simpSubscribeDestMatchers("/user/*/queue/notification").authenticated() 
+                  .simpSubscribeDestMatchers("/user/*/queue/notifications").authenticated() 
                   .simpSubscribeDestMatchers("/topic/auction/*/control").authenticated()
-                  .simpSubscribeDestMatchers("/topic/auction/*/notification").authenticated()
-                  .simpSubscribeDestMatchers("/topic/auction/*/bid").authenticated()
-                  .simpSubscribeDestMatchers("/topic/auction/*/comment").authenticated()
+                  .simpSubscribeDestMatchers("/topic/auction/*/notifications").authenticated()
+                  .simpSubscribeDestMatchers("/topic/auction/*/bids").authenticated()
+                  .simpSubscribeDestMatchers("/topic/auction/*/comments").authenticated()
                   .simpDestMatchers("/app/auction/**").hasRole("USER")
                   //.simpTypeMatchers(MessageType.MESSAGE).denyAll()
                   .anyMessage().denyAll(); 

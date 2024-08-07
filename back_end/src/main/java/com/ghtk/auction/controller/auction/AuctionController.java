@@ -2,17 +2,17 @@ package com.ghtk.auction.controller.auction;
 
 
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
-import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
+import com.ghtk.auction.dto.request.comment.CommentFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
 import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.JobSchedulerService;
 import com.ghtk.auction.service.AuctionRealtimeService;
-import com.ghtk.auction.service.AuctionService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -107,25 +107,28 @@ public class AuctionController {
   @PreAuthorize("isAuthenticated()")
   public ApiResponse<List<Auction>> getJoinableAuctions(
       @AuthenticationPrincipal Jwt jwt) {
-    return ApiResponse.success(auctionRealtimeService.getJoinableNotis(0L));
+    Long userId = (Long) jwt.getClaims().get("id");
+    return ApiResponse.success(auctionRealtimeService.getJoinableNotis(userId));
   }
 
-  @PostMapping("/{id}/join")
+  @PostMapping("/{auctionId}/join")
   @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
   public ApiResponse<Void> joinAuction(
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    // auctionRealtimeService.joinAuction(jwt, auctionId);
+    Long userId = (Long) jwt.getClaims().get("id");
+    auctionRealtimeService.joinAuction(userId, auctionId);
     return ApiResponse.success(null);
   }
 
-  @PostMapping("/{id}/leave")
+  @PostMapping("/{auctionId}/leave")
   public ApiResponse<Void> leaveAuction(
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
-    // auctionRealtimeService.leaveAuction(jwt, auctionId);
+    Long userId = (Long) jwt.getClaims().get("id");
+    auctionRealtimeService.leaveAuction(userId, auctionId);
     return ApiResponse.success(null);
   }
 
@@ -146,5 +149,14 @@ public class AuctionController {
   // ) {
   //   return ApiResponse.success(auctionService.getBids(jwt, auctionId, filter));
   // }
-
+  
+  @GetMapping("/{auctionId}/comments")
+  @PreAuthorize("auctionComponent.canParticipateAuction(#auctionId, principal)")
+  public ApiResponse<List<CommentMessage>> getComments(
+        @PathVariable("auctionId") Long auctionId, 
+        CommentFilter filter,
+        @AuthenticationPrincipal Jwt principal) {
+    Long userId = (Long) principal.getClaim("id");
+    return ApiResponse.success(auctionRealtimeService.getComments(userId, auctionId, filter));
+  }
 }
