@@ -24,10 +24,6 @@ public class ImageController {
     final ImageService imageService;
 
     @PostMapping("")
-    public ResponseEntity<ApiResponse<List<String>>> uploadImages(@RequestParam("files") List<MultipartFile> files) {
-        return ResponseEntity.ok(ApiResponse.success(imageService.uploadImages(files)));
-    }
-    @PostMapping("/test")
     public ResponseEntity<ApiResponse<String>> uploadImages(@RequestParam(value = "files") MultipartFile files) throws IOException {
         return ResponseEntity.ok(ApiResponse.ok(imageService.uploadImage(files)));
     }
