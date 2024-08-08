@@ -32,7 +32,6 @@ import { ref, onMounted } from 'vue';
 import { message } from 'ant-design-vue';
 import MenuSessionManagement from '../../../components/MenuSessionManagement/index.vue';
 import TheChevron from '../../../components/Chevron/index.vue';
-import baseService from '../../../services/base-service';
 
 const columns = ref([
     {
@@ -103,34 +102,34 @@ const columns = ref([
 
 const data = ref([]);
 
-const fetchSessions = async () => {
-    try {
-        const response = await baseService.get('/admin/sessions');
-        data.value = response.data;
-    } catch (error) {
-        console.error('Failed to fetch sessions:', error);
-    }
-};
+// const fetchSessions = async () => {
+//     try {
+//         const response = await baseService.get('/admin/sessions');
+//         data.value = response.data;
+//     } catch (error) {
+//         console.error('Failed to fetch sessions:', error);
+//     }
+// };
 
-const approveSession = async (id) => {
-    try {
-        await baseService.post(`/admin/sessions/${id}/approve`);
-        message.success('Session approved successfully');
-        fetchSessions();
-    } catch (error) {
-        message.error('Failed to approve session');
-    }
-};
+// const approveSession = async (id) => {
+//     try {
+//         await baseService.post(`/admin/sessions/${id}/approve`);
+//         message.success('Session approved successfully');
+//         fetchSessions();
+//     } catch (error) {
+//         message.error('Failed to approve session');
+//     }
+// };
 
-const rejectSession = async (id) => {
-    try {
-        await baseService.post(`/admin/sessions/${id}/reject`);
-        message.success('Session rejected successfully');
-        fetchSessions();
-    } catch (error) {
-        message.error('Failed to reject session');
-    }
-};
+// const rejectSession = async (id) => {
+//     try {
+//         await baseService.post(`/admin/sessions/${id}/reject`);
+//         message.success('Session rejected successfully');
+//         fetchSessions();
+//     } catch (error) {
+//         message.error('Failed to reject session');
+//     }
+// };
 
-onMounted(fetchSessions);
+// onMounted(fetchSessions);
 </script>

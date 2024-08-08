@@ -58,5 +58,13 @@ export default {
       } catch (error) {
          throw error;
       }
+   },
+
+   async resendOtp({commit}, {email}) {
+      try {
+         await authApi.resendOtp(email);
+      } catch (error) {
+         throw error;
+      }
    }
 }

@@ -10,7 +10,7 @@
 
         <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
             <template #cover>
-                <img alt="example" src="../../assets/product.jpg" />
+                <img alt="example" src="../../assets/images/product.jpg" />
             </template>
             <template #actions>
             </template>
@@ -23,7 +23,7 @@
 
         <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
             <template #cover>
-                <img alt="example" src="../../assets/product.jpg" />
+                <img alt="example" src="../../assets/images/product.jpg" />
             </template>
             <template #actions>
             </template>
@@ -36,7 +36,7 @@
 
         <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
             <template #cover>
-                <img alt="example" src="../../assets/product.jpg" />
+                <img alt="example" src="../../assets/images/product.jpg" />
             </template>
             <template #actions>
             </template>
@@ -49,7 +49,7 @@
 
         <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
             <template #cover>
-                <img alt="example" src="../../assets/product.jpg" />
+                <img alt="example" src="../../assets/images/product.jpg" />
             </template>
             <template #actions>
             </template>

@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto max-w-sm p-8">
     <img
-      src="../../../assets/logo.png"
+      src="../../../assets/images/logo.png"
       alt="Logo"
       class="h-130 h-130 -mt-10 flex items-center justify-center"
     />
@@ -59,7 +59,7 @@
 
       <div class="flex items-center mb-6">
         <input type="checkbox" id="rememberMe" v-model="rememberMe" />
-        <label for="rememberMe" class="text-gray-700 ml-2">Remember me?</label>
+        <label for="rememberMe" class="text-gray-700 ml-2 text-sm">Remember me?</label>
         <router-link
           to="/login/forgotPassword"
           class="text-sm text-blue-600 underline ml-14"

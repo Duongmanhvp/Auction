@@ -2,7 +2,7 @@
     <div class="relative mt-12">
         <a-carousel autoplay class="mb-8" ref="carouselRef">
             <div class="relative h-72">
-                <img src="../../../assets/image1.jpg" alt="Auction 1" class="w-full h-full object-cover" />
+                <img src="../../../assets/images/image1.jpg" alt="Auction 1" class="w-full h-full object-cover" />
                 <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h3 class="text-lg font-bold">Online Auction</h3>
                     <p class="text-sm">The community is strong, the opportunities are endless, total victory for
@@ -11,21 +11,21 @@
                 </div>
             </div>
             <div class="relative h-72">
-                <img src="../../../assets/image2.jpg" alt="Auction 2" class="w-full h-full object-cover" />
+                <img src="../../../assets/images/image2.jpg" alt="Auction 2" class="w-full h-full object-cover" />
                 <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h3 class="text-lg font-bold">Safe Auction</h3>
                     <p class="text-sm">Ensuring fair competition and the most transparent results.</p>
                 </div>
             </div>
             <div class="relative h-72">
-                <img src="../../../assets/image3.jpg" alt="Auction 3" class="w-full h-full object-cover" />
+                <img src="../../../assets/images/image3.jpg" alt="Auction 3" class="w-full h-full object-cover" />
                 <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h3 class="text-lg font-bold">Convenient Auction</h3>
                     <p class="text-sm">Simple auction, quick ownership of assets upon successful auction.</p>
                 </div>
             </div>
             <div class="relative h-72">
-                <img src="../../../assets/image4.jpg" alt="Auction 4" class="w-full h-full object-cover" />
+                <img src="../../../assets/images/image4.jpg" alt="Auction 4" class="w-full h-full object-cover" />
                 <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
                     <h3 class="text-lg font-bold">Auction Anytime Anywhere</h3>
                     <p class="text-sm">Full updates on asset types, auctions are held 24/7</p>
@@ -107,7 +107,7 @@
             <div class="flex space-x-4 ml-6 mr-3">
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -120,7 +120,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -133,7 +133,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -146,7 +146,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -167,7 +167,7 @@
             <div class="flex space-x-4 ml-6 mr-3">
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -180,7 +180,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -193,7 +193,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -206,7 +206,7 @@
 
                 <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/product.jpg" />
+                        <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
                     <template #actions>
                     </template>

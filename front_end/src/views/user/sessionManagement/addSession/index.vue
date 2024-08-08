@@ -74,7 +74,6 @@
 import TheChevron from '../../../../components/Chevron/index.vue';
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
 import { ref } from 'vue';
-import baseService from '../../../../services/base-service';
 
 const auction = ref({
     title: '',
@@ -94,33 +93,33 @@ const imagePreview = ref(null);
 
 const categories = ['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other'];
 
-const submitAuction = () => {
-    baseService.post('/auctions', auction.value)
-        .then(() => {
-            alert('Auction session added successfully!');
-            resetForm();
-        })
-        .catch(error => {
-            console.error('Error adding auction session:', error);
-        });
-};
+// const submitAuction = () => {
+//     baseService.post('/auctions', auction.value)
+//         .then(() => {
+//             alert('Auction session added successfully!');
+//             resetForm();
+//         })
+//         .catch(error => {
+//             console.error('Error adding auction session:', error);
+//         });
+// };
 
-const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
+// const handleImageUpload = (event) => {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const formData = new FormData();
+//         formData.append('file', file);
 
-        baseService.post('/products/upload-image', formData)
-            .then(response => {
-                imagePreview.value = URL.createObjectURL(file);
-                auction.value.product.image = response.data;
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-            });
-    }
-};
+//         baseService.post('/products/upload-image', formData)
+//             .then(response => {
+//                 imagePreview.value = URL.createObjectURL(file);
+//                 auction.value.product.image = response.data;
+//             })
+//             .catch(error => {
+//                 console.error('Error uploading image:', error);
+//             });
+//     }
+// };
 
 const resetForm = () => {
     auction.value = {

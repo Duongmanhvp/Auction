@@ -1,16 +1,23 @@
 <template>
     <div class="container mx-auto max-w-sm p-8">
-        <div class="flex">
-            <router-link to="/home/default" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+        <div class="flex justify-between">
+            <div class="flex justify-center">
+                <router-link to="/home/default" class="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
                 <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                 </svg>
                 <span>Back</span>
             </router-link>
-            <div class="flex justify-center ml-16">
-                <h1 class="flex items-center justify-center text-2xl font-bold -ml-5 mb-4">Register</h1>
-                <img src="../../../assets/logo.png" alt="Logo" class="h-24 flex items-center justify-center">
+            </div>
+
+            <div class="flex justify-center">
+                <h1 class="flex items-center justify-center text-2xl font-bold ml-6 ">Register</h1>
+
+            </div>
+            
+            <div>
+                <img src="../../../assets/images/logo.png" alt="Logo" class="h-auto flex items-center justify-center">
             </div>
         </div>
 

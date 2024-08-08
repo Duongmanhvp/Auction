@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto max-w-sm p-8">
-        <img src="../../../assets/logo.png" alt="Logo" class="h-130 h-130 -mt-10 flex items-center justify-center">
+        <img src="../../../assets/images/logo.png" alt="Logo" class="h-130 h-130 -mt-10 flex items-center justify-center">
         <router-link to="/home/default"
             class="flex items-center space-x-2 -ml-16 mb-4 text-gray-600 hover:text-gray-900">
             <img src="../../../assets/icon/auth-back.svg" alt="Back" class="w-6 h-6" />
@@ -49,13 +49,11 @@
 <script setup>
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../../stores/auth/auth-store'
 
 const currentPassword = ref('');
 const newPassword = ref('');
 const validation = reactive({ currentPassword: null, newPassword: null });
 const router = useRouter();
-const authStore = useAuthStore();
 
 const loading = computed(() => authStore.loading);
 const isCurrentPasswordVisible = ref(false);

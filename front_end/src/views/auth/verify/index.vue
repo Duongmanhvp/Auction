@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto max-w-sm p-0">
-        <img src="../../../assets/logo.png" alt="Logo" class="h-56 ml-16 flex items-center justify-center">
+        <img src="../../../assets/images/logo.png" alt="Logo" class="h-56 ml-16 flex items-center justify-center">
         <router-link to="/login" class="flex items-center space-x-2 -ml-10 mb-4 text-gray-600 hover:text-gray-900">
             <img src="../../../assets/icon/auth-back.svg" alt="Back" class="w-6 h-6" />
             <span>Back</span>
@@ -19,20 +19,21 @@
             </div>
 
             <!-- resend btn -->
-            <div class="flex flex-col items-center justify-center mt-6 mb-6">
-                <button :disabled="isResendDisabled" @click="resendCode"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:bg-gray-400">
-                    Resend Code
-                </button>
-                <p v-if="!isResendDisabled" class="mt-2 text-sm text-gray-600">Resend available in {{ countdown }}
-                    seconds</p>
-            </div>
+            
 
             <button type="submit"
                 class="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
                 Next
             </button>
         </form>
+        <div class="flex flex-row justify-around mt-6 mb-6">
+                <button :disabled="isResendDisabled" @click="resendCode"
+                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:bg-gray-400">
+                    Resend Code 
+                </button>
+                <p v-if="isResendDisabled" class="mt-2 text-sm text text-gray-600">
+                    Resend available in {{ countdown }} seconds </p>
+            </div>
     </div>
 </template>
 
@@ -77,7 +78,7 @@ const isNumber = (event) => {
 
 const startCountdown = () => {
     countdown.value = 30;
-    isResendDisabled.value = true;
+    // isResendDisabled.value = true;
     const timer = setInterval(() => {
         countdown.value -= 1;
         if (countdown.value <= 0) {
@@ -89,7 +90,9 @@ const startCountdown = () => {
 
 const resendCode = async () => {
     try {
-        await store.dispatch('',);
+        const email = store.getters.getEmail;
+        await store.dispatch('resendOtp',{email});
+        isResendDisabled.value = !isResendDisabled.value;
         message.success('Verification code resent successfully');
         startCountdown();
     } catch (error) {

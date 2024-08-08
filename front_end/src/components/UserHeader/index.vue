@@ -7,7 +7,7 @@
                 </span>
             </div>
             <div class="w-8/10 flex">
-                <img src="../../assets/logo.png" alt="Logo" class="mt-2 mr-40 ml-6 h-20 w-30">
+                <img src="../../assets/images/logo.png" alt="Logo" class="mt-2 mr-40 ml-6 h-20 w-30">
                 <div class="hidden sm:flex items-center justify-center space-x-2 ml-6">
                     <ul class="navbar-item font-bold cursor-pointer">
                         <router-link to="/user/default" active-class="text-green-600">

@@ -61,7 +61,6 @@
 import TheChevron from '../../../../components/Chevron/index.vue';
 import MenuProductManagement from '../../../../components/MenuProductManagement/index.vue';
 import { ref } from 'vue';
-import baseService from '../../../../services/base-service';
 
 const product = ref({
     name: '',
@@ -74,34 +73,34 @@ const imagePreview = ref(null);
 
 const categories = ['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other'];
 
-const submitProduct = () => {
-    baseService.post('/products', product.value)
-        .then(() => {
-            alert('Product added successfully!');
-            product.value = {
-                name: '',
-                category: '',
-                description: '',
-                image: ''
-            };
-            imagePreview.value = null;
-        });
-};
+// const submitProduct = () => {
+//     baseService.post('/products', product.value)
+//         .then(() => {
+//             alert('Product added successfully!');
+//             product.value = {
+//                 name: '',
+//                 category: '',
+//                 description: '',
+//                 image: ''
+//             };
+//             imagePreview.value = null;
+//         });
+// };
 
-const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
+// const handleImageUpload = (event) => {
+//     const file = event.target.files[0];
+//     if (file) {
+//         const formData = new FormData();
+//         formData.append('file', file);
 
-        baseService.post('/products/upload-image', formData)
-            .then(response => {
-                imagePreview.value = URL.createObjectURL(file);
-                product.value.image = response.data;
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-            });
-    }
-};
+//         baseService.post('/products/upload-image', formData)
+//             .then(response => {
+//                 imagePreview.value = URL.createObjectURL(file);
+//                 product.value.image = response.data;
+//             })
+//             .catch(error => {
+//                 console.error('Error uploading image:', error);
+//             });
+//     }
+// };
 </script>
