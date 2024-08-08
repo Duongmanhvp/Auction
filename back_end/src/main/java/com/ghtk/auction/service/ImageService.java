@@ -6,6 +6,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface ImageService {
-    List<String> uploadImages(List<MultipartFile> files);
-    String uploadImage(MultipartFile file) throws IOException;
+    String uploadImage(String name, MultipartFile file) throws IOException;
 }

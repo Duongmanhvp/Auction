@@ -17,20 +17,9 @@ public class ImageServiceImpl implements ImageService {
 
     private final CloudinaryComponent cloudinaryComponent;
     @Override
-    public List<String> uploadImages(List<MultipartFile> files) {
-        return files.stream().map(file -> {
-            try {
-                return cloudinaryComponent.uploadFile(file);
-            } catch (IOException e) {
-                throw new UploadException(e.getMessage());
-            }
-        }).collect(Collectors.toList());
-    }
-
-    @Override
-    public String uploadImage(MultipartFile file){
+    public String uploadImage(String name, MultipartFile file){
         try {
-            return cloudinaryComponent.uploadFile(file);
+            return cloudinaryComponent.uploadFile(name, file);
         } catch (IOException e) {
             throw new UploadException(e.getMessage());
         }
