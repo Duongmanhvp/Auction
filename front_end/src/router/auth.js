@@ -4,7 +4,6 @@ import Register from "../views/auth/register/index.vue";
 import ForgotPassword from "../views/auth/forgotPassword/index.vue";
 import ChangePassword from "../views/auth/changePassword/index.vue";
 import Verify from "../views/auth/verify/index.vue";
-import Verify2 from "../views/auth/verify2/index.vue";
 
 const authRoutes = [
     {
@@ -20,23 +19,17 @@ const authRoutes = [
                 path: "forgotPassword",
                 name: "login-forgotPassword",
                 component: ForgotPassword,
-                meta: { requiresVerification: true }
+               
             },
             {
                 path: "changePassword",
                 name: "login-changePassword",
                 component: ChangePassword,
-                meta: { requiresVerification: true }
             },
             {
                 path: "verify",
                 name: "login-verify",
                 component: Verify
-            },
-            {
-                path: "verify2",
-                name: "register-verify",
-                component: Verify2
             },
             {
                 path: "/register",

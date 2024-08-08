@@ -110,8 +110,8 @@
                         </router-link>
                     </ul>
                     <ul class="navbar-item font-bold cursor-pointer">
-                        <router-link to="/admin/introduction"
-                            class="block w-full h-full p-5 hover:text-teal-600 rounded" active-class="text-teal-600">
+                        <router-link to="/admin/introduction" class="block w-full h-full p-5 hover:text-teal-600 rounded"
+                            active-class="text-teal-600">
                             <div class="w-full h-full flex items-center justify-center">Introduction</div>
                         </router-link>
                     </ul>
@@ -126,8 +126,7 @@
 
             <!-- avatar and dropdown-->
             <div class="w-1/10 flex items-center m-auto">
-                <div ref="dropdownTrigger" @click="toggleDropdown"
-                    class="relative flex items-center hover:cursor-pointer">
+                <div ref="dropdownTrigger" @click="toggleDropdown" class="relative flex items-center hover:cursor-pointer">
                     <a-avatar class="bg-teal-400">
                         <img src="../../assets/icon/user.svg" alt="User" class="w-6 h-6" />
                     </a-avatar>
@@ -138,8 +137,7 @@
                     <a-menu>
                         <a-menu-item>
                             <a class="font-bold flex items-center" href="javascript:;">
-                                <img src="../../assets/icon/profile.svg" alt="Profile"
-                                    class="h-5 w-5 inline-block mr-2" />
+                                <img src="../../assets/icon/profile.svg" alt="Profile" class="h-5 w-5 inline-block mr-2" />
                                 Profile
                             </a>
                         </a-menu-item>
@@ -159,15 +157,13 @@
                         </a-menu-item>
                         <a-menu-item>
                             <a class="font-bold" href="javascript:;">
-                                <img src="../../assets/icon/setting.svg" alt="Setting"
-                                    class="h-5 w-5 inline-block mr-2" />
+                                <img src="../../assets/icon/setting.svg" alt="Setting" class="h-5 w-5 inline-block mr-2" />
                                 Settings
                             </a>
                         </a-menu-item>
                         <a-menu-item>
                             <button @click="handleLogout" class="font-bold flex items-center">
-                                <img src="../../assets/icon/logout.svg" alt="Logout"
-                                    class="h-5 w-5 inline-block mr-2" />
+                                <img src="../../assets/icon/logout.svg" alt="Logout" class="h-5 w-5 inline-block mr-2" />
                                 Logout
                             </button>
                         </a-menu-item>
@@ -191,10 +187,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../stores/auth/auth-store';
-
-const authStore = useAuthStore();
+//import { useAuthStore } from '../../stores/auth/auth-store';
+import { message } from 'ant-design-vue';
+import { useStore } from 'vuex';
+// const authStore = useAuthStore();
 const router = useRouter();
+const store = useStore();
 const open = ref(false);
 const showDropdown = ref(false);
 const dropdownTrigger = ref(null);
@@ -214,9 +212,9 @@ const navigateToAllProduct = () => {
 
 const handleLogout = async () => {
     try {
-        await authStore.logout();
+        const response = await store.dispatch('logout');
         message.success('You have successfully logout');
-        router.push('/login');
+        router.push('/');
     } catch (error) {
         message.error('Logout. Please try again.');
     }

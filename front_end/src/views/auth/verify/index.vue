@@ -5,7 +5,7 @@
             <img src="../../../assets/icon/auth-back.svg" alt="Back" class="w-6 h-6" />
             <span>Back</span>
         </router-link>
-        <h1 class="flex items-center justify-center text-2xl font-bold mb-4">Forgot your password?</h1>
+        <h1 class="flex items-center justify-center text-2xl font-bold mb-4">Verification</h1>
         <h2>
             Verification code is sent to your email. Please check and enter the verification code:
         </h2>
@@ -39,14 +39,15 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../../stores/auth/auth-store';
+import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 
-const authStore = useAuthStore();
 const codes = reactive(['', '', '', '', '', '']);
-const router = useRouter();
 const countdown = ref(30);
 const isResendDisabled = ref(true);
+
+const router = useRouter();
+const store = useStore();
 
 const checkBackspace = (event, index) => {
     if (event.key === 'Backspace') {
@@ -88,7 +89,7 @@ const startCountdown = () => {
 
 const resendCode = async () => {
     try {
-        await authStore.resendOTP();
+        await store.dispatch('',);
         message.success('Verification code resent successfully');
         startCountdown();
     } catch (error) {
@@ -99,9 +100,17 @@ const resendCode = async () => {
 
 async function onSubmit() {
     const otp = codes.join('');
+    const email = store.getters.getEmail;
+    console.log(email);
+
+    const data = {
+        email : email,
+        otp : otp,
+    };
+    
     try {
-        await authStore.verifyOTP(otp);
-        router.push('/user/changePassword');
+        await store.dispatch('verify', data);
+        router.push('/');
     } catch (error) {
         console.error('Verification error:', error);
         message.error('Verification failed. Please try again.');
@@ -113,6 +122,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss" scoped />

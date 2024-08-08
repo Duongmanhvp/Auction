@@ -184,10 +184,13 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../stores/auth/auth-store';
+// import { useAuthStore } from '../../stores/auth/auth-store';
+import { useStore } from 'vuex';
+import { message } from 'ant-design-vue';
 
-const authStore = useAuthStore();
+// const authStore = useAuthStore();
 const router = useRouter();
+const store = useStore();
 const open = ref(false);
 const showDropdown = ref(false);
 const dropdownTrigger = ref(null);
@@ -207,9 +210,9 @@ const navigateToAllProduct = () => {
 
 const handleLogout = async () => {
     try {
-        await authStore.logout();
+        const response = await store.dispatch('logout');
         message.success('You have successfully logout');
-        router.push('/login');
+        router.push('/');
     } catch (error) {
         message.error('Logout. Please try again.');
     }

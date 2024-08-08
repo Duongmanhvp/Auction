@@ -14,78 +14,78 @@ import Introduction from "../views/home/introduction/index.vue";
 import Contact from "../views/home/contact/index.vue";
 
 const userRoutes = [
-    {
-        path: "/user",
-        component: AuthenticatedLayout,
-        meta: { requiresAuth: true },
-        children: [
-            {
-                path: "default",
-                name: "user-default",
-                component: Default
-            },
-            {
-                path: "allSession",
-                name: "all-session",
-                component: AllSession
-            },
-            {
-                path: "addSession",
-                name: "add-session",
-                component: AddSession
-            },
-            {
-                path: "deleteSession",
-                name: "delete-session",
-                component: DeleteSession
-            },
-            {
-                path: "allProduct",
-                name: "all-product",
-                component: AllProduct
-            },
-            {
-                path: "addProduct",
-                name: "add-product",
-                component: AddProduct
-            },
-            {
-                path: "deleteProduct",
-                name: "delete-product",
-                component: DeleteProduct
-            },
-            {
-                path: "product",
-                name: "user-product",
-                component: Product
-            },
-            {
-                path: "session",
-                name: "user-session",
-                component: Session
-            },
-            {
-                path: "news",
-                name: "user-news",
-                component: News
-            },
-            {
-                path: "history",
-                name: "user-history",
-                component: History
-            },
-            {
-                path: "introduction",
-                name: "user-introduction",
-                component: Introduction
-            },
-            {
-                path: "contact",
-                name: "user-contact",
-                component: Contact
-            },
-        ]
-    }
+  {
+    path: "/user",
+    component: AuthenticatedLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: "default",
+        name: "user-default",
+        component: Default,
+      },
+      {
+        path: "allSession",
+        name: "all-session",
+        component: AllSession,
+      },
+      {
+        path: "addSession",
+        name: "add-session",
+        component: AddSession,
+      },
+      {
+        path: "deleteSession",
+        name: "delete-session",
+        component: DeleteSession,
+      },
+      {
+        path: "allProduct",
+        name: "all-product",
+        component: AllProduct,
+      },
+      {
+        path: "addProduct",
+        name: "add-product",
+        component: AddProduct,
+      },
+      {
+        path: "deleteProduct",
+        name: "delete-product",
+        component: DeleteProduct,
+      },
+      {
+        path: "product",
+        name: "user-product",
+        component: Product,
+      },
+      {
+        path: "session",
+        name: "user-session",
+        component: Session,
+      },
+      {
+        path: "news",
+        name: "user-news",
+        component: News,
+      },
+      {
+        path: "history",
+        name: "user-history",
+        component: History,
+      },
+      {
+        path: "introduction",
+        name: "user-introduction",
+        component: Introduction,
+      },
+      {
+        path: "contact",
+        name: "user-contact",
+        component: Contact,
+      },
+    ],
+  },
 ];
 
 export default userRoutes;

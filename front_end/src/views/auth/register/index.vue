@@ -73,35 +73,18 @@
 
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
-// import authService from '../../../services/auth-service';
-import { message } from 'ant-design-vue';
-import { useAuthStore } from '../../../stores/auth/auth-store';
+import { useStore } from 'vuex'
 
 const data = reactive({
     email: '',
     password: '',
     full_name: '',
     date_of_birth: '',
-    // gender: true,
     phone: '',
-    // address: '',
 });
 
 const router = useRouter();
-const authStore = useAuthStore();
-
-const handleSignUp = async () => {
-    const isValid = validateForm();
-    if (!isValid) return;
-
-    try {
-        await authStore.register(data);
-        message.success('You have successfully registered');
-        router.push('/login/verify2');
-    } catch (error) {
-        message.error('Registration failed. Please try again.');
-    }
-};
+const store = useStore();
 
 const validateForm = () => {
     let isValid = true;
@@ -119,6 +102,18 @@ const validateForm = () => {
     }
 
     return isValid;
+};
+
+const handleSignUp = async () => {
+    const isValid = validateForm();
+    if (!isValid) return;
+    try {
+        const response = await store.dispatch("registry", data );
+        router.push('/login/verify');
+        console.log(response);
+    } catch (error) {
+        console.log(error);
+    }
 };
 
 </script>
