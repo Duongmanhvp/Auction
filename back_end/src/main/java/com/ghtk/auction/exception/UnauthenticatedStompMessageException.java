@@ -13,13 +13,13 @@ public class UnauthenticatedStompMessageException extends AuthenticationCredenti
   private CloseStatus closeStatus;
 
   public UnauthenticatedStompMessageException(String sessionId, Optional<CloseStatus> closeStatus) {
-    super("Unauthorized stomp message");
+    super("Unauthenticated stomp message");
     this.sessionId = sessionId;
     this.closeStatus = closeStatus.orElse(null);
   }
 
   public UnauthenticatedStompMessageException(String sessionId, Optional<CloseStatus> closeStatus, Throwable cause) {
-    super("Unauthorized stomp message", cause);
+    super("Unauthenticated stomp message", cause);
     this.sessionId = sessionId;
     this.closeStatus = closeStatus.orElse(null);
   }

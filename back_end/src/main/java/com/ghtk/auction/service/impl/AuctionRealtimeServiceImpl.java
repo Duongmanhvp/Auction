@@ -9,6 +9,7 @@ import com.ghtk.auction.dto.redis.AuctionBid;
 import com.ghtk.auction.dto.redis.AuctionRedisResponse;
 import com.ghtk.auction.dto.request.comment.CommentFilter;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -16,16 +17,20 @@ import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.dto.stomp.NotifyMessage;
 import com.ghtk.auction.entity.Auction;
-import com.ghtk.auction.entity.Comment;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.TimeHistory;
 import com.ghtk.auction.entity.UserAuction;
 import com.ghtk.auction.entity.UserAuctionHistory;
+import com.ghtk.auction.event.AuctionEndEvent;
+import com.ghtk.auction.event.AuctionRoomOpenEvent;
+import com.ghtk.auction.event.AuctionStartEvent;
+import com.ghtk.auction.event.BidEvent;
+import com.ghtk.auction.event.CommentEvent;
 import com.ghtk.auction.exception.AlreadyExistsException;
 import com.ghtk.auction.exception.ForbiddenException;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.repository.AuctionRepository;
-import com.ghtk.auction.repository.CommentRepository;
+// import com.ghtk.auction.repository.CommentRepository;
 import com.ghtk.auction.repository.ProductRepository;
 import com.ghtk.auction.repository.TimeHistoryRepository;
 import com.ghtk.auction.repository.UserAuctionHistoryRepository;
@@ -50,10 +55,12 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   final AuctionRepository auctionRepository;
   final ProductRepository productRepository;
   final UserAuctionHistoryRepository userAuctionHistoryRepository;
-  final CommentRepository commentRepository;
+  // final CommentRepository commentRepository;
 
   final RedisTemplate<String, String> redisTemplate;
   final RedisTemplateFactory redisTemplateFactory;
+
+  final ApplicationEventPublisher eventPublisher;
   
   @Override
   public List<Auction> getJoinableNotis(Long userId) {
@@ -176,25 +183,27 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
 
   @Override
   public List<CommentMessage> getComments(Long userId, Long auctionId, CommentFilter filter) {
+    // TODO:
     if (!isAuctionActive(auctionId)) {
       throw new ForbiddenException("Phien dau gia chua bat dau");
     }
-    if (filter.getFrom() == null) {
-      return commentRepository.findAllByAuctionId(auctionId).stream()
-          .map(comment -> new CommentMessage(
-              comment.getId(), comment.getContent(), comment.getCreatedAt(), 
-              comment.getUserAuction().getUser().getId()
-          ))
-          .toList();
-    }
-    return commentRepository.findAllByAuctionIdAndCreatedAtAfter(
-        auctionId, filter.getFrom())
-            .stream()
-            .map(comment -> new CommentMessage(
-                comment.getId(), comment.getContent(), comment.getCreatedAt(), 
-                comment.getUserAuction().getUser().getId()
-            ))
-            .toList();
+    return null;
+    // if (filter.getFrom() == null) {
+    //   return commentRepository.findAllByAuctionId(auctionId).stream()
+    //       .map(comment -> new CommentMessage(
+    //           comment.getId(), comment.getContent(), comment.getCreatedAt(), 
+    //           comment.getUserAuction().getUser().getId()
+    //       ))
+    //       .toList();
+    // }
+    // return commentRepository.findAllByAuctionIdAndCreatedAtAfter(
+    //     auctionId, filter.getFrom())
+    //         .stream()
+    //         .map(comment -> new CommentMessage(
+    //             comment.getId(), comment.getContent(), comment.getCreatedAt(), 
+    //             comment.getUserAuction().getUser().getId()
+    //         ))
+    //         .toList();
   }
 	
 	@Override
@@ -206,7 +215,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
       throw new ValidationException("Gia dau gia khong hop le");
     }
     AuctionRedisResponse info = getAuctionRoom(auctionId).orElseThrow(
-        () -> new RuntimeException("Khong tim thay phien dau gia")
+        () -> new NotFoundException("Khong tim thay phien dau gia")
     );
 
     long lastPrice = getAuctionLastPrice(auctionId).get();
@@ -215,33 +224,44 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
         && bid > lastPrice + info.getPricePerStep();
 
     if (!valid) {
-      throw new RuntimeException("Gia dau gia khong hop le");
+      throw new ForbiddenException("Gia dau gia khong hop le");
     }
     
+    LocalDateTime time = LocalDateTime.now();
+
     AuctionBid auctionBid = new AuctionBid(
       userId,
       bid,
-      LocalDateTime.now()
+      time
     );
     addBid(auctionId, auctionBid);
     setAuctionLastPrice(auctionId, bid); 
     BidMessage message = new BidMessage(auctionBid.getBid(), auctionBid.getCreatedAt());
+    eventPublisher.publishEvent(new BidEvent(auctionId, userId, bid, time));
     return message;
 	}
 
   @Override
   public CommentMessage comment(Long userId, Long auctionId, String message) {
-    UserAuction ua = userAuctionRepository
-        .findByUserIdAndAuctionId(userId, auctionId);
-    Comment comment = Comment.builder()
-        .userAuction(ua)
-        .content(message)
-        .createdAt(LocalDateTime.now())
-        .build();
-    var saved = commentRepository.save(comment);
+    // TODO:
 
-    return new CommentMessage(
-        saved.getId(), saved.getContent(), saved.getCreatedAt(), userId);
+    LocalDateTime time = LocalDateTime.now();
+
+    // UserAuction ua = userAuctionRepository
+    //     .findByUserIdAndAuctionId(userId, auctionId);
+    // Comment comment = Comment.builder()
+    //     .userAuction(ua)
+    //     .content(message)
+    //     .createdAt(LocalDateTime.now())
+    //     .build();
+    // var saved = commentRepository.save(comment);
+
+    // return new CommentMessage(
+    //     saved.getId(), saved.getContent(), saved.getCreatedAt(), userId);
+
+    eventPublisher.publishEvent(new CommentEvent(auctionId, userId, message, time));
+
+    return null;
   }
 
   @Override
@@ -260,14 +280,18 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (isAuctionRoomOpen(auctionId)) {
       throw new ForbiddenException("Phong dau gia da mo");
     }
+
     setAuctionRoomOpen(auctionId);
+
     Auction auction = auctionRepository.findById(auctionId).orElseThrow(
         () -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
     );
     List<UserAuction> userAuctions = userAuctionRepository.findAllByAuction(auction);
     userAuctions.stream()
         .forEach(userAuction 
-            -> addUserToAuction(userAuction.getUser().getId(), auctionId));  
+            -> addUserToAuction(userAuction.getUser().getId(), auctionId)); 
+
+    eventPublisher.publishEvent(new AuctionRoomOpenEvent(auctionId));
   }
 
   @Override
@@ -277,6 +301,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     }
     setAuctionActive(auctionId);
     setAuctionLastPrice(auctionId, 0L);
+    eventPublisher.publishEvent(new AuctionStartEvent(auctionId));
   }
 
   @Override
@@ -284,14 +309,18 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (!isAuctionRoomOpen(auctionId)) {
       throw new ForbiddenException("Phong dau gia chua mo");
     }
+
     Auction auction = auctionRepository.findById(auctionId).orElseThrow(
         () -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
     );
+
     if (isAuctionActive(auctionId)) {
       deleteAuctionActive(auctionId);
+
       Product product = auction.getProduct();
       long lastPrice = getAuctionLastPrice(auctionId).get();
       List<AuctionBid> bids = getBids(auctionId);
+
       if (!bids.isEmpty()) {
         AuctionBid lastBid = bids.get(0);
         if (lastBid.getBid() != lastPrice) {
@@ -302,7 +331,9 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
         productRepository.save(product);
         auctionRepository.save(auction);
       }
+
       deleteAuctionLastPrice(auctionId);
+
       bids.forEach(auctionBid -> {
         UserAuction ua = userAuctionRepository.findByUserIdAndAuctionId(auctionBid.getUserId(), auctionId);
         userAuctionHistoryRepository.save(
@@ -313,13 +344,17 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
                 .build()
         );
       });
+
       deleteBids(auctionId);
     }
     setAuctionRoomClosed(auctionId);
+
     List<UserAuction> userAuctions = userAuctionRepository.findAllByAuction(auction);
     userAuctions.stream()
         .forEach(userAuction 
             -> removeUserFromAuction(userAuction.getUser().getId(), auctionId));
+
+    eventPublisher.publishEvent(new AuctionEndEvent(auctionId));
   }
 
 

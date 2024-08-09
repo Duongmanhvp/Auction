@@ -3,6 +3,8 @@ package com.ghtk.auction.config.stomp;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.stomp.StompCommand;
+
+import com.ghtk.auction.exception.UnauthorizedStompMessageException;
 import com.ghtk.auction.service.AuctionRealtimeService;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,45 @@ public class AuthHandlerConfig {
   public DispatchAuthHandler dispatchAuthHandler(
         MatcherHandler[] matchHandlers) {
     return new DispatchAuthHandler(matchHandlers);
+  }
+
+  @Bean
+  public MatcherHandler subscribeUserControlHandler() {
+    return new MatcherHandler(
+        "/user/{userId2:d}/queue/control", StompCommand.SUBSCRIBE,
+        (headers, payload) -> {
+            long userId = (Long) headers.getHeader("userId");
+            long userId2 = (Long) headers.getHeader("userId2");
+            if (userId != userId2) {
+                throw new UnauthorizedStompMessageException("Unauthorized control access");
+            }
+        });
+  }
+
+  @Bean
+  public MatcherHandler subscribeUserNotificationHandler() {
+    return new MatcherHandler(
+        "/user/{userId2:d}/queue/notifications", StompCommand.SUBSCRIBE,
+        (headers, payload) -> {
+            long userId = (Long) headers.getHeader("userId");
+            long userId2 = (Long) headers.getHeader("userId2");
+            if (userId != userId2) {
+                throw new UnauthorizedStompMessageException("Unauthorized notification access");
+            }
+        });
+  }
+  
+  @Bean
+  public MatcherHandler subscribeUserResponseHandler() {
+    return new MatcherHandler(
+        "/user/{userId2:d}/queue/responses", StompCommand.SUBSCRIBE,
+        (headers, payload) -> {
+            long userId = (Long) headers.getHeader("userId");
+            long userId2 = (Long) headers.getHeader("userId2");
+            if (userId != userId2) {
+                throw new UnauthorizedStompMessageException("Unauthorized response access");
+            }
+        });
   }
 
   @Bean
@@ -68,7 +109,6 @@ public class AuthHandlerConfig {
     return new MatcherHandler(
         "/app/auction/{auctionId:d}/bid", StompCommand.SEND,
         (headers, payload) -> {
-            System.out.println("bidHandler");
             long userId = (Long) headers.getHeader("userId"); 
             long auctionId = (Long) headers.getHeader("auctionId");
             auctionRealtimeService.checkBidding(userId, auctionId);
@@ -91,9 +131,10 @@ public class AuthHandlerConfig {
     return new MatcherHandler(
         "/app/auction/{auctionId:d}/notify", StompCommand.SEND,
         (headers, payload) -> {
-            long userId = (Long) headers.getHeader("userId"); 
-            long auctionId = (Long) headers.getHeader("auctionId");
-            auctionRealtimeService.checkNotifying(userId, auctionId);
+            String role = (String) headers.getHeader("role");
+            if (!role.equalsIgnoreCase("admin")) {
+                throw new UnauthorizedStompMessageException("Unauthorized notification access");
+            }
         });
   }
 }

@@ -2,11 +2,16 @@ package com.ghtk.auction.controller.admin;
 
 
 import com.ghtk.auction.dto.response.ApiResponse;
+import com.ghtk.auction.dto.stomp.NotifyMessage;
 import com.ghtk.auction.service.StompService;
 import com.ghtk.auction.service.AuctionRealtimeService;
+
+import java.time.LocalDateTime;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +30,7 @@ public class AdminController {
     return ApiResponse.success(null);
   }
 
-  @PostMapping("/{auctionId}/open")
+  @PostMapping("/auctions/{auctionId}/open")
   @PreAuthorize("hasRole('ADMIN')")
   public ApiResponse<Void> openAuction(
       @PathVariable Long auctionId
@@ -34,7 +39,7 @@ public class AdminController {
     return ApiResponse.success(null);
   }
 
-  @PostMapping("/{auctionId}/start")
+  @PostMapping("/auctions/{auctionId}/start")
   @PreAuthorize("hasRole('ADMIN')")
   public ApiResponse<Void> startAuction(
       @PathVariable Long auctionId
@@ -43,12 +48,26 @@ public class AdminController {
     return ApiResponse.success(null);
   }
 
-  @PostMapping("/{auctionId}/end")
+  @PostMapping("/auctions/{auctionId}/end")
   @PreAuthorize("hasRole('ADMIN')")
   public ApiResponse<Void> endAuction(
       @PathVariable Long auctionId
   ) {
     auctionRealtimeService.endAuction(auctionId);
     return ApiResponse.success(null);
+  }
+
+  @PostMapping("/notify")
+  public ApiResponse<Void> publishNotification(@RequestBody String message) {
+    stompService.sendGlobalNotification(new NotifyMessage(message, LocalDateTime.now()));
+    return ApiResponse.success("ok");
+  }
+
+  @PostMapping("/auctions/{auctionId}/notify")
+  public ApiResponse<Void> publishNotification(
+    @RequestBody String message,
+    @PathVariable Long auctionId) {
+    stompService.sendGlobalNotification(new NotifyMessage(message, LocalDateTime.now()));
+    return ApiResponse.success("ok");
   }
 }
