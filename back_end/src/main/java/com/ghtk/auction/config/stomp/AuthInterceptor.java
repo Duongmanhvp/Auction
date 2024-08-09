@@ -7,26 +7,18 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import com.ghtk.auction.exception.StompExceptionHandler;
-
 import lombok.RequiredArgsConstructor;
 
 @Component("authInterceptor")
 @RequiredArgsConstructor
 public class AuthInterceptor implements ChannelInterceptor {
-    private final DispatchAuthHandler authHandler;
-    private final StompExceptionHandler exceptionHandler;
+  private final DispatchAuthHandler authHandler;
 
-    @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
-        StompHeaderAccessor headers = StompHeaderAccessor.wrap(message);
-        Object payload = message.getPayload();
-        try {
-          authHandler.intercept(headers, payload);
-          return MessageBuilder.createMessage(payload, headers.getMessageHeaders());
-        } catch (Exception e) {
-          exceptionHandler.handle(e);
-          return null;
-        }
-    }
+  @Override
+  public Message<?> preSend(Message<?> message, MessageChannel channel) {
+    StompHeaderAccessor headers = StompHeaderAccessor.wrap(message);
+    Object payload = message.getPayload();
+    authHandler.intercept(headers, payload);
+    return MessageBuilder.createMessage(payload, headers.getMessageHeaders());
+  }
 }
