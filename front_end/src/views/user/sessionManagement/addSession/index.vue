@@ -3,7 +3,7 @@
         <div class="w-1/5 ml-4 mr-4">
             <MenuSessionManagement />
         </div>
-        <div class="w-4/5 container border-l bg-zinc-200 mx-auto p-10 rounded-md shadow-lg mt-6">
+        <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
             <div class="relative w-full max-w-md mx-auto">
                 <h1 class="text-2xl font-bold text-center text-gray-800">Add Auction Session</h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
@@ -19,9 +19,6 @@
                         <img :src="imagePreview" alt="Product Image"
                             class="w-full h-auto border border-gray-300 rounded-md" />
                     </div>
-                </div>
-
-                <div class="flex-1">
                     <div class="mb-5">
                         <label for="title" class="block text-gray-700 mb-3">Title</label>
                         <input type="text" id="title" v-model="auction.title"
@@ -33,7 +30,9 @@
                         <textarea id="description" v-model="auction.description"
                             class="form-textarea w-full border border-gray-300 rounded-md px-2 py-2"></textarea>
                     </div>
+                </div>
 
+                <div class="flex-1">
                     <div class="mb-5">
                         <label for="startBid" class="block text-gray-700 mb-3">Start Bid</label>
                         <input type="number" id="startBid" v-model="auction.startBid"

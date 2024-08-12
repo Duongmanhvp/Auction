@@ -136,25 +136,32 @@
                 <div v-if="showDropdown"
                     class="absolute right-0 w-54 mt-36 mr-8 bg-white border border-gray-200 rounded shadow-lg z-20">
                     <a-menu>
-                        <a-menu-item>
+                        <a-menu-item @click="profileManagement">
                             <a class="font-bold flex items-center" href="javascript:;">
                                 <img src="../../assets/icon/profile.svg" alt="Profile"
                                     class="h-5 w-5 inline-block mr-2" />
                                 Profile
                             </a>
                         </a-menu-item>
-                        <a-menu-item @click="navigateToAllProduct">
+                        <a-menu-item @click="auctionManagement">
+                            <a class="font-bold flex items-center">
+                                <img src="../../assets/icon/auction-management.svg" alt="Auction Management"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Auction Management
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item @click="productManagement">
                             <a class="font-bold flex items-center">
                                 <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
                                     class="h-5 w-5 inline-block mr-2" />
                                 Asset Management
                             </a>
                         </a-menu-item>
-                        <a-menu-item>
-                            <a class="font-bold" href="javascript:;">
-                                <img src="../../assets/icon/setting.svg" alt="Setting"
-                                    class="h-5 w-5 inline-block mr-2" />
-                                Settings
+                        <a-menu-item @click="auctionSessionManagement">
+                            <a class="font-bold flex items-center">
+                                <img src="../../assets/icon/auction-session-management.svg"
+                                    alt="Auction Session Management" class="h-5 w-5 inline-block mr-2" />
+                                Auction Session Management
                             </a>
                         </a-menu-item>
                         <a-menu-item>
@@ -184,13 +191,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-// import { useAuthStore } from '../../stores/auth/auth-store';
-import { useStore } from 'vuex';
+import { useAuthStore } from '../../stores/auths/useAuthStore';
 import { message } from 'ant-design-vue';
 
-// const authStore = useAuthStore();
+
 const router = useRouter();
-const store = useStore();
+const authStore = useAuthStore();
 const open = ref(false);
 const showDropdown = ref(false);
 const dropdownTrigger = ref(null);
@@ -203,14 +209,29 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const navigateToAllProduct = () => {
+const auctionManagement = () => {
+    router.push('/user/allAuction');
+    hideDropdown();
+};
+
+const productManagement = () => {
     router.push('/user/allProduct');
+    hideDropdown();
+};
+
+const auctionSessionManagement = () => {
+    router.push('/user/allSession');
+    hideDropdown();
+};
+
+const profileManagement = () => {
+    router.push('/user/profile');
     hideDropdown();
 };
 
 const handleLogout = async () => {
     try {
-        const response = await store.dispatch('logout');
+        await authStore.logout('logout');
         message.success('You have successfully logout');
         router.push('/');
     } catch (error) {

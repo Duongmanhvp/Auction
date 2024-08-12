@@ -3,7 +3,7 @@
         <div class="w-1/5 ml-4 mr-4">
             <MenuProductManagement />
         </div>
-        <div class="w-4/5 container border-l bg-zinc-200 mx-auto p-10 rounded-md shadow-lg mt-6">
+        <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
             <div class="relative w-full max-w-md mx-auto">
                 <h1 class="text-2xl font-bold text-center text-gray-800">
                     Delete Product

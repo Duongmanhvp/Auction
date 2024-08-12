@@ -19,7 +19,7 @@ const authRoutes = [
                 path: "forgotPassword",
                 name: "login-forgotPassword",
                 component: ForgotPassword,
-               
+
             },
             {
                 path: "changePassword",

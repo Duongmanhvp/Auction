@@ -1,7 +1,7 @@
 <template>
     <TheUserHeader />
-    <div class="w-full h-full ">
-        <div class="p-4">
+    <div class="w-full h-full">
+        <div class="p-4 ">
             <router-view></router-view>
         </div>
     </div>

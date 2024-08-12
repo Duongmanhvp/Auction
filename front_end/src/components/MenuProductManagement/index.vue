@@ -17,13 +17,6 @@
                         Add Product
                     </button>
                 </router-link>
-                <router-link to="/user/deleteProduct" class="w-full">
-                    <button class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md
-                    hover:bg-teal-200 outline-gray-400 shadow-lg">
-                        <img src="../../assets/icon/delete.svg" alt="Delete Product" class="w-6 h-6 mr-3" />
-                        Delete Product
-                    </button>
-                </router-link>
             </div>
         </a-card>
     </div>
@@ -70,18 +63,3 @@ const filterByTag = (tag) => {
     console.log('Filtering products by tags:', selectedTags.value);
 };
 </script>
-
-
-<style scoped>
-.bg-blue-50 {
-    background-color: #ebf8ff;
-}
-
-.bg-teal-200 {
-    background-color: #81e6d9;
-}
-
-button:focus {
-    outline: none;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
     <TheHeader />
-    <div class="w-full h-full bg-blue-50">
+    <div class="w-full h-full">
         <div class="p-4">
             <router-view></router-view>
         </div>

@@ -19,7 +19,7 @@
             </div>
 
             <!-- resend btn -->
-            
+
 
             <button type="submit"
                 class="flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -27,13 +27,13 @@
             </button>
         </form>
         <div class="flex flex-row justify-around mt-6 mb-6">
-                <button :disabled="isResendDisabled" @click="resendCode"
-                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:bg-gray-400">
-                    Resend Code 
-                </button>
-                <p v-if="isResendDisabled" class="mt-2 text-sm text text-gray-600">
-                    Resend available in {{ countdown }} seconds </p>
-            </div>
+            <button :disabled="isResendDisabled" @click="resendCode"
+                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded disabled:bg-gray-400">
+                Resend Code
+            </button>
+            <p v-if="isResendDisabled" class="mt-2 text-sm text text-gray-600">
+                Resend available in {{ countdown }} seconds </p>
+        </div>
     </div>
 </template>
 
@@ -91,7 +91,7 @@ const startCountdown = () => {
 const resendCode = async () => {
     try {
         const email = store.getters.getEmail;
-        await store.dispatch('resendOtp',{email});
+        await store.dispatch('resendOtp', { email });
         isResendDisabled.value = !isResendDisabled.value;
         message.success('Verification code resent successfully');
         startCountdown();
@@ -107,10 +107,10 @@ async function onSubmit() {
     console.log(email);
 
     const data = {
-        email : email,
-        otp : otp,
+        email: email,
+        otp: otp,
     };
-    
+
     try {
         await store.dispatch('verify', data);
         router.push('/');
