@@ -24,9 +24,8 @@
                             class="w-full h-auto border border-gray-300 rounded-md" />
                         </a-carousel-slide> 
                     </a-carousel> -->
-                    <div v-for="(image,index) in imagePreview" :key="index" class="mb-4">
-                        <img :src="image" alt="Product Image"
-                            class="w-full h-auto border border-gray-300 rounded-md" />
+                    <div v-for="(image, index) in imagePreview" :key="index" class="mb-4">
+                        <img :src="image" alt="Product Image" class="w-full h-auto border border-gray-300 rounded-md" />
                         <button @click="removeImage(index)" class="delete-icon">✖</button>
                     </div>
                 </div>
@@ -74,37 +73,40 @@ import { message } from 'ant-design-vue';
 
 
 const store = useStore();
+
 const product = reactive({
     name: '',
     category: '',
     description: '',
     image: '',
 });
+
 const images = ref([]);
 // const imagePreview = ref(null);
 
 const imagePreview = ref([]);
 let selectedFile = ref([]);
+
 const categories = ['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHER'];
 
 const onFileChange = (event) => {
-    const files = event.target.files;
-    selectedFile = files[0];
+    // const files = event.target.files;
+    // selectedFile = files[0];
 
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            imagePreview.value.push(imageUrl);
-            console.log(imagePreview.value);
-        }
-    }
+    // for (let i = 0; i < files.length; i++) {
+    //     const file = files[i];
+    //     if (file) {
+    //         const imageUrl = URL.createObjectURL(file);
+    //         imagePreview.value.push(imageUrl);
+    //         console.log(imagePreview.value);
+    //     }
+    // }
+    selectedFile = event.target.files[0];
 };
 
 const removeImage = (index) => {
-    const removeImg = imagePreview.value.splice(index, 1);
-    console.log(removeImg);
-   // store.dispatch('removeImage', removeImg);
+    imagePreview.value.splice(index, 1);
+    console.log(imagePreview.value);
 };
 
 const onUpload = async () => {
@@ -115,6 +117,10 @@ const onUpload = async () => {
 
         const response = await store.dispatch('uploadImage', formData);
 
+        imagePreview.value.push(response);
+
+        console.log(imagePreview.value);
+
         message.success('Upload image successfully');
     } catch (error) {
         console.log(error);
@@ -124,11 +130,13 @@ const onUpload = async () => {
 
 const submitProduct = async () => {
     try {
-        const imgs = store.getters.getImages;
-        for (let i = 0; i < imgs.length; i++) {
-            const rs = imgs[i].split("upload/")[1];
+
+        for (let i = 0; i < imagePreview.value.length; i++) {
+            console.log(imagePreview.value[i]);
+            const rs = imagePreview.value[i].split("upload/")[1];
             images.value.push(rs);
         }
+
         product.image = images.value.join(', ');
 
         const response = await store.dispatch('addProduct', product);
@@ -138,13 +146,13 @@ const submitProduct = async () => {
         product.description = '';
         product.image = '';
         imagePreview.value = [];
-        // message.success('Add product successfully');
+        message.success('Add product successfully');
     } catch (error) {
         console.log(error);
-        // message.error('Add product failed');
+        message.error('Add product failed');
     }
     finally {
-        
+
     }
 };
 </script>

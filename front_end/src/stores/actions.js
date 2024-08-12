@@ -106,8 +106,9 @@ export default {
    async uploadImage({commit, state}, images) {
       try {
          const response = await imageApi.uploadImage(images);
-         const updateImages = [...state.images, response];
-         commit('setImages', updateImages);
+         // const updateImages = [...state.images, response];
+         // commit('setImages', updateImages);
+         return response;
       } catch (error) {
          throw error;
       } finally {
