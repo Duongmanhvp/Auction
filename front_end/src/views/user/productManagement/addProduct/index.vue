@@ -10,20 +10,28 @@
                 </h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             </div>
-            <form @submit.prevent="submitProduct" class="flex space-x-8">
+            <div class="flex space-x-8">
                 <div class="flex-1">
                     <div class="mb-4">
                         <label class="block text-gray-700 mb-3">Upload Image</label>
-                        <input type="file" @change="handleImageUpload"
+                        <input type="file" @change="onFileChange"
                             class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                     </div>
-                    <div v-if="imagePreview" class="mb-4">
-                        <img :src="imagePreview" alt="Product Image"
+                    <button @click="onUpload" class="border  border-gray-300 rounded-md px-2 py-2">Upload!</button>
+                    <!-- <a-carousel autoplay>
+                        <a-carousel-slide v-for="(image,index) in imagePreview" :key="index">
+                            <img :src="image" alt="Product Image" 
                             class="w-full h-auto border border-gray-300 rounded-md" />
+                        </a-carousel-slide> 
+                    </a-carousel> -->
+                    <div v-for="(image,index) in imagePreview" :key="index" class="mb-4">
+                        <img :src="image" alt="Product Image"
+                            class="w-full h-auto border border-gray-300 rounded-md" />
+                        <button @click="removeImage(index)" class="delete-icon">✖</button>
                     </div>
                 </div>
 
-                <div class="flex-1">
+                <form @submit.prevent="submitProduct" class="flex-1">
                     <div class="mb-5">
                         <label for="name" class="block text-gray-700 mb-3">Product Name</label>
                         <input type="text" id="name" v-model="product.name"
@@ -31,7 +39,7 @@
                     </div>
 
                     <div class="mb-5">
-                        <label for="category" class="block text-gray-700 mb-3">Classification</label>
+                        <label for="category" class="block text-gray-700 mb-3">Category</label>
                         <select id="category" v-model="product.category"
                             class="form-select w-full border border-gray-300 rounded-md px-2 py-2">
                             <option value="" disabled>Select product type</option>
@@ -49,8 +57,8 @@
                         class="w-full bg-teal-400 hover:bg-teal-500 outline-gray-400 shadow-lg text-white font-bold py-2 px-4 rounded">
                         Confirm
                     </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -60,47 +68,83 @@
 <script setup>
 import TheChevron from '../../../../components/Chevron/index.vue';
 import MenuProductManagement from '../../../../components/MenuProductManagement/index.vue';
-import { ref } from 'vue';
+import { ref, reactive } from 'vue';
+import { useStore } from 'vuex';
+import { message } from 'ant-design-vue';
 
-const product = ref({
+
+const store = useStore();
+const product = reactive({
     name: '',
     category: '',
     description: '',
-    image: ''
+    image: '',
 });
+const images = ref([]);
+// const imagePreview = ref(null);
 
-const imagePreview = ref(null);
+const imagePreview = ref([]);
+let selectedFile = ref([]);
+const categories = ['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHER'];
 
-const categories = ['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other'];
+const onFileChange = (event) => {
+    const files = event.target.files;
+    selectedFile = files[0];
 
-// const submitProduct = () => {
-//     baseService.post('/products', product.value)
-//         .then(() => {
-//             alert('Product added successfully!');
-//             product.value = {
-//                 name: '',
-//                 category: '',
-//                 description: '',
-//                 image: ''
-//             };
-//             imagePreview.value = null;
-//         });
-// };
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file) {
+            const imageUrl = URL.createObjectURL(file);
+            imagePreview.value.push(imageUrl);
+            console.log(imagePreview.value);
+        }
+    }
+};
 
-// const handleImageUpload = (event) => {
-//     const file = event.target.files[0];
-//     if (file) {
-//         const formData = new FormData();
-//         formData.append('file', file);
+const removeImage = (index) => {
+    const removeImg = imagePreview.value.splice(index, 1);
+    console.log(removeImg);
+   // store.dispatch('removeImage', removeImg);
+};
 
-//         baseService.post('/products/upload-image', formData)
-//             .then(response => {
-//                 imagePreview.value = URL.createObjectURL(file);
-//                 product.value.image = response.data;
-//             })
-//             .catch(error => {
-//                 console.error('Error uploading image:', error);
-//             });
-//     }
-// };
+const onUpload = async () => {
+    try {
+        const formData = new FormData();
+        formData.append('files', selectedFile);
+        formData.append('name', selectedFile.name);
+
+        const response = await store.dispatch('uploadImage', formData);
+
+        message.success('Upload image successfully');
+    } catch (error) {
+        console.log(error);
+        message.error('Upload image failed');
+    }
+};
+
+const submitProduct = async () => {
+    try {
+        const imgs = store.getters.getImages;
+        for (let i = 0; i < imgs.length; i++) {
+            const rs = imgs[i].split("upload/")[1];
+            images.value.push(rs);
+        }
+        product.image = images.value.join(', ');
+
+        const response = await store.dispatch('addProduct', product);
+
+        product.name = '';
+        product.category = '';
+        product.description = '';
+        product.image = '';
+        imagePreview.value = [];
+        // message.success('Add product successfully');
+    } catch (error) {
+        console.log(error);
+        // message.error('Add product failed');
+    }
+    finally {
+        
+    }
+};
 </script>

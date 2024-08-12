@@ -13,5 +13,8 @@ export default {
    },
    getEmail(state) {
       return state.email;
+   },
+   getImages(state) {
+      return state.images;
    }
 } 

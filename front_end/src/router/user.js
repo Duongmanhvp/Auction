@@ -12,6 +12,9 @@ import News from "../views/home/news/index.vue";
 import History from "../views/home/history/index.vue";
 import Introduction from "../views/home/introduction/index.vue";
 import Contact from "../views/home/contact/index.vue";
+import Profile from "../views/user/profileManagement/profile/index.vue";
+import EditProfile from "../views/user/profileManagement/editProfile/index.vue";
+import ChangePassword from "../views/user/profileManagement/changePassword/index.vue";
 
 const userRoutes = [
   {
@@ -23,6 +26,22 @@ const userRoutes = [
         path: "default",
         name: "user-default",
         component: Default,
+      },
+      {
+        path: "editProfile",
+        name: "user-edit-profile",
+        component: EditProfile,
+      },
+      {
+        path: "changePassword",
+        name: "user-changePassword",
+        component: ChangePassword,
+        meta: { requiresVerification: true },
+      },
+      {
+        path: "profile",
+        name: "user-profile",
+        component: Profile,
       },
       {
         path: "allSession",

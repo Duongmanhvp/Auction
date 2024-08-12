@@ -1,4 +1,7 @@
 import {
+    Pagination,
+    Tabs,
+    Form,
     Table,
     Avatar,
     Empty,
@@ -15,6 +18,9 @@ import {
 } from 'ant-design-vue';
 
 export default {
+    Pagination,
+    Tabs,
+    Form,
     Table,
     Avatar,
     Empty,

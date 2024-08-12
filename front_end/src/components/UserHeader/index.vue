@@ -136,18 +136,25 @@
                 <div v-if="showDropdown"
                     class="absolute right-0 w-54 mt-36 mr-8 bg-white border border-gray-200 rounded shadow-lg z-20">
                     <a-menu>
-                        <a-menu-item>
+                        <a-menu-item @click="profileManagement">
                             <a class="font-bold flex items-center" href="javascript:;">
                                 <img src="../../assets/icon/profile.svg" alt="Profile"
                                     class="h-5 w-5 inline-block mr-2" />
                                 Profile
                             </a>
                         </a-menu-item>
-                        <a-menu-item @click="navigateToAllProduct">
+                        <a-menu-item @click="productManagement">
                             <a class="font-bold flex items-center">
                                 <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
                                     class="h-5 w-5 inline-block mr-2" />
                                 Asset Management
+                            </a>
+                        </a-menu-item>
+                        <a-menu-item @click="auctionSessionManagement">
+                            <a class="font-bold flex items-center">
+                                <img src="../../assets/icon/auction-session.svg" alt="Asset Management"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Auction Session Management
                             </a>
                         </a-menu-item>
                         <a-menu-item>
@@ -203,9 +210,30 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const navigateToAllProduct = () => {
+const productManagement = () => {
     router.push('/user/allProduct');
     hideDropdown();
+};
+
+const auctionSessionManagement = () => {
+    router.push('/user/allSession');
+    hideDropdown();
+};
+
+const profileManagement = async () => {
+    try {
+        const response = await store.dispatch('getMyProfile');
+       console.log(store.getters.getUser);
+        message.success('Get profile successfully');
+        router.push('/user/profile');
+    } catch (error) {
+        console.log(error);
+        message.error('Get profile failed');
+    }finally{
+        hideDropdown();
+    }
+    
+   
 };
 
 const handleLogout = async () => {

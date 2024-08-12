@@ -4,4 +4,5 @@ export default {
    isAdmin : false,
    isLoading: false,
    email: '',
+   images: [],
 };

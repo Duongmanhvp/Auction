@@ -1,4 +1,7 @@
 export default {
+   // RESET_STATE(state) {
+   //    Object.assign(state, getDefaultState());
+   //  },
    setUser(state, matchUser){
       state.user = matchUser;
    },
@@ -13,5 +16,11 @@ export default {
    },
    setEmail(state, email) {
       state.email = email;
+   },
+   setImages(state, images) {
+      state.images = images;
+   },
+   removeImage(state, imageToRemove) {
+      state.images = state.images.filter(image => image !== imageToRemove);
    }
 }

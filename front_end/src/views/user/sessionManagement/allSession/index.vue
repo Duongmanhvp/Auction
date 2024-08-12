@@ -3,133 +3,93 @@
         <div class="w-1/5 ml-4 mr-4">
             <MenuSessionManagement />
         </div>
-        <div class="w-4/5 container border-l bg-blue-100 mx-auto p-10 rounded-md shadow-lg mt-6">
-            <div class="relative w-full">
+        <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
+            <div class="relative w-full max-w-md mx-auto">
                 <h1 class="text-2xl font-bold text-center text-gray-800">
-                    Session Requests
+                    All Sessions
                 </h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
-                <a-table :columns="columns" :data-source="data" :row-key="record => record.id">
-                    <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'actions'">
-                            <span>
-                                <a @click="approveSession(record.id)">Approve</a>
-                                <a-divider type="vertical" />
-                                <a @click="rejectSession(record.id)">Reject</a>
-                            </span>
+            </div>
+            <div class="session-list grid grid-cols-4 gap-4">
+                <div v-for="session in paginatedSessions" :key="session.id"
+                    class="session-item bg-white shadow-lg rounded-lg cursor-pointer"
+                    @click="goToSessionDetail(session.id)">
+
+                    <a-card hoverable>
+                        <template #cover>
+                            <img src=" ../../../../assets/images/product.jpg" alt="Session" />
                         </template>
-                    </template>
-                </a-table>
+                        <a-card-meta :title="session.title" :description="session.status">
+                            <template #avatar>
+                                <a-avatar :src="session.avatar" />
+                            </template>
+                        </a-card-meta>
+                    </a-card>
+                </div>
+            </div>
+            <button @click="prevSlide"
+                class="absolute left-1/4 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+                <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
+            </button>
+            <button @click="nextSlide"
+                class="absolute right-12 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+                <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
+            </button>
+            <div class="flex justify-center mt-4">
+                <a-pagination v-model:current="currentPage" :total="totalSessions" :pageSize="pageSize * 2" />
             </div>
         </div>
     </div>
-
-    <TheChevron />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { message } from 'ant-design-vue';
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
-import TheChevron from '../../../../components/Chevron/index.vue';
+import { ref, computed } from 'vue';
 
-const columns = ref([
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Title',
-        dataIndex: 'title',
-        key: 'title',
-    },
-    {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-    },
-    {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-    },
-    {
-        title: 'Confirm Date',
-        dataIndex: 'confirmDate',
-        key: 'confirmDate',
-    },
-    {
-        title: 'End Registration',
-        dataIndex: 'endRegistration',
-        key: 'endRegistration',
-    },
-    {
-        title: 'Start Time',
-        dataIndex: 'startTime',
-        key: 'startTime',
-    },
-    {
-        title: 'End Time',
-        dataIndex: 'endTime',
-        key: 'endTime',
-    },
-    {
-        title: 'Start Bid',
-        dataIndex: 'startBid',
-        key: 'startBid',
-    },
-    {
-        title: 'Price Per Step',
-        dataIndex: 'pricePerStep',
-        key: 'pricePerStep',
-    },
-    {
-        title: 'End Bid',
-        dataIndex: 'endBid',
-        key: 'endBid',
-    },
-    {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-    },
-    {
-        title: 'Actions',
-        key: 'actions',
-    },
+const sessions = ref([
+    { id: 1, title: 'Demo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 2', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 3', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 4', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 5', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 6', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 7', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 8', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+    { title: 'Session 9', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
 ]);
 
-const data = ref([]);
+const currentPage = ref(1);
+const pageSize = 4;
+const totalSessions = sessions.value.length;
 
-// const fetchSessions = async () => {
-//     try {
-//         const response = await baseService.get('/admin/sessions');
-//         data.value = response.data;
-//     } catch (error) {
-//         console.error('Failed to fetch sessions:', error);
-//     }
-// };
+const paginatedSessions = computed(() => {
+    const start = (currentPage.value - 1) * pageSize * 2;
+    const end = start + pageSize * 2;
+    return sessions.value.slice(start, end);
+});
 
-// const approveSession = async (id) => {
-//     try {
-//         await baseService.post(`/admin/sessions/${id}/approve`);
-//         message.success('Session approved successfully');
-//         fetchSessions();
-//     } catch (error) {
-//         message.error('Failed to approve session');
-//     }
-// };
+const prevSlide = () => {
+    if (currentPage.value > 1) {
+        currentPage.value--;
+    }
+};
 
-// const rejectSession = async (id) => {
-//     try {
-//         await baseService.post(`/admin/sessions/${id}/reject`);
-//         message.success('Session rejected successfully');
-//         fetchSessions();
-//     } catch (error) {
-//         message.error('Failed to reject session');
-//     }
-// };
+const nextSlide = () => {
+    if (currentPage.value < Math.ceil(totalSessions / (pageSize * 2))) {
+        currentPage.value++;
+    }
+};
 
-onMounted(fetchSessions);
+const goToSessionDetail = (id) => {
+    router.push({ name: 'SessionDetail', params: { id } });
+};
+
 </script>
+
+<style scoped>
+.session-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+</style>
