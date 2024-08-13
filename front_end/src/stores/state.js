@@ -1,8 +1,16 @@
 export default {
-   user: [],  
+   user:{
+      fullName: '',
+      dateOfBirth: '',
+      email: '',
+      phone : '',
+      address : '',
+      gender : '',
+      avatarUrl : ''
+   },  
    isLogin : false,
    isAdmin : false,
    isLoading: false,
-   email: '',
+   // email: '',
    images: [],
 };

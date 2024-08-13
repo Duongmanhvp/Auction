@@ -103,7 +103,7 @@ const _gender = ref('');
 const user = store.getters.getUser;
 
 if (user) {
-    _fullName.value = user[0];
+    _fullName.value = user.fullName;
     _birthday.value = user[1];
     _email.value = user[2];
     _phone.value = user[3];
@@ -125,21 +125,5 @@ const submitProfile = async () => {
     }
 };
 
-const handleAvatarUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const formData = new FormData();
-        formData.append('file', file);
-
-        baseService.post('/products/upload-avatar', formData)
-            .then(response => {
-                imagePreview.value = URL.createObjectURL(file);
-                product.value.image = response.data;
-            })
-            .catch(error => {
-                console.error('Error uploading image:', error);
-            });
-    }
-};
 
 </script>

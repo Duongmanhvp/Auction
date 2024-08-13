@@ -11,9 +11,9 @@ export default {
    getLoading(state){
       return state.isLoading;
    },
-   getEmail(state) {
-      return state.email;
-   },
+   // getEmail(state) {
+   //    return state.email;
+   // },
    getImages(state) {
       return state.images;
    }

@@ -17,7 +17,8 @@ const authApi = {
       try {
          const token = localStorage.getItem('token');
          const response = await api.post('/v1/auths/logout', {token});
-         localStorage.removeItem('token');
+         localStorage.clear();
+         sessionStorage.clear();
          return response.data.message;
       } catch (error) {
          throw error;
