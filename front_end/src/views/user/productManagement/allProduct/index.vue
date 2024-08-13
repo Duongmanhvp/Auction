@@ -11,6 +11,14 @@
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             </div>
             <div class="product-list grid grid-cols-4 gap-4">
+                <button @click="prevSlide"
+                    class="absolute left-1/4 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+                    <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
+                </button>
+                <button @click="nextSlide"
+                    class="absolute right-12 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+                    <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
+                </button>
                 <div v-for="(product, index) in paginatedProducts" :key="index"
                     class="product-item bg-white shadow-lg rounded-lg">
                     <a-card hoverable @click="selectProduct(product)">
@@ -35,14 +43,6 @@
                     </a-card>
                 </div>
             </div>
-            <button @click="prevSlide"
-                class="absolute left-1/4 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
-                <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
-            </button>
-            <button @click="nextSlide"
-                class="absolute right-12 top-3/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
-                <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
-            </button>
             <div class="flex justify-center mt-4">
                 <a-pagination v-model:current="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
             </div>
