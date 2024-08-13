@@ -103,39 +103,4 @@ const closeImageModal = () => {
     currentImage.value = null;
 };
 
-const updateCountdown = () => {
-    const now = new Date();
-    const startTime = parseISO(auction.value.sessionDetail.startTime);
-    const endTime = parseISO(auction.value.sessionDetail.endTime);
-
-    if (now < startTime) {
-        timeUntilStart.value = startTime - now;
-        timeLeft.value = 0;
-    } else if (now < endTime) {
-        timeUntilStart.value = 0;
-        timeLeft.value = endTime - now;
-    } else {
-        clearInterval(countdownInterval);
-        timeUntilStart.value = 0;
-        timeLeft.value = 0;
-    }
-};
-
-const formattedTimeUntilStart = computed(() => {
-    return timeUntilStart.value > 0
-        ? formatDistance(new Date(timeUntilStart.value), new Date(0), { addSuffix: true })
-        : 'Auction has started';
-});
-
-const formattedTimeLeft = computed(() => {
-    return timeLeft.value > 0
-        ? formatDistance(new Date(timeLeft.value), new Date(0), { addSuffix: true })
-        : 'Auction has ended';
-});
-
-onUnmounted(() => {
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-    }
-});
 </script>
