@@ -1,10 +1,13 @@
 package com.ghtk.auction.controller.admin;
 
 
+import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.stomp.NotifyMessage;
+import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.service.StompService;
 import com.ghtk.auction.service.AuctionRealtimeService;
+import com.ghtk.auction.service.AuctionService;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 public class AdminController {
+  final AuctionService auctionService;
   final AuctionRealtimeService auctionRealtimeService;
   final StompService stompService;
 	
@@ -44,6 +48,7 @@ public class AdminController {
   public ApiResponse<Void> startAuction(
       @PathVariable Long auctionId
   ) {
+    auctionService.updateStatus(new AuctionUpdateStatusRequest(auctionId, AuctionStatus.IN_PROGRESS));
     auctionRealtimeService.startAuction(auctionId);
     return ApiResponse.success(null);
   }
@@ -53,6 +58,7 @@ public class AdminController {
   public ApiResponse<Void> endAuction(
       @PathVariable Long auctionId
   ) {
+    auctionService.updateStatus(new AuctionUpdateStatusRequest(auctionId, AuctionStatus.CLOSED));
     auctionRealtimeService.endAuction(auctionId);
     return ApiResponse.success(null);
   }

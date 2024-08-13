@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CommentEvent {
+  private final Long commentId;
   private final Long auctionId;
   private final Long userId;
   private final String content;

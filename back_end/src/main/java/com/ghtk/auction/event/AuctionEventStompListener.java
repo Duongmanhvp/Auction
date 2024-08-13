@@ -47,9 +47,9 @@ public class AuctionEventStompListener {
   @Async
   @EventListener
   public void handleCommentEvent(CommentEvent event) {
-    stompService.broadcastComment(
-        event.getAuctionId(),
-        new CommentMessage(event.getContent(), event.getUserId(), event.getTime()));
+    stompService.broadcastComment(event.getAuctionId(),
+        new CommentMessage(event.getCommentId(), event.getUserId(), 
+            event.getContent(), event.getTime()));
   }
 
   @Async

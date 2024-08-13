@@ -51,7 +51,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> accessException(AccessDeniedException ex) {
-        log.error("NotFoundException: ", ex);
+        log.error("AccessException: ", ex);
         return new ResponseEntity<>(ApiResponse.error("You do not have access"), HttpStatus.FORBIDDEN);
     }
 

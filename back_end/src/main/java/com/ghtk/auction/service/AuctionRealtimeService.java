@@ -32,7 +32,7 @@ public interface AuctionRealtimeService {
 
 
 
-    void openAuctionRoom(Long auctionId); // TODO: quartz 10p truoc khi bat dau
+    void openAuctionRoom(Long auctionId);
     void startAuction(Long auctionId);
     void endAuction(Long auctionId);
 }

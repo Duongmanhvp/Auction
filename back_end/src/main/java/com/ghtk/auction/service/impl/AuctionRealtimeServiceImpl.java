@@ -17,6 +17,7 @@ import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.dto.stomp.NotifyMessage;
 import com.ghtk.auction.entity.Auction;
+import com.ghtk.auction.entity.Comment;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.TimeHistory;
 import com.ghtk.auction.entity.UserAuction;
@@ -30,7 +31,7 @@ import com.ghtk.auction.exception.AlreadyExistsException;
 import com.ghtk.auction.exception.ForbiddenException;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.repository.AuctionRepository;
-// import com.ghtk.auction.repository.CommentRepository;
+import com.ghtk.auction.repository.CommentRepository;
 import com.ghtk.auction.repository.ProductRepository;
 import com.ghtk.auction.repository.TimeHistoryRepository;
 import com.ghtk.auction.repository.UserAuctionHistoryRepository;
@@ -55,7 +56,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   final AuctionRepository auctionRepository;
   final ProductRepository productRepository;
   final UserAuctionHistoryRepository userAuctionHistoryRepository;
-  // final CommentRepository commentRepository;
+  final CommentRepository commentRepository;
 
   final RedisTemplate<String, String> redisTemplate;
   final RedisTemplateFactory redisTemplateFactory;
@@ -183,27 +184,20 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
 
   @Override
   public List<CommentMessage> getComments(Long userId, Long auctionId, CommentFilter filter) {
-    // TODO:
     if (!isAuctionActive(auctionId)) {
       throw new ForbiddenException("Phien dau gia chua bat dau");
     }
-    return null;
-    // if (filter.getFrom() == null) {
-    //   return commentRepository.findAllByAuctionId(auctionId).stream()
-    //       .map(comment -> new CommentMessage(
-    //           comment.getId(), comment.getContent(), comment.getCreatedAt(), 
-    //           comment.getUserAuction().getUser().getId()
-    //       ))
-    //       .toList();
-    // }
-    // return commentRepository.findAllByAuctionIdAndCreatedAtAfter(
-    //     auctionId, filter.getFrom())
-    //         .stream()
-    //         .map(comment -> new CommentMessage(
-    //             comment.getId(), comment.getContent(), comment.getCreatedAt(), 
-    //             comment.getUserAuction().getUser().getId()
-    //         ))
-    //         .toList();
+    var queryResult = (filter.getFrom() == null) 
+        ? commentRepository.findAllByAuctionId(auctionId)
+        : commentRepository.findAllByAuctionIdAndCreatedAtAfter(auctionId, filter.getFrom());
+    return queryResult.stream()
+        .map(comment -> new CommentMessage(
+            comment.getId(),
+            comment.getUserId(),
+            comment.getContent(), 
+            comment.getCreatedAt() 
+        ))
+        .toList();
   }
 	
 	@Override
@@ -243,23 +237,18 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
 
   @Override
   public CommentMessage comment(Long userId, Long auctionId, String message) {
-    // TODO:
-
     LocalDateTime time = LocalDateTime.now();
 
-    // UserAuction ua = userAuctionRepository
-    //     .findByUserIdAndAuctionId(userId, auctionId);
-    // Comment comment = Comment.builder()
-    //     .userAuction(ua)
-    //     .content(message)
-    //     .createdAt(LocalDateTime.now())
-    //     .build();
-    // var saved = commentRepository.save(comment);
-
-    // return new CommentMessage(
-    //     saved.getId(), saved.getContent(), saved.getCreatedAt(), userId);
-
-    eventPublisher.publishEvent(new CommentEvent(auctionId, userId, message, time));
+    Comment comment = Comment.builder()
+        .auctionId(auctionId)
+        .userId(userId)
+        .content(message)
+        .createdAt(LocalDateTime.now())
+        .build();
+    var saved = commentRepository.save(comment);
+    
+    eventPublisher.publishEvent(new CommentEvent(
+        saved.getId(), auctionId, userId, message, time));
 
     return null;
   }
@@ -307,7 +296,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   @Override
   public void endAuction(Long auctionId) {
     if (!isAuctionRoomOpen(auctionId)) {
-      throw new ForbiddenException("Phong dau gia chua mo");
+      throw new ForbiddenException("Phien dau gia chua bat dau");
     }
 
     Auction auction = auctionRepository.findById(auctionId).orElseThrow(

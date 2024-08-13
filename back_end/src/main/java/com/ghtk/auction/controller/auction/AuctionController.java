@@ -151,7 +151,7 @@ public class AuctionController {
   // }
   
   @GetMapping("/{auctionId}/comments")
-  @PreAuthorize("auctionComponent.canParticipateAuction(#auctionId, principal)")
+  @PreAuthorize("@auctionComponent.canParticipateAuction(#auctionId, principal)")
   public ApiResponse<List<CommentMessage>> getComments(
         @PathVariable("auctionId") Long auctionId, 
         CommentFilter filter,
