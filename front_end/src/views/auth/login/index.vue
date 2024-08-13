@@ -119,8 +119,7 @@
 <script setup>
 import { ref, reactive, computed } from "vue";
 import { useRouter } from "vue-router";
-// import { useStore } from "vuex";
-import { useAuthStore } from '../../../stores/auths/useAuthStore';
+import { useStore } from "vuex";
 
 const email = ref("");
 const password = ref("");
@@ -133,9 +132,9 @@ const passwordType = computed(() =>
 );
 
 const router = useRouter();
-const authStore = useAuthStore();
+const store = useStore();
 
-const loading = computed(() => authStore.isLoading);
+const loading = computed(() => store.getters.getLoading);
 
 function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -171,12 +170,12 @@ const handleSignIn = async () => {
     if (!isValid) return;
     try {
         // const response = await authApi.login(email.value, password.value);
-        await authStore.login({
+        const response = await store.dispatch("login", {
             email: email.value,
             password: password.value,
         });
 
-        const isAdmin = authStore.getIsAdmin;
+        const isAdmin = store.getters.getIsAdmin;
         console.log(isAdmin);
         if (isAdmin) {
             router.push("/admin/requestSession");

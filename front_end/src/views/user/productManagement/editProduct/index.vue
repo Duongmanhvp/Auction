@@ -30,7 +30,7 @@
                             class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                     </div>
                     <div class="mb-5">
-                        <label for="category" class="block text-gray-700 mb-3">Classification</label>
+                        <label for="category" class="block text-gray-700 mb-3">Category</label>
                         <select id="category" v-model="product.category"
                             class="form-select w-full border border-gray-300 rounded-md px-2 py-2">
                             <option value="" disabled>Select product type</option>
@@ -102,4 +102,40 @@ const close = () => {
 const closeImageModal = () => {
     currentImage.value = null;
 };
+
+const updateCountdown = () => {
+    const now = new Date();
+    const startTime = parseISO(auction.value.sessionDetail.startTime);
+    const endTime = parseISO(auction.value.sessionDetail.endTime);
+
+    if (now < startTime) {
+        timeUntilStart.value = startTime - now;
+        timeLeft.value = 0;
+    } else if (now < endTime) {
+        timeUntilStart.value = 0;
+        timeLeft.value = endTime - now;
+    } else {
+        clearInterval(countdownInterval);
+        timeUntilStart.value = 0;
+        timeLeft.value = 0;
+    }
+};
+
+const formattedTimeUntilStart = computed(() => {
+    return timeUntilStart.value > 0
+        ? formatDistance(new Date(timeUntilStart.value), new Date(0), { addSuffix: true })
+        : 'Auction has started';
+});
+
+const formattedTimeLeft = computed(() => {
+    return timeLeft.value > 0
+        ? formatDistance(new Date(timeLeft.value), new Date(0), { addSuffix: true })
+        : 'Auction has ended';
+});
+
+onUnmounted(() => {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+});
 </script>

@@ -57,13 +57,13 @@
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Profile from '../../../../components/Profile/index.vue';
-// import { useAuthStore } from '../../../stores/auth/auth-store';
+import { useStore } from 'vuex';
 
 const currentPassword = ref('');
 const newPassword = ref('');
 const validation = reactive({ currentPassword: null, newPassword: null });
 const router = useRouter();
-// const authStore = useAuthStore();
+const store = useStore();
 
 const isCurrentPasswordVisible = ref(false);
 const isNewPasswordVisible = ref(false);
@@ -74,7 +74,7 @@ function validatePassword(password) {
     return password.length >= 4;
 }
 
-function handleChangePassword() {
+const handleChangePassword = async () => {
     let isValid = true;
 
     if (!currentPassword.value) {
@@ -96,14 +96,15 @@ function handleChangePassword() {
 
     if (!isValid) return;
 
+    try {
+        const response = await store.dispatch('changePassword',
+            { oldPassword: currentPassword.value, newPassword: newPassword.value });
+        router.push('/user/profile');
+    } catch (error) {
+        console.log(error);
+    }
 
-    // authStore.changePassword(currentPassword.value, newPassword.value)
-    //     .then(() => {
-    //         router.push('/home/default');
-    //     })
-    //     .catch(error => {
-    //         console.error('Error changing password:', error);
-    //     });
+
 }
 
 function toggleCurrentPasswordVisibility() {

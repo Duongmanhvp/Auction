@@ -36,22 +36,22 @@
 
                 <a-tabs v-model:activeKey="activeKey" centered>
                     <a-tab-pane key="1" tab="Personal Informations">
-                        <div class="ml-20 space-y-5">
-                            <a-card-meta title="Full Name" description="This is the Full Name">
+                        <div class="text-xl ml-20 space-y-5">
+                            <a-card-meta title="Full Name" :description="fullName">
                             </a-card-meta>
-                            <a-card-meta title="Birthday" description="This is the Birthday">
+                            <a-card-meta title="Birthday" :description="birthday">
                             </a-card-meta>
-                            <a-card-meta title="Gender" description="This is the Gender">
+                            <a-card-meta title="Gender" :description="gender">
                             </a-card-meta>
                         </div>
                     </a-tab-pane>
                     <a-tab-pane key="2" tab="Contact Informations" force-render>
-                        <div class="ml-20 space-y-5">
-                            <a-card-meta title="Email" description="This is the Email">
+                        <div class="text-xl ml-20 space-y-5">
+                            <a-card-meta title="Email" :description="email">
                             </a-card-meta>
-                            <a-card-meta title="Address" description="This is the Address">
+                            <a-card-meta title="Address" :description="address">
                             </a-card-meta>
-                            <a-card-meta title="Phone Number" description="This is the Phone number">
+                            <a-card-meta title="Phone Number" :description="phone">
                             </a-card-meta>
                         </div>
                     </a-tab-pane>
@@ -67,15 +67,36 @@
 import TheChevron from '../../../../components/Chevron/index.vue';
 import Profile from '../../../../components/Profile/index.vue';
 import { ref } from 'vue';
+import { message } from 'ant-design-vue';
 
+import { useStore } from "vuex";
 const activeKey = ref('1');
+const fullName = ref('');
+const birthday = ref('');
+const phone = ref('');
+const email = ref('');
+const address = ref('');
+const gender = ref('');
 const showUploadModal = ref(false);
 const avatarUrl = ref('');
 const imagePreview = ref('');
 
+const store = useStore();
+
+const user = store.getters.getUser;
+
 const changeAvatar = () => {
     showUploadModal.value = true;
 };
+
+if (user) {
+    fullName.value = user[0];
+    birthday.value = user[1];
+    email.value = user[2];
+    phone.value = user[3];
+    address.value = user[4];
+    gender.value = user[5];
+}
 
 const handleFileChange = (event) => {
     const file = event.target.files[0];

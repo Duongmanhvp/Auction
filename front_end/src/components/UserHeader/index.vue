@@ -191,12 +191,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '../../stores/auths/useAuthStore';
+import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 
-
+const store = useStore();
 const router = useRouter();
-const authStore = useAuthStore();
 const open = ref(false);
 const showDropdown = ref(false);
 const dropdownTrigger = ref(null);
@@ -224,9 +223,20 @@ const auctionSessionManagement = () => {
     hideDropdown();
 };
 
-const profileManagement = () => {
-    router.push('/user/profile');
-    hideDropdown();
+const profileManagement = async () => {
+    try {
+        const response = await store.dispatch('getMyProfile');
+        console.log(store.getters.getUser);
+        message.success('Get profile successfully');
+        router.push('/user/profile');
+    } catch (error) {
+        console.log(error);
+        message.error('Get profile failed');
+    } finally {
+        hideDropdown();
+    }
+
+
 };
 
 const handleLogout = async () => {

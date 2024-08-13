@@ -16,7 +16,7 @@ const authApi = {
    async logout() {
       try {
          const token = localStorage.getItem('token');
-         const response = await api.post('/v1/auths/logout', {token});
+         const response = await api.post('/v1/auths/logout', { token });
          localStorage.removeItem('token');
          return response.data.message;
       } catch (error) {
@@ -70,9 +70,9 @@ const authApi = {
       }
    },
 
-   async changePassword(data) {
+   async changePassword(old_password, new_password) {
       try {
-         const response = await api.post('/v1/users/change-password', data);
+         const response = await api.put('/v1/users/change-password', { old_password, new_password });
          message.success(response.data.message);
          return response.data.data;
       } catch (error) {
@@ -85,6 +85,19 @@ const authApi = {
       try {
          const token = localStorage.getItem('token');
          const response = await api.get('/v1/users/get-my-info', { headers: { Authorization: `Bearer ${token}` } });
+         message.success(response.data.message);
+         return response.data.data;
+      } catch (error) {
+         message.error(error.response.data.message);
+         throw error;
+      }
+   },
+
+   async updateMyInfo(data) {
+      try {
+         const token = localStorage.getItem('token');
+         console.log(data);
+         const response = await api.put('v1/users/update-my-info', data, { headers: { Authorization: `Bearer ${token}` } });
          message.success(response.data.message);
          return response.data.data;
       } catch (error) {

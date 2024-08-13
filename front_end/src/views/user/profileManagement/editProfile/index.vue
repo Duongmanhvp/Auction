@@ -15,12 +15,12 @@
                     <div class="flex-1">
                         <div class="mb-5">
                             <label class="block text-gray-700">Full Name</label>
-                            <input type="text" v-model="profile.fullName"
+                            <input type="text" v-model="profile.full_name" :placeholder=_fullName
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                         </div>
                         <div class="mb-5">
                             <label class="block text-gray-700">Birthday</label>
-                            <input type="date" v-model="profile.dateOfBirth"
+                            <input type="date" v-model="profile.date_of_birth"
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                         </div>
                         <div class="mb-5">
@@ -28,25 +28,21 @@
                             <select v-model="profile.gender"
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2">
                                 <option value="" disabled>Select gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
+                                <option value="MALE">MALE</option>
+                                <option value="FEMALE">FEMALE</option>
                             </select>
                         </div>
-                        <div class="mb-5">
-                            <label class="block text-gray-700">Email</label>
-                            <input type="email" v-model="profile.email"
-                                class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
-                        </div>
+
                     </div>
                     <div class="flex-1">
                         <div class="mb-5">
                             <label class="block text-gray-700">Address</label>
-                            <input type="text" v-model="profile.address"
+                            <input type="text" v-model="profile.address" :placeholder=_address
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                         </div>
                         <div class="flex-1">
                             <div class="mb-4">
-                                <label class="block text-gray-700 mb-3">Avatar</label>
+                                <label class="block text-gray-700 ">Avatar</label>
                                 <input type="file" @change="handleAvatarUpload"
                                     class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                             </div>
@@ -57,7 +53,7 @@
                         </div>
                         <div class="mb-5">
                             <label class="block text-gray-700">Phone</label>
-                            <input type="text" v-model="profile.phone"
+                            <input type="text" v-model="profile.phone" :placeholder=_phone
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                         </div>
                         <div class="flex justify-center items-center space-x-6">
@@ -81,12 +77,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import TheChevron from '../../../../components/Chevron/index.vue';
 import Profile from '../../../../components/Profile/index.vue';
-import { useAuthStore } from '../../../../stores/auths/useAuthStore';
+import { useStore } from 'vuex'
 
-const profile = ref({
+const store = useStore();
+
+const profile = reactive({
     fullName: '',
     dateOfBirth: '',
     gender: '',
@@ -96,10 +94,35 @@ const profile = ref({
     phone: ''
 });
 
-const authStore = useAuthStore();
+const _fullName = ref('');
+const _birthday = ref('');
+const _phone = ref('');
+const _email = ref('');
+const _address = ref('');
+const _gender = ref('');
 
-const submitProfile = () => {
-    console.log(profile.value);
+const user = store.getters.getUser;
+
+if (user) {
+    _fullName.value = user[0];
+    _birthday.value = user[1];
+    _email.value = user[2];
+    _phone.value = user[3];
+    _address.value = user[4];
+    _gender.value = user[5];
+}
+
+const submitProfile = async () => {
+    console.log('profile:', profile);
+    const filteredProfile = Object.fromEntries(
+        Object.entries(profile).filter(([key, value]) => value !== '')
+    );
+    console.log('filteredProfile:', filteredProfile);
+    try {
+        const response = await store.dispatch('updateMyInfo', filteredProfile);
+    } catch (error) {
+        console.error('Error updating profile:', error);
+    }
 };
 
 const handleAvatarUpload = (event) => {

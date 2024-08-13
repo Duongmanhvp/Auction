@@ -11,7 +11,7 @@ import History from "../views/home/history/index.vue";
 import News from "../views/home/news/index.vue";
 import Introduction from "../views/home/introduction/index.vue";
 import Contact from "../views/home/contact/index.vue";
-import { useAuthStore } from '../stores/auths/useAuthStore';
+// import { useAuthStore } from '../stores/store';
 
 const routes = [
     {
@@ -71,12 +71,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
-    const useStore = useAuthStore();
+    const store = useStore();
     const token = localStorage.getItem('token');
-    const isAdmin = useStore.isAdmin;
+    const isAdmin = store.getters.getIsAdmin;
 
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
     const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+
     const requiresVerification = to.matched.some(record => record.meta.requiresVerification);
 
     if (requiresAuth && !token) {
