@@ -230,7 +230,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     );
     addBid(auctionId, auctionBid);
     setAuctionLastPrice(auctionId, bid); 
-    BidMessage message = new BidMessage(auctionBid.getBid(), auctionBid.getCreatedAt());
+    BidMessage message = new BidMessage(userId, auctionBid.getBid(), auctionBid.getCreatedAt());
     eventPublisher.publishEvent(new BidEvent(auctionId, userId, bid, time));
     return message;
 	}

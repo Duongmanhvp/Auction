@@ -41,7 +41,7 @@ public class AuctionEventStompListener {
     System.out.println("listen bid event");
     stompService.broadcastBid(
         event.getAuctionId(), 
-        new BidMessage(event.getPrice(), event.getTime()));
+        new BidMessage(event.getUserId(), event.getPrice(), event.getTime()));
   }
 
   @Async
