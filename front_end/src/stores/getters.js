@@ -16,5 +16,8 @@ export default {
    // },
    getImages(state) {
       return state.images;
+   },
+   getProducts(state) {
+      return state.products;
    }
 } 

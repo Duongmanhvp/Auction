@@ -12,6 +12,7 @@
                     <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
                 </div>
                 <form @submit.prevent="submitProfile" class=" flex px-8 space-x-5">
+                    
                     <div class="flex-1">
                         <div class="mb-5">
                             <label class="block text-gray-700">Full Name</label>
@@ -40,17 +41,7 @@
                             <input type="text" v-model="profile.address" :placeholder=_address
                                 class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                         </div>
-                        <div class="flex-1">
-                            <div class="mb-4">
-                                <label class="block text-gray-700 ">Avatar</label>
-                                <input type="file" @change="handleAvatarUpload"
-                                    class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
-                            </div>
-                            <div v-if="imagePreview" class="mb-4">
-                                <img :src="imagePreview" alt="Product Image"
-                                    class="w-60 h-60 border border-gray-300 rounded-md" />
-                            </div>
-                        </div>
+                   
                         <div class="mb-5">
                             <label class="block text-gray-700">Phone</label>
                             <input type="text" v-model="profile.phone" :placeholder=_phone
@@ -94,21 +85,15 @@ const profile = reactive({
 });
 
 const _fullName = ref('');
-const _birthday = ref('');
 const _phone = ref('');
-const _email = ref('');
 const _address = ref('');
-const _gender = ref('');
 
 const user = store.getters.getUser;
 
 if (user) {
     _fullName.value = user.fullName;
-    _birthday.value = user[1];
-    _email.value = user[2];
-    _phone.value = user[3];
-    _address.value = user[4];
-    _gender.value = user[5];
+    _phone.value = user.phone;
+    _address.value = user.address;
 }
 
 

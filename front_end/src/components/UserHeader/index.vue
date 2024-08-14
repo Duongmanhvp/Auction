@@ -143,6 +143,13 @@
                                 Profile
                             </a>
                         </a-menu-item>
+                        <a-menu-item @click="auctionManagement">
+                            <a class="font-bold flex items-center">
+                                <img src="../../assets/icon/auction-management.svg" alt="Auction Management"
+                                    class="h-5 w-5 inline-block mr-2" />
+                                Auction Management
+                            </a>
+                        </a-menu-item>
                         <a-menu-item @click="productManagement">
                             <a class="font-bold flex items-center">
                                 <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
@@ -152,16 +159,9 @@
                         </a-menu-item>
                         <a-menu-item @click="auctionSessionManagement">
                             <a class="font-bold flex items-center">
-                                <img src="../../assets/icon/auction-session.svg" alt="Asset Management"
-                                    class="h-5 w-5 inline-block mr-2" />
+                                <img src="../../assets/icon/auction-session-management.svg"
+                                    alt="Auction Session Management" class="h-5 w-5 inline-block mr-2" />
                                 Auction Session Management
-                            </a>
-                        </a-menu-item>
-                        <a-menu-item>
-                            <a class="font-bold" href="javascript:;">
-                                <img src="../../assets/icon/setting.svg" alt="Setting"
-                                    class="h-5 w-5 inline-block mr-2" />
-                                Settings
                             </a>
                         </a-menu-item>
                         <a-menu-item>
@@ -191,13 +191,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useRouter } from 'vue-router';
-// import { useAuthStore } from '../../stores/auth/auth-store';
 import { useStore } from 'vuex';
 import { message } from 'ant-design-vue';
 
-// const authStore = useAuthStore();
-const router = useRouter();
 const store = useStore();
+const router = useRouter();
 const open = ref(false);
 const showDropdown = ref(false);
 const dropdownTrigger = ref(null);
@@ -210,9 +208,23 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const productManagement = () => {
-    router.push('/user/allProduct');
+const auctionManagement = () => {
+    router.push('/user/allAuction');
     hideDropdown();
+};
+
+const productManagement = async() => {
+    try {
+        const response = await store.dispatch('getProducts');
+        message.success('Get all product successfully');
+        router.push('/user/allProduct');
+    } catch (error) {
+        message.error('Get product failed');
+    }finally{
+        hideDropdown();
+    }
+    
+
 };
 
 const auctionSessionManagement = () => {
@@ -223,17 +235,17 @@ const auctionSessionManagement = () => {
 const profileManagement = async () => {
     try {
         const response = await store.dispatch('getMyProfile');
-       console.log(store.getters.getUser);
+        console.log(store.getters.getUser);
         message.success('Get profile successfully');
         router.push('/user/profile');
     } catch (error) {
         console.log(error);
         message.error('Get profile failed');
-    }finally{
+    } finally {
         hideDropdown();
     }
-    
-   
+
+
 };
 
 const handleLogout = async () => {

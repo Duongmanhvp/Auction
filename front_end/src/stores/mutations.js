@@ -49,5 +49,8 @@ export default {
    },
    removeImage(state, imageToRemove) {
       state.images = state.images.filter(image => image !== imageToRemove);
-   }
+   },
+   setProducts(state, products) {
+      state.products = products;
+   },
 }

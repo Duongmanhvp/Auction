@@ -13,4 +13,5 @@ export default {
    isLoading: false,
    // email: '',
    images: [],
+   products: [],
 };

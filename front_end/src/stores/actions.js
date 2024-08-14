@@ -32,15 +32,15 @@ export default {
 
   async logout({ commit }) {
     try {
-      await authApi.logout();
+      await authApi.logout(); 
       commit("setUser", {
-        fullName: "",
-        dateOfBirth: "",
-        email: "",
-        phone: "",
-        address: "",
-        gender: "",
-        avatarUrl: "",
+        fullName: '',
+        dateOfBirth:'' ,
+        email: '',
+        phone: '',
+        address: '',
+        gender: '',
+        avatarUrl: '',
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
@@ -125,10 +125,6 @@ export default {
     }
   },
 
-  deleteImage({ commit }, image) {
-    commit("removeImage", image);
-  },
-
   async addProduct({ commit }, data) {
     try {
       await productApi.addProduct(data);
@@ -137,4 +133,14 @@ export default {
       throw error;
     }
   },
+
+  async getProducts({ commit }) {
+    try {
+      const response = await productApi.getProducts();
+      commit("setProducts", response);
+      console.log (response);
+    } catch (error) {
+      throw error;
+    }
+  }
 };

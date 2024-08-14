@@ -11,9 +11,9 @@
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             </div>
             <div class="product-list grid grid-cols-4 gap-4">
-                <div v-for="(product, index) in paginatedProducts" :key="index"
+                <div v-for="(product, index) in paginatedProducts" :key="index" :product="product" :index="index"
                     class="product-item bg-white shadow-lg rounded-lg">
-                    <a-card hoverable @click="selectProduct(product)">
+                    <a-card hoverable @click="selectProduct(product,index)">
                         <div class=" flex absolute right-0 top-0 m-4 space-x-2">
                             <button @click.stop="editProduct(product)"
                                 class="flex justify-center items-center w-8 bg-teal-300 text-black hover:bg-teal-400 outline-gray-600 shadow-lg font-bold py-2 rounded">
@@ -25,11 +25,11 @@
                             </button>
                         </div>
                         <template #cover>
-                            <img src="../../../../assets/images/product.jpg" alt="Product" />
+                            <img src="../../../../assets/images/auction.jpg" alt="Product" />
                         </template>
-                        <a-card-meta :title="product.title" :description="product.category">
+                        <a-card-meta :title="product.name" :description="product.category">
                             <template #avatar>
-                                <a-avatar :src="product.avatar" />
+                                <a-avatar :src="product.image" />
                             </template>
                         </a-card-meta>
                     </a-card>
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <ProductDetailModal :visible="viewModalVisible" :product="selectedProduct" @close="closeProductDetailModal" />
+        <ProductDetailModal :pos="a" :visible="viewModalVisible" :product="selectedProduct" @close="closeProductDetailModal" />
         <EditProductModal :visible="editModalVisible" :product="selectedProduct" @close="closeEditProductModal" />
 
     </div>
@@ -56,21 +56,31 @@
 
 <script setup>
 import MenuProductManagement from '../../../../components/MenuProductManagement/index.vue';
-import { ref, computed } from 'vue';
+import { ref,reactive, computed } from 'vue';
 import ProductDetailModal from '../productDetail/index.vue';
 import EditProductModal from '../editProduct/index.vue';
+import { useStore } from 'vuex'
+// const products = ref([
+//     { title: 'Demo Product', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 2', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 3', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 4', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 5', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 6', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 7', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 8', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+//     { title: 'Product 9', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+// ]);
 
-const products = ref([
-    { title: 'Demo Product', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 2', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 3', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 4', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 5', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 6', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 7', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 8', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-    { title: 'Product 9', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-]);
+const store = useStore();
+
+
+const products = ref([]);
+
+products.value = store.getters.getProducts;
+
+
+
 
 const currentPage = ref(1);
 const pageSize = 4;
@@ -78,10 +88,12 @@ const totalProducts = products.value.length;
 const selectedProduct = ref(null);
 const viewModalVisible = ref(false);
 const editModalVisible = ref(false);
+const a = ref(1000);
 
-const selectProduct = (product) => {
+const selectProduct = (product,index) => {
     selectedProduct.value = product;
     viewModalVisible.value = true;
+    a.value = index;
 };
 
 const editProduct = (product) => {
