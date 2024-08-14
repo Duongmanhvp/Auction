@@ -49,7 +49,7 @@ public class AuthHandlerConfig {
   @Bean
   public MatcherHandler subscribeUserResponseHandler() {
     return new MatcherHandler(
-        "/user/{userId2:d}/queue/responses", StompCommand.SUBSCRIBE,
+        "/user/{userId2:d}/queue/receipts", StompCommand.SUBSCRIBE,
         (headers, payload) -> {
             long userId = (Long) headers.getHeader("userId");
             long userId2 = (Long) headers.getHeader("userId2");

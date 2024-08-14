@@ -31,7 +31,7 @@ public class AuctionEventStompListener {
     System.out.println("listen subscribe event");
     StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
     long userId = (Long) headers.getSessionAttributes().get("userId");
-    stompService.sendMessageResponse(
+    stompService.sendMessageReceipt(
         userId, event.getMessage(), ApiResponse.success("ok"));
   }
 

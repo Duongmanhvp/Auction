@@ -10,7 +10,7 @@ import com.ghtk.auction.dto.stomp.NotifyMessage;
 public interface StompService {
   public void sendGlobalNotification(NotifyMessage message);
 
-  public void sendMessageResponse(long userId, Message<?> message, ApiResponse<?> response);
+  public void sendMessageReceipt(long userId, Message<?> message, ApiResponse<?> response);
 
   public void notifyJoinableAuction(long userId, long auctionId);
 

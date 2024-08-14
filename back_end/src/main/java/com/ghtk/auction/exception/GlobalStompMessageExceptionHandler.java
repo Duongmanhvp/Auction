@@ -23,7 +23,7 @@ public class GlobalStompMessageExceptionHandler {
       @Header("userId") Long userId) {
     Optional<ApiResponse<?>> response = stompExceptionHandler.handle(e, message);
     response.ifPresent(payload -> {
-      stompService.sendMessageResponse(userId, message, payload);
+      stompService.sendMessageReceipt(userId, message, payload);
     });
   }
 }

@@ -41,7 +41,7 @@ public class AuctionStompController {
       @Header("userId") Long userId,
       Message<?> message) {
     System.out.println("subscribing to control channel");
-    stompService.sendMessageResponse(userId, message, ApiResponse.success("ok"));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success("ok"));
   }
   @SubscribeMapping("/topic/auction/{auctionId}/notifications")
   public void subscribeNotificationChannel(
@@ -49,7 +49,7 @@ public class AuctionStompController {
       @Header("userId") Long userId,
       Message<?> message) {
     System.out.println("subscribing to notification channel");
-    stompService.sendMessageResponse(userId, message, ApiResponse.success("ok"));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success("ok"));
   }
   
   @SubscribeMapping("/topic/auction/{auctionId}/bids")
@@ -67,7 +67,7 @@ public class AuctionStompController {
       @Header("userId") Long userId,
       Message<?> message) {
     System.out.println("subscribing to comment channel");
-    stompService.sendMessageResponse(userId, message, ApiResponse.success("ok"));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success("ok"));
   }
 
   @MessageMapping("/auction/{id}/last-price")
@@ -76,7 +76,7 @@ public class AuctionStompController {
       @Header("userId") Long userId,
       Message<?> message) {
     Long lastPrice = auctionRealtimeService.getCurrentPrice(userId, auctionId);
-    stompService.sendMessageResponse(userId, message, ApiResponse.success(lastPrice));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success(lastPrice));
   }
 
   @MessageMapping("/auction/{id}/bid")
@@ -87,7 +87,7 @@ public class AuctionStompController {
       @Payload @Valid BidRequest bid,
       Message<?> message) {
     auctionRealtimeService.bid(userId, auctionId, bid.getBid());  
-    stompService.sendMessageResponse(userId, message, ApiResponse.success("ok"));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success("ok"));
   }
 
   @MessageMapping("/auction/{id}/comment")
@@ -97,6 +97,6 @@ public class AuctionStompController {
       @Payload String content,
       Message<?> message) {
     auctionRealtimeService.comment(userId, auctionId, content);
-    stompService.sendMessageResponse(userId, message, ApiResponse.success("ok"));
+    stompService.sendMessageReceipt(userId, message, ApiResponse.success("ok"));
   }
 }

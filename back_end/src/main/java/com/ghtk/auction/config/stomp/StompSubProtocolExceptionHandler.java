@@ -31,7 +31,7 @@ public class StompSubProtocolExceptionHandler extends StompSubProtocolErrorHandl
         System.out.println(payload);
         StompHeaderAccessor clientHeaders = StompHeaderAccessor.wrap(clientMessage);
         long userId = (Long) clientHeaders.getSessionAttributes().get("userId");
-        stompService.sendMessageResponse(userId, clientMessage, payload);
+        stompService.sendMessageReceipt(userId, clientMessage, payload);
       });
       return null;
     } catch (Throwable e) {

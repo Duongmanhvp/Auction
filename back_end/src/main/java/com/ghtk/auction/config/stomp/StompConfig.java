@@ -99,7 +99,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
                   .simpSubscribeDestMatchers("/topic/errors").permitAll() 
                   .simpSubscribeDestMatchers("/user/*/queue/control").authenticated() 
                   .simpSubscribeDestMatchers("/user/*/queue/notifications").authenticated() 
-                  .simpSubscribeDestMatchers("/user/*/queue/responses").authenticated() 
+                  .simpSubscribeDestMatchers("/user/*/queue/receipts").authenticated() 
                   .simpSubscribeDestMatchers("/topic/auction/*/control").authenticated()
                   .simpSubscribeDestMatchers("/topic/auction/*/notifications").authenticated()
                   .simpSubscribeDestMatchers("/topic/auction/*/bids").authenticated()
