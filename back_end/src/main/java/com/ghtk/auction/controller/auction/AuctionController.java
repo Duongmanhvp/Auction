@@ -5,6 +5,7 @@ import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.comment.CommentFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
+import com.ghtk.auction.dto.response.auction.AuctionJoinResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.entity.Auction;
@@ -113,13 +114,13 @@ public class AuctionController {
 
   @PostMapping("/{auctionId}/join")
   @PreAuthorize("@auctionComponent.isRegisteredAuction(#auctionId, principal)")
-  public ApiResponse<Void> joinAuction(
+  public ApiResponse<AuctionJoinResponse> joinAuction(
       @PathVariable Long auctionId,
       @AuthenticationPrincipal Jwt jwt
   ) {
     Long userId = (Long) jwt.getClaims().get("id");
-    auctionRealtimeService.joinAuction(userId, auctionId);
-    return ApiResponse.success(null);
+    var response = auctionRealtimeService.joinAuction(userId, auctionId);
+    return ApiResponse.success(response);
   }
 
   @PostMapping("/{auctionId}/leave")

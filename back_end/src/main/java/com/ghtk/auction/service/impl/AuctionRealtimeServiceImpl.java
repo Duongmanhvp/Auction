@@ -8,6 +8,7 @@ import com.ghtk.auction.component.RedisTemplateFactory;
 import com.ghtk.auction.dto.redis.AuctionBid;
 import com.ghtk.auction.dto.redis.AuctionRedisResponse;
 import com.ghtk.auction.dto.request.comment.CommentFilter;
+import com.ghtk.auction.dto.response.auction.AuctionJoinResponse;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -113,7 +114,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   }
 
 	@Override
-	public void joinAuction(Long userId, Long auctionId) {
+	public AuctionJoinResponse joinAuction(Long userId, Long auctionId) {
     if (!isAuctionRoomOpen(auctionId)) {
       throw new ForbiddenException("phong dau gia chua mo");
     }
@@ -125,6 +126,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     }
     LocalDateTime joinTime = LocalDateTime.now();
     setUserLastJoinAuction(userId, auctionId, joinTime);
+    return new AuctionJoinResponse(isAuctionActive(auctionId));
 	}
 
   @Override

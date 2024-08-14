@@ -3,6 +3,7 @@ package com.ghtk.auction.service;
 import java.util.List;
 
 import com.ghtk.auction.dto.request.comment.CommentFilter;
+import com.ghtk.auction.dto.response.auction.AuctionJoinResponse;
 import com.ghtk.auction.dto.stomp.BidMessage;
 import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.dto.stomp.NotifyMessage;
@@ -16,7 +17,7 @@ public interface AuctionRealtimeService {
     void checkBidJoin(Long userId, Long auctionId);
     void checkCommentJoin(Long userId, Long auctionId);
 
-    void joinAuction(Long userId, Long auctionId);
+    AuctionJoinResponse joinAuction(Long userId, Long auctionId);
     void leaveAuction(Long userId, Long auctionId);
 
     void checkBidding(Long userId, Long auctionId);
