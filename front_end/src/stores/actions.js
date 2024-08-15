@@ -2,6 +2,7 @@ import { commonInputProps } from "ant-design-vue/es/vc-input/inputProps.js";
 import authApi from "../api/auths.js";
 import imageApi from "../api/images.js";
 import productApi from "../api/products.js";
+import auctionApi from "../api/auctions.js";
 import { jwtDecode } from "jwt-decode";
 import { useStore } from "vuex";
 
@@ -40,7 +41,7 @@ export default {
         phone: '',
         address: '',
         gender: '',
-        avatarUrl: '',
+        avatar: '',
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
@@ -89,7 +90,7 @@ export default {
         phone: response.phone,
         address: response.address,
         gender: response.gender,
-        avatarUrl: response.avatar,
+        avatar: response.avatar,
       });
     } catch (error) {
       throw error;
@@ -106,7 +107,8 @@ export default {
 
   async updateMyInfo({ commit }, data) {
     try {
-      await authApi.updateMyInfo(data);
+      const response = await authApi.updateMyInfo(data);
+      commit("setUser",response);
     } catch (error) {
       throw error;
     }
@@ -125,9 +127,11 @@ export default {
     }
   },
 
-  async addProduct({ commit }, data) {
+  async addProduct({ commit, state }, data) {
     try {
-      await productApi.addProduct(data);
+      const response = await productApi.addProduct(data);
+      const updatedProducts = [...state.products, response];
+      commit("setProducts", updatedProducts);
       commit("setImages", []);
     } catch (error) {
       throw error;
@@ -139,6 +143,15 @@ export default {
       const response = await productApi.getProducts();
       commit("setProducts", response);
       console.log (response);
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  async getMyAuction({ commit }) {
+    try {
+      const response = await auctionApi.getMyAuction();
+      commit("setSessions", response);
     } catch (error) {
       throw error;
     }

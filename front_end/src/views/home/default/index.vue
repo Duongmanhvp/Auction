@@ -118,7 +118,7 @@
                     </a-card-meta>
                 </a-card>
 
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
+                <!-- <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
                         <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
@@ -129,9 +129,9 @@
                             <a-avatar src="https://joeschmoe.io/api/v1/random" />
                         </template>
                     </a-card-meta>
-                </a-card>
+                </a-card> -->
 
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
+                <!-- <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
                         <img alt="example" src="../../../assets/images/product.jpg" />
                     </template>
@@ -155,7 +155,7 @@
                             <a-avatar src="https://joeschmoe.io/api/v1/random" />
                         </template>
                     </a-card-meta>
-                </a-card>
+                </a-card> -->
             </div>
             <div class="max-w-md mx-auto mt-14">
                 <h1 class="text-2xl font-bold text-center text-gray-800">

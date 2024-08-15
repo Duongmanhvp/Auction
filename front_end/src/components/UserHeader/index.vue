@@ -227,9 +227,15 @@ const productManagement = async() => {
 
 };
 
-const auctionSessionManagement = () => {
-    router.push('/user/allSession');
+const auctionSessionManagement = async () => {
+    try {
+        const response = await store.dispatch('getMyAuction');
+        router.push('/user/allSession');
     hideDropdown();
+    } catch (error) {
+        message.error('Get session failed');
+    }
+    
 };
 
 const profileManagement = async () => {

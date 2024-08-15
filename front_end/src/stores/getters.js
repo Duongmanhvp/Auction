@@ -19,5 +19,14 @@ export default {
    },
    getProducts(state) {
       return state.products;
+   },
+   getFilterProducts(state) {
+      return state.filterProducts;
+   },
+   getProductDetail(state) {
+      return state.productDetail;
+   },
+   getSessions(state) {
+      return state.sessions;
    }
 } 

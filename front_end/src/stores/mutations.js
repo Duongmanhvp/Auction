@@ -9,7 +9,7 @@ export default {
       state.user.phone = user.phone || '';
       state.user.address = user.address || '';
       state.user.gender = user.gender || '';
-      state.user.avatarUrl = user.avatarUrl || '';
+      state.user.avatar = user.avatar || '';
     },
    // setFullName(state, fullName){
    //    state.user.fullName = fullName;
@@ -53,4 +53,18 @@ export default {
    setProducts(state, products) {
       state.products = products;
    },
+   setFilterProducts(state, filterProducts) {
+      state.filterProducts = filterProducts;
+   },
+   setProductDetail(state, productDetail) {
+      state.productDetail.id = productDetail.id || '';
+      state.productDetail.name = productDetail.name || '';
+      state.productDetail.category = productDetail.category || '';
+      state.productDetail.description = productDetail.description || '';
+      state.productDetail.images = productDetail.images || '';
+      state.productDetail.owner = productDetail.owner || '';
+   },
+   setSessions(state, sessions) {
+      state.sessions = sessions;
+   }
 }

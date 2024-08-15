@@ -105,6 +105,7 @@ const submitProfile = async () => {
     console.log('filteredProfile:', filteredProfile);
     try {
         const response = await store.dispatch('updateMyInfo', filteredProfile);
+        store.getters.getUser;
     } catch (error) {
         console.error('Error updating profile:', error);
     }
