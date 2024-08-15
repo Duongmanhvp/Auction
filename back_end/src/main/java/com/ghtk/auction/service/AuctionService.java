@@ -12,6 +12,7 @@ import com.ghtk.auction.entity.UserAuction;
 import org.quartz.SchedulerException;
 import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface AuctionService {
@@ -37,4 +38,6 @@ public interface AuctionService {
     Auction confirmAuction(Long auctionId) throws SchedulerException;
     void updateStatus(AuctionUpdateStatusRequest request);
     void rejectAuction(Long auctionId);
+
+    List<Auction> getMyRegisteredAuction(Jwt principal);
 }

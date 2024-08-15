@@ -124,10 +124,10 @@ public class AuctionServiceImpl implements AuctionService {
 			throw new NotFoundException("Nguoi dung chua dang ky tham gia bat ky phien nao!");
 		}
 		List<UserAuction> myJoined = new ArrayList<>();
-		
+
 		results.forEach(
 				result -> {
-					if(timeHistoryRepository.existsByUserAuctionId(result))
+					if(timeHistoryRepository.existsByUserAuction(result))
 					{
 						myJoined.add(result);
 					}
@@ -272,5 +272,22 @@ public class AuctionServiceImpl implements AuctionService {
 		auctionRepository.deleteById(auctionId);
 		
 	}
-	
+
+	@Override
+	public List<Auction> getMyRegisteredAuction(Jwt principal) {
+		Long userId = (Long)principal.getClaims().get("id");
+
+		User user = userRepository.findById(userId).orElseThrow(
+				() -> new NotFoundException("Khong thay nguoi dung")
+		);
+
+		List<UserAuction> results = userAuctionRepository.findAllByUser(user);
+
+		if (results.isEmpty()) {
+			throw new NotFoundException("Nguoi dung chua dang ky tham gia bat ky phien nao!");
+		}
+
+		return results.stream().map(UserAuction::getAuction).toList();
+	}
+
 }
