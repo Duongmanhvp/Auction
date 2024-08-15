@@ -39,27 +39,18 @@
                 <h2 class="text-xl font-semibold text-gray-700 mb-2">Session Details</h2>
                 <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ auction.sessionDetail.description }}</p>
                 <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ auction.sessionDetail.startBid }}</p>
-                <p class="text-gray-700 mb-2"><strong>Current Price:</strong> {{ currentPrice }}</p>
-                <div class="flex items-center mb-4">
+                <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.sessionDetail.startTime }}</p>
+                <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.sessionDetail.endTime }}</p>
+                <div class="flex items-center mb-6">
                     <span class="text-gray-700 mr-2"><strong>Price per Step:</strong></span>
                     <span class="text-gray-700 mr-2">{{ auction.sessionDetail.pricePerStep }}</span>
                 </div>
+                <p class="text-gray-700 mb-2"><strong>Current Price:</strong> {{ currentPrice }}</p>
                 <div class="flex items-center mb-4">
                     <span class="text-gray-700 mr-2"><strong> Increase Current Price:</strong></span>
                     <button @click="increaseCurrentPrice" class="bg-gray-200 p-2 rounded w-10">+</button>
                 </div>
-                <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.sessionDetail.startTime }}</p>
-                <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.sessionDetail.endTime }}</p>
                 <button @click="bid" class="bg-green-500 text-white p-2 rounded mt-4 w-full">Bid now</button>
-            </div>
-            <div class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700 mb-2">Participants</h2>
-                <ul>
-                    <li v-for="participant in auction.participants" :key="participant.id"
-                        class="py-2 border-b border-gray-300">
-                        {{ participant.name }}
-                    </li>
-                </ul>
             </div>
         </div>
     </div>
@@ -172,12 +163,7 @@ onMounted(() => {
                 startTime: '2024-08-15',
                 endTime: '2024-08-21'
             },
-            participants: [
-                { id: 1, name: 'Participant 1' },
-                { id: 2, name: 'Participant 2' },
-                { id: 3, name: 'Participant 3' }
-            ]
-        },
+        }
     ];
 
     auction.value = auctions.find(a => a.id === auctionId) || {};

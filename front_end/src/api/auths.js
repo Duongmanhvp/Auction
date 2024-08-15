@@ -17,7 +17,8 @@ const authApi = {
       try {
          const token = localStorage.getItem('token');
          const response = await api.post('/v1/auths/logout', { token });
-         localStorage.removeItem('token');
+         localStorage.clear();
+         sessionStorage.clear();
          return response.data.message;
       } catch (error) {
          throw error;
@@ -85,7 +86,7 @@ const authApi = {
       try {
          const token = localStorage.getItem('token');
          const response = await api.get('/v1/users/get-my-info', { headers: { Authorization: `Bearer ${token}` } });
-         message.success(response.data.message);
+         // message.success(response.data.message);
          return response.data.data;
       } catch (error) {
          message.error(error.response.data.message);

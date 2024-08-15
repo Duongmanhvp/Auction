@@ -241,7 +241,7 @@ const profileManagement = async () => {
 
 const handleLogout = async () => {
     try {
-        await authStore.logout('logout');
+        const response = await store.dispatch('logout');
         message.success('You have successfully logout');
         router.push('/');
     } catch (error) {

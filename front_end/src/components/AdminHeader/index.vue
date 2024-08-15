@@ -7,7 +7,8 @@
                 </span>
             </div>
             <div class="w-8/10 flex">
-                <img src="../../assets/images/logo.png" alt="Logo" class="mt-2 mr-20 ml-6 h-20 w-30">
+                <img src="../../assets/images/logo.png" alt="Logo"
+                    class="mt-2 mr-40 ml-6 h-20 w-30 flex justify-between">
                 <div class="hidden sm:flex items-center justify-center space-x-2 ml-6">
                     <a class="ant-dropdown-link font-bold cursor-pointer hover:text-teal-600">
                         <router-link to="/admin/auctionManagement"
@@ -16,16 +17,6 @@
                                 <img src="../../assets/icon/auction-management.svg" alt="Chevron Down"
                                     class="h-5 w-5 mr-2" />
                                 Auction Management
-                            </div>
-                        </router-link>
-                    </a>
-                    <a class="ant-dropdown-link font-bold cursor-pointer hover:text-teal-600">
-                        <router-link to="/admin/auctionSessionManagement"
-                            class="block w-full h-full hover:text-teal-600 rounded" active-class="text-teal-600">
-                            <div class="w-full h-full p-5 flex items-center justify-center">
-                                <img src="../../assets/icon/auction-session-management.svg" alt="Chevron Down"
-                                    class="h-5 w-5 mr-2" />
-                                Auction Session Management
                             </div>
                         </router-link>
                     </a>

@@ -2,28 +2,11 @@
     <div class="flex mt-20 mx-5 space-x-5">
         <div class="w-1/5 ml-4 mr-4">
             <div class="z-10">
-                <a-card hoverable class="h-auto bg-white shadow-lg rounded-md mt-6">
-                    <h1 class="text-lg font-bold">Auction Management</h1>
-                    <div class="flex flex-col items-center justify-center mt-4 space-y-4">
-                        <button class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md
-                    hover:bg-teal-200 outline-gray-400 shadow-lg">
-                            <img src="../../../assets/icon/accept.svg" alt="Add Session" class="w-6 h-6 mr-3" />
-                            Accept Auction
-                        </button>
-                        <button class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md
-                    hover:bg-teal-200 outline-gray-400 shadow-lg">
-                            <img src="../../../assets/icon/delete.svg" alt="Add Session" class="w-6 h-6 mr-3" />
-                            Delete Auction
-                        </button>
-                    </div>
-                </a-card>
-            </div>
-            <div class="z-10">
                 <a-card hoverable class="h-40 bg-white shadow-lg rounded-md mt-6">
                     <h1 class="text-lg font-bold">Search</h1>
                     <div class="flex items-center justify-center mt-4">
-                        <input type="text" class="w-3/4 p-2 border border-gray-300 rounded-md"
-                            placeholder="Enter seesion keyword...">
+                        <input type="text" v-model="searchKeyword" class="w-3/4 p-2 border border-gray-300 rounded-md"
+                            placeholder="Enter session keyword..." />
                         <button class="ml-2 p-2 bg-blue-50 hover:bg-teal-200 rounded-full outline-gray-400 shadow-lg">
                             <img src="../../../assets/icon/search.svg" alt="Search" class="w-5 h-5" />
                         </button>
@@ -44,19 +27,17 @@
                 </a-card>
             </div>
         </div>
+
         <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
             <div class="relative w-full">
-                <h1 class="text-2xl font-bold text-center text-gray-800">
-                    Auction List
-                </h1>
+                <h1 class="text-2xl font-bold text-center text-gray-800">Auction List</h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
-                <a-table :columns="columns" :data-source="data" :row-key="record => record.id">
+
+                <a-table :columns="filteredColumns" :data-source="filteredData" :row-key="record => record.id">
                     <template #bodyCell="{ column, record }">
-                        <template v-if="column.key === 'actions'">
-                            <span>
-                                <a @click="approveSession(record.id)">Approve</a>
-                                <a-divider type="vertical" />
-                                <a @click="rejectSession(record.id)">Reject</a>
+                        <template v-if="column.key">
+                            <span class="hover:cursor-pointer" @click="selectAuction(record)">
+                                {{ record[column.dataIndex] }}
                             </span>
                         </template>
                     </template>
@@ -65,144 +46,80 @@
         </div>
     </div>
 
-    <TheChevron />
+    <AuctionDetail :auction="selectedAuction" :isVisible="isModalVisible" @close="closeModal" />
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import TheChevron from '../../../components/Chevron/index.vue';
+import { ref, computed } from 'vue';
+import AuctionDetail from '../auctionDetail/index.vue';
 
-const columns = reactive([
-    {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
-    },
-    {
-        title: 'Title',
-        dataIndex: 'title',
-        key: 'title',
-    },
-    {
-        title: 'Created At',
-        dataIndex: 'createdAt',
-        key: 'createdAt',
-    },
-    {
-        title: 'Confirm Date',
-        dataIndex: 'confirmDate',
-        key: 'confirmDate',
-    },
-    {
-        title: 'End Registration',
-        dataIndex: 'endRegistration',
-        key: 'endRegistration',
-    },
-    {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-    },
-    {
-        title: 'Actions',
-        key: 'actions',
-    },
-]);
+const isModalVisible = ref(false);
+const selectedAuction = ref({});
+const isDetailsVisible = ref(false);
 
-const data = ref([
+const selectAuction = (auction) => {
+    selectedAuction.value = auction || {};
+    isModalVisible.value = true;
+};
+
+const columns = [
+    { title: 'ID', dataIndex: 'id', key: 'id' },
+    { title: 'Title', dataIndex: 'title', key: 'title' },
+    { title: 'Description', dataIndex: 'description', key: 'description' },
+    { title: 'Start Time', dataIndex: 'startTime', key: 'startTime' },
+    { title: 'End Time', dataIndex: 'endTime', key: 'endTime' },
+    { title: 'Start Bid', dataIndex: 'startBid', key: 'startBid' },
+    { title: 'Price Per Step', dataIndex: 'pricePerStep', key: 'pricePerStep' },
+    { title: 'Status', dataIndex: 'status', key: 'status' },
+    { title: 'Created At', dataIndex: 'createdAt', key: 'createdAt', visible: isDetailsVisible },
+    { title: 'Confirm Date', dataIndex: 'confirmDate', key: 'confirmDate', visible: isDetailsVisible },
+    { title: 'End Registration', dataIndex: 'endRegistration', key: 'endRegistration', visible: isDetailsVisible },
+];
+
+const data = [
     {
         id: 1,
         title: 'Auction of J5m',
         createdAt: '2024-08-01',
         confirmDate: '2024-08-03',
         endRegistration: '2024-08-10',
+        description: 'J5m number one',
+        startTime: '2024-08-15',
+        endTime: '2024-08-21',
+        startBid: '20000000VND',
+        pricePerStep: '1000000VND',
         status: 'Pending'
     },
     {
-        id: 1,
+        id: 2,
         title: 'Auction of J5m',
         createdAt: '2024-08-01',
         confirmDate: '2024-08-03',
         endRegistration: '2024-08-10',
+        description: 'J5m number two',
+        startTime: '2024-08-15',
+        endTime: '2024-08-21',
+        startBid: '20000000VND',
+        pricePerStep: '1000000VND',
         status: 'Pending'
     },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-    {
-        id: 1,
-        title: 'Auction of J5m',
-        createdAt: '2024-08-01',
-        confirmDate: '2024-08-03',
-        endRegistration: '2024-08-10',
-        status: 'Pending'
-    },
-]);
+];
 
 const searchKeyword = ref('');
-const tags = ref(['Pending', 'Opening', 'Close', 'In Progress', 'Finish', 'Canceled']);
+const tags = ['Pending', 'Opening', 'Close', 'In Progress', 'Finish', 'Canceled'];
 const selectedTags = ref([]);
+
+const filteredData = computed(() => {
+    return data.filter(auction => {
+        const matchesKeyword = auction.title.toLowerCase().includes(searchKeyword.value.toLowerCase());
+        const matchesTags = selectedTags.value.length === 0 || selectedTags.value.includes(auction.status);
+        return matchesKeyword && matchesTags;
+    });
+});
+
+const filteredColumns = computed(() => {
+    return columns.filter(col => col.visible === undefined || col.visible === isDetailsVisible.value);
+});
 
 const filterByTag = (tag) => {
     if (selectedTags.value.includes(tag)) {
@@ -210,7 +127,9 @@ const filterByTag = (tag) => {
     } else {
         selectedTags.value.push(tag);
     }
-    console.log('Filtering products by tags:', selectedTags.value);
 };
 
+const closeModal = () => {
+    isModalVisible.value = false;
+};
 </script>

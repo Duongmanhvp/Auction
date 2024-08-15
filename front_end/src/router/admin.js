@@ -1,6 +1,5 @@
 import AdminLayout from "../layouts/AdminLayout.vue";
 import AuctionManagement from "../views/admin/auctionManagement/index.vue";
-import AuctionSessionManagement from "../views/admin/auctionSessionManagement/index.vue";
 import ProductManagement from "../views/admin/productManagement/index.vue";
 import UserManagement from "../views/admin/userManagement/index.vue";
 import ProfileManagement from "../views/admin/profileManagement/profile/index.vue";
@@ -18,11 +17,6 @@ const adminRoutes = [
                 path: "auctionManagement",
                 name: "auction-management",
                 component: AuctionManagement
-            },
-            {
-                path: "auctionSessionManagement",
-                name: "auction-session-management",
-                component: AuctionSessionManagement
             },
             {
                 path: "productManagement",

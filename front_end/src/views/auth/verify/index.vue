@@ -91,7 +91,7 @@ const startCountdown = () => {
 const resendCode = async () => {
     try {
         const email = store.getters.getEmail;
-        await store.dispatch('resendOtp', { email });
+        const response = await store.dispatch('resendOtp', { email });
         isResendDisabled.value = !isResendDisabled.value;
         message.success('Verification code resent successfully');
         startCountdown();
@@ -112,7 +112,7 @@ async function onSubmit() {
     };
 
     try {
-        await store.dispatch('verify', data);
+        const response = await store.dispatch('verify', data);
         router.push('/');
     } catch (error) {
         console.error('Verification error:', error);
