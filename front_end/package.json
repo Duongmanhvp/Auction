@@ -10,14 +10,20 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
+    "@stomp/stompjs": "^7.0.0",
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
+    "front_end": "file:",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.2.0",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "uuid": "^10.0.0",
     "vue": "^3.4.31",
     "vue-router": "^4.4.0",
-    "vuex-persistedstate": "^4.1.0"
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
