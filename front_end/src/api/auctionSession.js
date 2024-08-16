@@ -5,6 +5,15 @@ const config = {
     onJoinableAuction: null,
 }
 
+let auctionJoinRegistry = {};
+
+stompApi.setOnDisconnect(() => {
+    for (const session of auctionJoinRegistry) {
+        session.leave();
+    }
+    auctionJoinRegistry = {};
+})
+
 /**
  * @typedef {Object} AuctionSession
  * @property {Function} isOpen - Check if the session is open
@@ -40,7 +49,6 @@ async function joinAuctionRoom(auctionId, callbacks) {
             onBid: callbacks.onBid,
             onComment: callbacks.onComment
         };
-        let sessionJoined = true;
         let sessionActive = wasActive;
         Object.defineProperties(session, {
             auctionId: {
@@ -48,43 +56,19 @@ async function joinAuctionRoom(auctionId, callbacks) {
                 writable: false
             },
             isJoined: {
-                get: () => sessionJoined,
-                writable: false
-            },
-            isActive: {
-                get: () => sessionActive,
-                writable: false
-            },
-            bid: {
-                value: (amount) => bid(auctionId, amount),
-                writable: false
-            },
-            comment: {
-                value: (content) => comment(auctionId, content),
-                writable: false
-            },
-            getCurrentPrice: {
-                value: () => getCurrentPrice(auctionId),
-                writable: false
-            },
-            getPastComments: {
-                value: (from) => getPastComments(auctionId, from),
+                get: () => auctionJoinRegistry[auctionId] === session,
                 writable: false
             },
             leave: {
-                value: function() {
-                    leaveAuctionRoom(auctionId)
-                    sessionJoined = false;
-                    delete this.isActive
-                    delete this.bid
-                    delete this.comment
-                    delete this.getCurrentPrice
-                    delete this.getPastComments
-                    delete this.leave
+                value: async function () {
+                    if (this.isJoined) {
+                        await leaveAuctionRoom(auctionId);
+                    }
                 },
                 writable: false
             }
         });
+        
 
         const controlPromise = stompApi.subscribe(`/topic/auction/${auctionId}/control`, 
             (message) => {
@@ -117,7 +101,8 @@ async function joinAuctionRoom(auctionId, callbacks) {
         const commentPromise = wasActive ? subscribeComment(auctionId, session) : null;
         
         await Promise.all([controlPromise, notificationPromise, bidPromise, commentPromise]);
-
+  
+        auctionJoinRegistry[auctionId] = session;
         return session;
     } catch (error) {
         throw error;
@@ -125,10 +110,14 @@ async function joinAuctionRoom(auctionId, callbacks) {
 }
       
 async function leaveAuctionRoom(auctionId) {
+    if (!auctionJoinRegistry[auctionId]) {
+        return;
+    }
     stompApi.unsubscribe(`/topic/auction/${auctionId}/bids`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/comments`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/notifications`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/control`);
+    delete auctionJoinRegistry[auctionId];
     await httpApi.post(`/v1/auctions/${auctionId}/leave`);
 }
 
