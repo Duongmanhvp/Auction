@@ -82,11 +82,16 @@ public class AuctionServiceImpl implements AuctionService {
 						(Long)auction[1],
 						(String) auction[2],
 						(String) auction[3],
-						(Timestamp) auction[4],
-						(LocalDateTime) auction[5],
-						(LocalDateTime) auction[6],
-						(LocalDateTime) auction[7],
-						(LocalDateTime) auction[8],
+						convertToLocalDateTime((Timestamp) auction[4]),
+						convertToLocalDateTime((Timestamp) auction[5]),
+						convertToLocalDateTime((Timestamp) auction[6]),
+						convertToLocalDateTime((Timestamp) auction[7]),
+						convertToLocalDateTime((Timestamp) auction[8]),
+//						((Timestamp) auction[4]).toLocalDateTime(),
+//						((Timestamp) auction[5]).toLocalDateTime(),
+//						((Timestamp) auction[6]).toLocalDateTime(),
+//						((Timestamp) auction[7]).toLocalDateTime(),
+//						((Timestamp) auction[8]).toLocalDateTime(),
 						(Long) auction[9],
 						(Long) auction[10],
 						(Long) auction[11],
@@ -104,6 +109,19 @@ public class AuctionServiceImpl implements AuctionService {
 		);
 		auctionRepository.delete(auction);
 		return auction;
+	}
+	
+	@Override
+	public List<Auction> getMyRegisteredAuction(Jwt principal) {
+		Long userId = (Long)principal.getClaims().get("id");
+		User user = userRepository.findById(userId).orElseThrow(
+				() -> new NotFoundException("Khong thay nguoi dung")
+		);
+		List<UserAuction> results = userAuctionRepository.findAllByUser(user);
+		if (results.isEmpty()) {
+			throw new NotFoundException("Nguoi dung chua dang ky tham gia bat ky phien nao!");
+		}
+		return results.stream().map(UserAuction::getAuction).toList();
 	}
 	
 	// TODO : meo hieu doan nay the nao nua ??
@@ -125,7 +143,7 @@ public class AuctionServiceImpl implements AuctionService {
 		
 		results.forEach(
 				result -> {
-					if(timeHistoryRepository.existsByUserAuctionId(result))
+					if(timeHistoryRepository.existsByUserAuction(result))
 					{
 						myJoined.add(result);
 					}
@@ -282,5 +300,10 @@ public class AuctionServiceImpl implements AuctionService {
 		);
 		auctionRepository.deleteById(auctionId);
 	}
+	
+	private LocalDateTime convertToLocalDateTime(Timestamp timestamp) {
+		return timestamp!=null ? timestamp.toLocalDateTime() : null;
+	}
+	
 	
 }

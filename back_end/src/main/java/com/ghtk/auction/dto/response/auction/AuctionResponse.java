@@ -21,7 +21,8 @@ public class AuctionResponse {
 	Long product_id;
 	String title;
 	String description;
-	Timestamp created_at;
+//	Timestamp created_at;
+	LocalDateTime created_at;
 	LocalDateTime confirm_date;
 	LocalDateTime end_registration;
 	LocalDateTime start_time;
