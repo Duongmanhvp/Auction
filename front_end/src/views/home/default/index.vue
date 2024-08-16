@@ -104,58 +104,21 @@
                 <div class="border-b-2 border-blue-300 mt-2 mb-6"></div>
             </div>
 
-            <div class="flex space-x-4 ml-6 mr-3">
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="License Plate" description="10.000.000 VND">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
+            <div class="product-list grid grid-cols-4 gap-4">
+                <div v-for="(product, index) in topProducts" :key="index" class=" bg-white shadow-lg rounded-lg p-4">
+                    <a-card hoverable @click="selectProduct(product, index)" class="h-full">
+                        <template #cover>
+                            <img class="h-56 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
                         </template>
-                    </a-card-meta>
-                </a-card>
-
-                <!-- <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Art" description="8.888.888 VND">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
+                        <template #actions>
                         </template>
-                    </a-card-meta>
-                </a-card> -->
-
-                <!-- <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Vehicles" description="35.600.000 VND">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                        </template>
-                    </a-card-meta>
-                </a-card>
-
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Antiques" description="9.999.000.000 VND">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                        </template>
-                    </a-card-meta>
-                </a-card> -->
+                        <a-card-meta :title="product.name" :description="product.description">
+                            <template #avatar>
+                                <a-avatar :src="product.avatar" />
+                            </template>
+                        </a-card-meta>
+                    </a-card>
+                </div>
             </div>
             <div class="max-w-md mx-auto mt-14">
                 <h1 class="text-2xl font-bold text-center text-gray-800">
@@ -164,10 +127,23 @@
                 <div class="border-b-2 border-blue-300 mt-2 mb-6"></div>
             </div>
 
-            <div class="flex space-x-4 ml-6 mr-3">
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
+            <div class="product-list grid grid-cols-4 gap-4">
+                <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
+                        <img alt="example" src="../../../assets/images/new_product.jpg" />
+                    </template>
+                    <template #actions>
+                    </template>
+                    <a-card-meta title="Card title" description="This is the description">
+                        <template #avatar>
+                            <a-avatar src="../../../assets/images/new_product.jpg" />
+                        </template>
+                    </a-card-meta>
+                </a-card>
+
+                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
+                    <template #cover>
+                        <img alt="example" src="../../../assets/images/new_product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -178,9 +154,9 @@
                     </a-card-meta>
                 </a-card>
 
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
+                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
+                        <img alt="example" src="../../../assets/images/new_product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -191,22 +167,9 @@
                     </a-card-meta>
                 </a-card>
 
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
+                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
                     <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Card title" description="This is the description">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                        </template>
-                    </a-card-meta>
-                </a-card>
-
-                <a-card hoverable class="w-1/4 h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/product.jpg" />
+                        <img alt="example" src="../../../assets/images/new_product.jpg" />
                     </template>
                     <template #actions>
                     </template>
@@ -220,39 +183,79 @@
 
             <TheChevron />
         </div>
+        <ProductDetailModal :pos="a" :visible="viewModalVisible" :product="selectedProduct"
+            @close="closeProductDetailModal" />
     </div>
 </template>
 
-<script>
+<script setup>
 import TheChevron from '../../../components/Chevron/index.vue';
-import { ref } from 'vue';
+import ProductDetailModal from '../../../views/user/productManagement/productDetail/index.vue';
+import { reactive, ref, onMounted , watch} from 'vue';
+import productApi from '../../../api/products.js';
+import { useStore } from 'vuex';
 
-export default {
-    components: {
-        TheChevron
-    },
-    setup() {
-        const carouselRef = ref(null);
+const store = useStore();
+const carouselRef = ref(null);
+let topProducts = reactive([])
+const selectedProduct = ref(null);
+const viewModalVisible = ref(false);
+const a = ref(1000);
 
-        const prevSlide = () => {
-            if (carouselRef.value) {
-                carouselRef.value.prev();
-            }
-        };
-
-        const nextSlide = () => {
-            if (carouselRef.value) {
-                carouselRef.value.next();
-            }
-        };
-
-        return {
-            carouselRef,
-            prevSlide,
-            nextSlide,
-        };
-    },
+const getTopProducts = async () => {
+    try {
+        const response = await productApi.getTopProducts();
+        console.log(response);
+        // topProducts = response;
+        topProducts.splice(0, topProducts.length, ...response);
+    } catch (error) {
+        console.log(error);
+    }
 };
+
+const prevSlide = () => {
+    if (carouselRef.value) {
+        carouselRef.value.prev();
+    }
+};
+
+const nextSlide = () => {
+    if (carouselRef.value) {
+        carouselRef.value.next();
+    }
+};
+const selectProduct = async (product, index) => {
+    selectedProduct.value = product;
+    a.value = index;
+    store.commit('setProductDetail',
+        {
+            id: product.productId,
+            name: product.name,
+            category: product.category,
+            description: product.description,
+            images: product.image,
+            owner: product.owner,
+        }
+    );
+    viewModalVisible.value = true;
+};
+
+const closeProductDetailModal = () => {
+    viewModalVisible.value = false;
+    store.commit('setProductDetail',
+        {
+            id: '',
+            name: '',
+            category: '',
+            description: '',
+            images: '',
+            owner: '',
+        });
+};
+
+onMounted(() => {
+    getTopProducts();
+});
 </script>
 
 <style scoped>
@@ -266,4 +269,18 @@ export default {
 :deep(.slick-slide h3) {
     color: #fff;
 }
+
+::v-deep .ant-card-meta-description {
+    overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
 </style>
+

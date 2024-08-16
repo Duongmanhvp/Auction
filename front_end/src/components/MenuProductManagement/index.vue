@@ -54,7 +54,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 const searchKeyword = ref('');
-const tags = ref(['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHERS']);
+const tags = ref(['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHER']);
 const selectedTags = ref('');
 
 const filterByTag = (tag) => {

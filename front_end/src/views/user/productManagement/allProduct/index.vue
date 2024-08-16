@@ -12,8 +12,8 @@
             </div>
             <div class="product-list grid grid-cols-4 gap-4">
                 <div v-for="(product, index) in paginatedProducts" :key="index" :product="product" :index="index"
-                    class="product-item bg-white shadow-lg rounded-lg">
-                    <a-card hoverable @click="selectProduct(product, index)">
+                    class=" product-item bg-white shadow-lg rounded-lg">
+                    <a-card hoverable @click="selectProduct(product, index)" class="h-72 ">
                         <div class=" flex absolute right-0 top-0 m-4 space-x-2">
                             <button @click.stop="editProduct(product)"
                                 class="flex justify-center items-center w-8 bg-teal-300 text-black hover:bg-teal-400 outline-gray-600 shadow-lg font-bold py-2 rounded">
@@ -25,7 +25,7 @@
                             </button>
                         </div>
                         <template #cover>
-                            <img src="../../../../assets/images/cover.jpg" alt="Product" />
+                            <img class="h-44" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" alt="No Image" />
                         </template>
                         <a-card-meta :title="product.name" :description="product.category">
                             <!-- <template #avatar>

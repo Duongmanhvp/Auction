@@ -23,6 +23,16 @@ const productApi = {
          message.error(error.response.data.message);
          throw error;
       }
+   },
+
+   async getTopProducts() {
+      try {
+         const response = await api.get('/v1/products/top-popular');
+         return response.data.data;
+      } catch (error) {
+         message.error(error.response.data.message);
+         throw error;
+      }
    }
    
 }
