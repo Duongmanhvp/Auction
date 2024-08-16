@@ -62,6 +62,11 @@ public class AuctionController {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.deleteAuction(jwt,id)));
 	}
 	
+	@GetMapping("/get-my-registered")
+	public ResponseEntity<ApiResponse<List<Auction>>> getMyRegisteredAuction(@AuthenticationPrincipal Jwt jwt) {
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyRegisteredAuction(jwt)));
+	}
+	
 	@GetMapping("/get-my-joined")
 	public ResponseEntity<ApiResponse<List<Auction>>> getMyJoined(@AuthenticationPrincipal Jwt jwt) {
 		return ResponseEntity.ok(ApiResponse.success(auctionService.getMyJoinedAuction(jwt)));

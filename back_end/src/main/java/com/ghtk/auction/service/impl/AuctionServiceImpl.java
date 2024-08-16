@@ -113,6 +113,19 @@ public class AuctionServiceImpl implements AuctionService {
 		return auction;
 	}
 	
+	@Override
+	public List<Auction> getMyRegisteredAuction(Jwt principal) {
+		Long userId = (Long)principal.getClaims().get("id");
+		User user = userRepository.findById(userId).orElseThrow(
+				() -> new NotFoundException("Khong thay nguoi dung")
+		);
+		List<UserAuction> results = userAuctionRepository.findAllByUser(user);
+		if (results.isEmpty()) {
+			throw new NotFoundException("Nguoi dung chua dang ky tham gia bat ky phien nao!");
+		}
+		return results.stream().map(UserAuction::getAuction).toList();
+	}
+	
 	// TODO : meo hieu doan nay the nao nua ??
 	@Override
 	public List<Auction> getMyJoinedAuction(Jwt principal) {
@@ -281,5 +294,6 @@ public class AuctionServiceImpl implements AuctionService {
 	private LocalDateTime convertToLocalDateTime(Timestamp timestamp) {
 		return timestamp!=null ? timestamp.toLocalDateTime() : null;
 	}
+	
 	
 }
