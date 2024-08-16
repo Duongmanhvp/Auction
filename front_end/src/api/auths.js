@@ -105,6 +105,15 @@ const authApi = {
          message.error(error.response.data.message);
          throw error;
       }
+   },
+
+   async getAnotherInfo(ownerId){
+      try{
+         const response = await api.get('v1/users/get-another-info/' + ownerId)
+         return response.data.data;
+      } catch (error) {
+         throw error
+      }
    }
 }
 export default authApi;

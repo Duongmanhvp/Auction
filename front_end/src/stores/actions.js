@@ -148,12 +148,35 @@ export default {
     }
   },
 
+  //auction
+  async getMyJoined({commit}) {
+    try {
+      const response = await auctionApi.getMyJoined();
+      commit("setAuction",response);
+    }
+    catch (error) {
+      throw error;
+    }
+  },
+
   async getMyAuction({ commit }) {
     try {
       const response = await auctionApi.getMyAuction();
       commit("setSessions", response);
-    } catch (error) {
+    }
+    catch (error) {
+      throw error;
+    }
+  },
+
+  async getAnotherInfo({commit},ownerId) {
+    try {
+      const response = await authApi.getAnotherInfo(ownerId);
+      return response;
+    }
+    catch (error) {
       throw error;
     }
   }
+  
 };

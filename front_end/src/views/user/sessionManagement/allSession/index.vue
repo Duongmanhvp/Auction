@@ -17,7 +17,7 @@
 
                     <a-card hoverable>
                         <template #cover>
-                            <img src=" ../../../../assets/images/product.jpg" alt="Session" />
+                            <img src="../../../../assets/images/auction.jpg" alt="Session" />
                         </template>
                         <a-card-meta :title="session.title" :description="session.status">
                             <template #avatar>

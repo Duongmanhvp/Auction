@@ -53,6 +53,9 @@ export default {
    setProducts(state, products) {
       state.products = products;
    },
+   setAuction(state, auction){
+      state.auction=auction;
+   },
    setFilterProducts(state, filterProducts) {
       state.filterProducts = filterProducts;
    },

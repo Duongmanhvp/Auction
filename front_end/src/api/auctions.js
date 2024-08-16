@@ -25,6 +25,11 @@ const auctionApi = {
          throw error;
       }
    },
+   
+   async getMyJoined(){
+      const response =  await api.get('/v1/auctions/get-my-registered');
+      return response.data.data;
+  }
 
 }
 export default auctionApi;

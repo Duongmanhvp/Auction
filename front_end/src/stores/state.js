@@ -14,6 +14,7 @@ export default {
    // email: '',
    images: [],
    products: [],
+   auction:[],
    filterProducts: [],
    productDetail: {
       id: '',

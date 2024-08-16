@@ -20,6 +20,9 @@ export default {
    getProducts(state) {
       return state.products;
    },
+   getAuction(state){
+      return state.auction;
+   },
    getFilterProducts(state) {
       return state.filterProducts;
    },
