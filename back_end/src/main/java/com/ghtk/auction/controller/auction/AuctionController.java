@@ -7,6 +7,7 @@ import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionJoinResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.dto.stomp.CommentMessage;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.UserAuction;
@@ -14,6 +15,7 @@ import com.ghtk.auction.scheduler.jobs.UpdateAuctionStatus;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.JobSchedulerService;
 import com.ghtk.auction.service.AuctionRealtimeService;
+import com.ghtk.auction.utils.AppConstants;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -160,4 +162,13 @@ public class AuctionController {
     Long userId = (Long) principal.getClaim("id");
     return ApiResponse.success(auctionRealtimeService.getComments(userId, auctionId, filter));
   }
+	@GetMapping("")
+	public ResponseEntity<ApiResponse<PageResponse<Auction>>> getAllAuction(
+			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sort_by", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sort_dir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+	){
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllList(pageNo, pageSize, sortBy, sortDir)));
+	}
 }

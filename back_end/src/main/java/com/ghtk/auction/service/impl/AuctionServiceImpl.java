@@ -4,6 +4,7 @@ import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
+import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.*;
 import com.ghtk.auction.enums.AuctionStatus;
 import com.ghtk.auction.exception.ForbiddenException;
@@ -16,6 +17,10 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.quartz.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -199,9 +204,24 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	// ADMIN
 	@Override
-	public List<Auction> getAllList() {
+	public PageResponse<Auction> getAllList(int pageNo, int pageSize, String sortBy, String sortDir) {
     // TODO:
-		return List.of();
+		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+
+		Page<Auction> auctions =auctionRepository.findAll(pageable);
+
+		List<Auction> listOfAuction =auctions.getContent();
+		PageResponse<Auction> pageAuctionResponse = new PageResponse<>();
+		pageAuctionResponse.setPageNo(pageNo);
+		pageAuctionResponse.setPageSize(pageSize);
+		pageAuctionResponse.setTotalPages(auctions.getTotalPages());
+		pageAuctionResponse.setTotalElements(auctions.getTotalElements());
+		pageAuctionResponse.setLast(auctions.isLast());
+		pageAuctionResponse.setContent(listOfAuction);
+		return pageAuctionResponse;
 	}
 	
 	//////////////////////////////////////////////////
