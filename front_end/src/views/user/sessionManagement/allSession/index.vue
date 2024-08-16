@@ -10,10 +10,16 @@
             </div>
             <div class="session-list grid grid-cols-4 gap-4">
                 <div v-for="session in paginatedSessions" :key="session.id"
-                    class="session-item bg-white shadow-lg rounded-lg cursor-pointer" @click="openModal(session)">
-                    <a-card hoverable>
+                    class="session-item w-60 bg-white shadow-lg rounded-lg cursor-pointer" @click="openModal(session)">
+                    <a-card hoverable class="h-72 w-60">
+                        <span
+                            class=" absolute top-4 left-4 flex justify-center items-center w-auto bg-sky-200 text-black outline-gray-600 shadow-lg font-bold py-1 px-1 rounded">
+                            <img src="../../../../assets/icon/heart.svg" alt="Interested" class="w-4 h-4 mr-1" />
+                            100
+                        </span>
                         <template #cover>
-                            <img src="../../../../assets/images/product.jpg" alt="Session" />
+                            <img src="../../../../assets/images/product.jpg" alt="Session"
+                                class="w-44 h-44 object-cover" />
                         </template>
                         <a-card-meta :title="session.title" :description="session.status">
                             <template #avatar>
@@ -45,7 +51,7 @@ import SessionModal from '../sessionDetail/index.vue';
 import { ref, computed } from 'vue';
 
 const sessions = ref([
-    { id: 1, title: 'Demo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending', image: 'https://joeschmoe.io/api/v1/random', description: 'Description here', startBid: '20.000.000VND', pricePerStep: '10.000.000VND', startTime: '2024-01-01', endTime: '2024-01-02' },
+    { id: 1, title: 'Demo SessionDemo SessionDemo SessionDemo SessionDemo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending', image: 'https://joeschmoe.io/api/v1/random', description: 'Description here', startBid: '20.000.000VND', pricePerStep: '10.000.000VND', startTime: '2024-01-01', endTime: '2024-01-02' },
     { id: 2, title: 'Session 2', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
     { id: 3, title: 'Session 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' }
 ]);

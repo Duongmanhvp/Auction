@@ -36,7 +36,7 @@
                 <h1 class="text-2xl font-bold text-center text-gray-800">All Auctions</h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             </div>
-            <div class="grid grid-cols-4 gap-4 p-4">
+            <div class="grid grid-cols-3 gap-4 p-4">
                 <button @click="prevSlide"
                     class="absolute top-3/4 left-1/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
                     <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
@@ -46,15 +46,26 @@
                     <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
                 </button>
                 <div v-for="auction in paginatedAuctions" :key="auction.id"
-                    class=" bg-white shadow-lg rounded-lg relative hover:cursor-pointer"
+                    class=" bg-white w-60 shadow-lg rounded-lg relative hover:cursor-pointer"
                     @click="goToAuction(auction.id)">
-                    <a-card hoverable>
+                    <a-card hoverable class="h-96 w-80">
+                        <span
+                            class="absolute top-4 left-4 flex justify-center items-center w-auto bg-sky-200 text-black outline-gray-600 shadow-lg font-bold py-1 px-1 rounded">
+                            <img src="../../../../assets/icon/heart.svg" alt="Interested" class="w-4 h-4 mr-1" />
+                            100
+                        </span>
                         <template #cover>
-                            <img src="../../../../assets/images/product.jpg" alt="Auction" />
+                            <img src="../../../../assets/images/product.jpg" alt="Auction"
+                                class="w-52 h-52 object-cover" />
                         </template>
                         <a-card-meta :title="auction.title" :description="auction.status">
                             <template #avatar>
                                 <a-avatar :src="auction.avatar" />
+                            </template>
+                            <template #title>
+                                <h2 class="text-lg font-semibold">
+                                    {{ auction.title }}
+                                </h2>
                             </template>
                         </a-card-meta>
                     </a-card>
@@ -74,7 +85,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 const auctions = ref([
-    { id: 1, title: 'Demo Auction', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending', image: 'https://joeschmoe.io/api/v1/random', description: 'Description here', startBid: '20.000.000VND', pricePerStep: '10.000.000VND', startTime: '2024-01-01', endTime: '2024-01-02' },
+    { id: 1, title: 'Demo AuctionDemo AuctionDemo AuctionDemo AuctionDemo AuctionDemo AuctionDemo Auction', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending', image: 'https://joeschmoe.io/api/v1/random', description: 'Description here', startBid: '20.000.000VND', pricePerStep: '10.000.000VND', startTime: '2024-01-01', endTime: '2024-01-02' },
     { id: 2, title: 'Auction 2', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
     { id: 3, title: 'Auction 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
     { id: 3, title: 'Auction 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
@@ -115,3 +126,17 @@ const filterByDate = () => {
 };
 
 </script>
+
+<style scoped>
+::v-deep .ant-card-meta-title {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+::v-deep .ant-card-meta-description {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+</style>

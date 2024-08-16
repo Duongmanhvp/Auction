@@ -20,9 +20,9 @@
                     <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
                 </button>
                 <div v-for="(product, index) in paginatedProducts" :key="index"
-                    class="product-item bg-white shadow-lg rounded-lg">
-                    <a-card hoverable @click="selectProduct(product)">
-                        <div class=" flex absolute right-0 top-0 m-4 space-x-2">
+                    class="product-item w-60 bg-white shadow-lg rounded-lg overflow-hidden">
+                    <a-card hoverable @click="selectProduct(product)" class="h-72 w-60">
+                        <div class="flex absolute right-0 top-0 m-4 space-x-2">
                             <button @click.stop="editProduct(product)"
                                 class="flex justify-center items-center w-8 bg-teal-300 text-black hover:bg-teal-400 outline-gray-600 shadow-lg font-bold py-2 rounded">
                                 <img src="../../../../assets/icon/pencil2.svg" alt="Edit" class="w-4 h-4" />
@@ -32,8 +32,14 @@
                                 <img src="../../../../assets/icon/delete2.svg" alt="Delete" class="w-4 h-4" />
                             </button>
                         </div>
+                        <span
+                            class=" absolute top-4 left-4 flex justify-center items-center w-auto bg-sky-200 text-black outline-gray-600 shadow-lg font-bold py-1 px-1 rounded">
+                            <img src="../../../../assets/icon/heart.svg" alt="Interested" class="w-4 h-4 mr-1" />
+                            100
+                        </span>
                         <template #cover>
-                            <img src="../../../../assets/images/product.jpg" alt="Product" />
+                            <img src="../../../../assets/images/product.jpg" alt="Product"
+                                class="w-44 h-44 object-cover" />
                         </template>
                         <a-card-meta :title="product.title" :description="product.category">
                             <template #avatar>
@@ -61,7 +67,7 @@ import ProductDetailModal from '../productDetail/index.vue';
 import EditProductModal from '../editProduct/index.vue';
 
 const products = ref([
-    { title: 'Demo Product', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
+    { title: 'Demo ProductDemo ProductDemo ProductDemo ProductDemo ProductDemo ProductDemo ProductDemo Product', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
     { title: 'Product 2', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
     { title: 'Product 3', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
     { title: 'Product 4', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },

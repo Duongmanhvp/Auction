@@ -33,11 +33,10 @@
                 <h1 class="text-2xl font-bold text-center text-gray-800">Auction List</h1>
                 <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
 
-                <a-table :columns="filteredColumns" :data-source="filteredData" :row-key="record => record.id"
-                    @row-click="selectAuction">
+                <a-table :columns="filteredColumns" :data-source="filteredData" :row-key="record => record.id">
                     <template #bodyCell="{ column, record }">
                         <template v-if="column.key">
-                            <span class="hover:cursor-pointer">
+                            <span class="hover:cursor-pointer" @click="selectAuction(record)">
                                 {{ record[column.dataIndex] }}
                             </span>
                         </template>

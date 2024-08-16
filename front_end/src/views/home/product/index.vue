@@ -44,10 +44,16 @@
                     <img src="../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
                 </button>
                 <div v-for="(product, index) in paginatedProducts" :key="index"
-                    class="product-item bg-white shadow-lg rounded-lg">
-                    <a-card hoverable @click="selectProduct(product)">
+                    class="product-item bg-white shadow-lg rounded-lg w-60">
+                    <a-card hoverable @click="selectProduct(product)" class="h-72 w-60">
+                        <span
+                            class=" absolute top-4 left-4 flex justify-center items-center w-auto bg-red-200 text-black outline-gray-600 shadow-lg font-bold py-1 px-1 rounded">
+                            <img src="../../../assets/icon/heart.svg" alt="Interested" class="w-4 h-4 mr-1" />
+                            100
+                        </span>
                         <template #cover>
-                            <img src="../../../assets/images/product.jpg" alt="Product" />
+                            <img src="../../../assets/images/product.jpg" alt="Product"
+                                class="w-44 h-44 object-cover" />
                         </template>
                         <a-card-meta :title="product.title" :description="product.category">
                             <template #avatar>

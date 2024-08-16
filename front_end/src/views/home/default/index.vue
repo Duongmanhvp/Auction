@@ -58,6 +58,23 @@
                 </a-card>
             </div>
             <div class="z-10">
+                <a-card hoverable class="bg-white shadow-lg rounded-md mt-6">
+                    <h1 class="text-lg font-bold">Filter by Date</h1>
+                    <div class="flex flex-col items-center mt-2 space-y-4">
+                        <input type="date" v-model="startDate" class="w-full p-2 border border-gray-300 rounded-md"
+                            placeholder="Start Date">
+                        <span>TO</span>
+                        <input type="date" v-model="endDate" class="w-full p-2 border border-gray-300 rounded-md"
+                            placeholder="End Date">
+                        <button @click="filterByDate"
+                            class=" flex items-center justify-center p-2 w-full bg-blue-50 font-bold hover:bg-teal-200 rounded-md outline-gray-400 shadow-lg">
+                            <img src="../../../assets/icon/search.svg" alt="Search" class="w-5 h-5 mr-3" />
+                            Search
+                        </button>
+                    </div>
+                </a-card>
+            </div>
+            <div class="z-10">
                 <a-card hoverable class="h-auto bg-[#] shadow-lg rounded-md mt-6">
                     <h1 class="text-lg font-bold mb-4"> News </h1>
                     <div class="space-y-4">
@@ -223,36 +240,37 @@
     </div>
 </template>
 
-<script>
-import TheChevron from '../../../components/Chevron/index.vue';
-import { ref } from 'vue';
+<script setup>
+import { ref, onMounted } from 'vue';
 
-export default {
-    components: {
-        TheChevron
-    },
-    setup() {
-        const carouselRef = ref(null);
+const carouselRef = ref(null);
+const startDate = ref('');
+const endDate = ref('');
+const currentPage = ref(1);
 
-        const prevSlide = () => {
-            if (carouselRef.value) {
-                carouselRef.value.prev();
-            }
-        };
+onMounted(() => {
+    if (carouselRef.value) {
+        carouselRef.value.goTo(0);
+    }
+});
 
-        const nextSlide = () => {
-            if (carouselRef.value) {
-                carouselRef.value.next();
-            }
-        };
 
-        return {
-            carouselRef,
-            prevSlide,
-            nextSlide,
-        };
-    },
+const prevSlide = () => {
+    if (carouselRef.value) {
+        carouselRef.value.prev();
+    }
 };
+
+const nextSlide = () => {
+    if (carouselRef.value) {
+        carouselRef.value.next();
+    }
+};
+
+const filterByDate = () => {
+
+};
+
 </script>
 
 <style scoped>
