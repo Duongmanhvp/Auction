@@ -1,9 +1,9 @@
 <template>
-    <div v-if="auction" class="container flex h-screen p-8 mt-20">
-        <button @click="goBack" class="absolute top-16 right-16 text-gray-500 hover:text-gray-700 mt-20">
+    <div v-if="auction" class=" fixed top-9 left-0 container h-md flex mt-9">
+        <button @click="goBack" class="absolute -top-14 right-10 text-gray-500 hover:text-gray-700 mt-20">
             <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
         </button>
-        <div class="w-2/3 bg-black">
+        <div class="w-3/5 bg-black">
             <div class="flex justify-center items-center h-full relative">
                 <img v-for="(image, index) in images" :key="index" :src="image.src" alt="Session"
                     v-show="index === currentImageIndex" class="max-w-full max-h-full object-contain" />
@@ -17,11 +17,10 @@
                 </button>
             </div>
         </div>
-        <div class="w-1/3 p-4 bg-gray-100 overflow-y-auto">
+        <div class="w-2/5 p-4 bg-gray-100 overflow-y-auto">
             <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
             <div class="border-b-2 border-gray-300 mb-4"></div>
 
-            <!-- time -->
             <div class="mb-4">
                 <h2 class="text-md font-semibold text-gray-700 mb-2">Auction start {{ formattedTimeUntilStart }}
                 </h2>
@@ -30,7 +29,6 @@
                 <h2 class="text-md font-semibold text-gray-700 mb-2">Time remaining: {{ formattedTimeLeft }}</h2>
             </div>
 
-            <!-- auction infor -->
             <div class="mb-4">
                 <h2 class="text-xl font-semibold text-gray-700 mb-2">Details</h2>
                 <p class="text-gray-600">{{ auction.description }}</p>
