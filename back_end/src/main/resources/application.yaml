@@ -64,8 +64,9 @@ websocket:
   endpoint: /ws
 
 allowed-origins: >
-  http://localhost:3000
+  *
 
-# logging:
-#   level:
-#     root: DEBUG
+cloudinary:
+  name: ${CLOUD_NAME:}
+  key: ${API_KEY:}
+  secret: ${API_SECRET:}

@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(AlreadyExistsException.class)
-    public ResponseEntity<ApiResponse<Void>> authenticateException(AlreadyExistsException ex) {
+    public ResponseEntity<ApiResponse<Void>> alreadyExistsException(AlreadyExistsException ex) {
         log.error("AlreadyExistsException: ", ex);
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
@@ -75,6 +75,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ApiResponse<Void>> validationException(ValidationException ex) {
         log.error("ValidationException: ", ex.getMessage());
+        return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler(UploadException.class)
+    public ResponseEntity<ApiResponse<Void>> uploadException(UploadException ex) {
+        log.error("UploadException: ", ex);
         return new ResponseEntity<>(ApiResponse.error(ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
