@@ -31,4 +31,5 @@ public interface ProductService {
 	
 	List<ProductResponse> searchProductbyCategory(ProductFilterRequest request);
 	
+	List<ProductResponse> getTop5MostPopularProducts();
 }

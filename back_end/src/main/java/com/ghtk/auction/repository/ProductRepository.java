@@ -20,7 +20,8 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
            p.category AS category,
            p.description AS description,
            p.image AS image,
-           u2.full_name AS buyer
+           u2.full_name AS buyer,
+           p.id AS productId
        FROM
            product p
        JOIN USER u ON
