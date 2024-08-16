@@ -33,7 +33,7 @@ public class SecurityConfig {
 					,"v1/auths/authenticate","v1/auths/introspect","v1/auths/logout","v1/auths/refresh"};
 	private  final String[] PUBLIC_PUT_ENDPOINTS =
 			{"v1/users/forget-password"};
-	private static final String[] PUBLIC_GET_ENDPOINTS = {"v1/products/**"};
+	private static final String[] PUBLIC_GET_ENDPOINTS = {"v1/products/**", "v1/auctions/**"};
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -42,6 +42,7 @@ public class SecurityConfig {
 						req.requestMatchers(HttpMethod.POST , PUBLIC_POST_ENDPOINTS).permitAll()
 								.requestMatchers(HttpMethod.PUT , PUBLIC_PUT_ENDPOINTS).permitAll()
 								.requestMatchers(HttpMethod.GET , PUBLIC_GET_ENDPOINTS).permitAll()
+								.requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 								.anyRequest().authenticated()
 				);
 		httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
