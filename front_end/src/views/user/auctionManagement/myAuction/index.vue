@@ -59,9 +59,6 @@ const router = useRouter();
 const auctions = ref([
     { id: 1, title: 'Demo AuctionDemo AuctionDemo AuctionDemo AuctionDemo AuctionDemo AuctionDemo Auction', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Opening', image: 'https://joeschmoe.io/api/v1/random', description: 'Description here', startBid: '20.000.000VND', pricePerStep: '10.000.000VND', startTime: '2024-01-01', endTime: '2024-01-02' },
     { id: 2, title: 'Auction 2', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Opening' },
-    { id: 3, title: 'Auction 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
-    { id: 3, title: 'Auction 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
-    { id: 3, title: 'Auction 3', avatar: 'https://joeschmoe.io/api/v1/random', status: 'Pending' },
 ]);
 
 const currentPage = ref(1);
