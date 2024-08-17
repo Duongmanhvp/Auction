@@ -44,7 +44,7 @@
                 <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
             </button>
             <div class="flex justify-center mt-4">
-                <a-pagination v-model:current="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
+                <a-pagination v-model="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
             </div>
         </div>
 
@@ -61,21 +61,9 @@ import { ref, reactive, computed, watch, defineProps } from 'vue';
 import ProductDetailModal from '../productDetail/index.vue';
 import EditProductModal from '../editProduct/index.vue';
 import { useStore } from 'vuex'
-// const products = ref([
-//     { title: 'Demo Product', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 2', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 3', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 4', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 5', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 6', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 7', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 8', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-//     { title: 'Product 9', avatar: 'https://joeschmoe.io/api/v1/random', category: 'Licence Plate' },
-// ]);
 
 
 const store = useStore();
-
 const products = ref([]);
 products.value = store.getters.getProducts;
 let totalProducts = products.value.length;

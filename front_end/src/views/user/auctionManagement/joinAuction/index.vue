@@ -82,6 +82,21 @@ import image2 from "../../../../assets/images/image2.jpg";
 import image3 from "../../../../assets/images/image3.jpg";
 import { useStore } from "vuex";
 
+const data = [
+    {
+        title: 'Elon Muc',
+    },
+    {
+        title: 'Bin Ghet',
+    },
+    {
+        title: 'Mac Zubot',
+    },
+    {
+        title: 'Rach Mar',
+    },
+];
+
 const route = useRoute();
 const router = useRouter();
 let auction = reactive({});
