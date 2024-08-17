@@ -1,6 +1,6 @@
 <template>
     <div v-if="auction" class=" fixed left-0 top-24 container max-w-fit flex p-1">
-        <button @click="goBack" class="absolute -top-14 right-7 z-50 text-gray-500 hover:text-gray-700 mt-20">
+        <button @click="goBack" class="absolute -top-16 right-96 z-50 text-gray-500 hover:text-gray-700 mt-20">
             <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
         </button>
         <div class="w-1/2 bg-black">
@@ -17,11 +17,10 @@
                 </button>
             </div>
         </div>
-        <div class="flex w-1/2 p-4 bg-white overflow-y-auto max-h-screen">
+        <div class="flex w-1/2 p-4 bg-white max-h-screen">
             <div class="w-1/2">
                 <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
-
                 <div class="mb-4">
                     <h2 class="text-md font-semibold text-gray-700 mb-2">Auction start {{ formattedTimeUntilStart }}
                     </h2>
@@ -47,39 +46,38 @@
                     </div>
                     <p class="text-gray-700 mb-2"><strong>Current Price:</strong> {{ currentPrice }}</p>
                     <div class="flex items-center mb-4">
-                        <span class="text-gray-700 mr-2"><strong> Increase Current Price:</strong></span>
-                        <button @click="increaseCurrentPrice" class="bg-gray-200 p-2 rounded w-10">+</button>
+                        <span class="text-gray-700 mr-2"><strong>Increase Price:</strong></span>
+                        <input v-model.number="increasePrice" @input="adjustIncreasePrice" type="number"
+                            class="border p-2 rounded w-32 mr-2" step="pricePerStep" />
+                        VND
                     </div>
                     <button @click="handleAction" class="bg-green-500 text-white p-2 rounded mt-4 w-full">
                         {{ auctionIsOpen ? 'Join Auction' : 'Bid' }}
                     </button>
                 </div>
             </div>
-            <div class="w-1/2 mt-10">
-                <div class="p-5">
+            <div class="w-1/2">
+                <div class="p-4">
                     <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
                         <template #actions>
                         </template>
-                        <a-card-meta title="Card title" description="This is the description"></a-card-meta>
+                        <a-card-meta title="Notification 1" description="This is the description"></a-card-meta>
                     </a-card>
                     <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
                         <template #actions>
                         </template>
-                        <a-card-meta title="Card title" description="This is the description"></a-card-meta>
-                    </a-card>
-                    <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
-                        <template #actions>
-                        </template>
-                        <a-card-meta title="Card title" description="This is the description"></a-card-meta>
+                        <a-card-meta title="Notification 2" description="This is the description"></a-card-meta>
                     </a-card>
                 </div>
-                <a-list item-layout="horizontal" :data-source="data" class="p-5">
+                <div></div>
+                <a-list item-layout="horizontal" :data-source="data"
+                    class="p-5 overflow-y-scroll max-h-72 custom-scrollbar">
                     <template #renderItem="{ item }">
                         <a-list-item>
                             <a-list-item-meta
                                 description="Ant Design, a design language for background applications, is refined by Ant UED Team">
                                 <template #title>
-                                    <a href="https://www.antdv.com/">{{ item.title }}</a>
+                                    <a class="font-bold" href="https://www.antdv.com/">{{ item.title }}</a>
                                 </template>
                                 <template #avatar>
                                     <a-avatar src="https://joeschmoe.io/api/v1/random" />
@@ -115,12 +113,16 @@ const data = [
     {
         title: 'Rach Mar',
     },
+    {
+        title: 'Donan Chum',
+    },
 ];
 
 const route = useRoute();
 const router = useRouter();
 const auction = ref(null);
 const currentPrice = ref('');
+const increasePrice = ref(0);
 const timeUntilStart = ref(0);
 const timeLeft = ref(0);
 let countdownInterval = null;
@@ -133,10 +135,9 @@ const formatPrice = (priceNum) => {
     return `${priceNum} VND`;
 };
 
-const increaseCurrentPrice = () => {
-    const currentPriceNum = parsePrice(currentPrice.value);
+const adjustIncreasePrice = () => {
     const pricePerStep = parsePrice(auction.value.sessionDetail.pricePerStep);
-    currentPrice.value = formatPrice(currentPriceNum + pricePerStep);
+    increasePrice.value = Math.ceil(increasePrice.value / pricePerStep) * pricePerStep;
 };
 
 const goBack = () => {
@@ -217,6 +218,7 @@ onMounted(() => {
 
     auction.value = auctions.find(a => a.id === auctionId) || {};
     currentPrice.value = auction.value.sessionDetail.startBid;
+    increasePrice.value = 0;
 
     updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
@@ -227,4 +229,7 @@ onUnmounted(() => {
         clearInterval(countdownInterval);
     }
 });
+
 </script>
+
+<style lang="scss" src="./style.scss" scoped />
