@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 /// here we have a convention that stateful functions (functions that refer to variables) are declared with function expressions
 /// and stateless functions are declared with arrow functions
 
-const wsurl = 'ws://localhost:8080/auction/ws';
+const wsurl = import.meta.env.VITE_WS_URL;
 
 const stompState = {
     connection: null,
