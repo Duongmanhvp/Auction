@@ -71,7 +71,7 @@
                 </div>
                 <div></div>
                 <a-list item-layout="horizontal" :data-source="data"
-                    class="p-5 overflow-y-scroll max-h-72 custom-scrollbar">
+                    class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
                     <template #renderItem="{ item }">
                         <a-list-item>
                             <a-list-item-meta
