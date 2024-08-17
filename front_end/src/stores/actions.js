@@ -1,10 +1,11 @@
 import { commonInputProps } from "ant-design-vue/es/vc-input/inputProps.js";
 import authApi from "../api/auths.js";
 import imageApi from "../api/images.js";
+import stompApi from "../api/stomp.js";
 import productApi from "../api/products.js";
 import auctionApi from "../api/auctions.js";
+import auctionSessionApi from "../api/auctionSession.js";
 import { jwtDecode } from "jwt-decode";
-import { useStore } from "vuex";
 
 export default {
   // clearAllState({ commit }) {
@@ -24,6 +25,8 @@ export default {
       if (scope === "ROLE_ADMIN") {
         commit("setAdmin", true);
       }
+
+      stompApi.setup();
     } catch (error) {
       throw error;
     } finally {
@@ -45,6 +48,7 @@ export default {
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
+      stompApi.teardown();
     } catch (error) {
       throw error;
     }
