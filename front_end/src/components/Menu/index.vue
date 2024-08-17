@@ -150,8 +150,4 @@ const toggleMenu = () => {
 
 </script>
 
-<style scoped>
-.menu-collapsed {
-    left: -16rem;
-}
-</style>
+<style lang="scss" src="./style.scss" scoped />

@@ -32,6 +32,4 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-@import './style.scss';
-</style>
+<style lang="scss" src="./style.scss" scoped />

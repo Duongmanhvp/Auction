@@ -95,10 +95,4 @@ const goToSessionDetail = (id) => {
 
 </script>
 
-<style scoped>
-.session-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-}
-</style>
+<style lang="scss" src="./style.scss" scoped />
