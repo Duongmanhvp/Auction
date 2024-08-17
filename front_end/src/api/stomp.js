@@ -3,8 +3,9 @@ import Websocket from 'ws';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 
-/// here we have a convention that stateful functions (functions that refer to variables) are declared with function expressions
-/// and stateless functions are declared with arrow functions
+/// convention for global function declaration:
+/// - stateful functions (functions that refer to global variables) are declared with function expressions
+/// - stateless functions are declared with arrow functions
 
 const wsurl = import.meta.env.VITE_WS_URL;
 
@@ -48,7 +49,7 @@ const stompApi = {
         controlCallbacks[type] = callback;
     },
     
-    // if callback is not provided, the function should return a promise
+    /// if callback is not provided, the function should return a promise
     subscribe(destination, onMessage, callback, errorCallback) {
         if (!stompState.connection?.client.connected) {
             throw new Error('Not connected');
@@ -92,7 +93,7 @@ const stompApi = {
         return !!subscription;
     },
     
-    // if callback is not provided, the function should return a promise
+    /// if callback is not provided, the function should return a promise
     send(destination, payload, callback, errorCallback) {
         if (!stompState.connection?.client.connected) {
             throw new Error('Not connected');
@@ -164,10 +165,10 @@ function registerReceiptCallback(messageId, callback, errorCallback) {
 
 
 const createConnection = async (token) => {
-  const websocket = await createWebSocket(token);
-  const client = await createStompClient(websocket, token);
-  const subscriptionRegistry = {};
-  return { client, subscriptionRegistry };
+    const websocket = await createWebSocket(token);
+    const client = await createStompClient(websocket, token);
+    const subscriptionRegistry = {};
+    return { client, subscriptionRegistry };
 }
 
 function setupErrorHandler() {
@@ -199,7 +200,8 @@ function setupSubscriptions() {
         throw new Error('Not connected');
     }
 
-    // note that this call must be placed before any other subscribe calls,
+    // this is a workaround for spring STOMP's lack of support for RECEIPT frame
+    // this call must be placed before any other subscribe calls,
     // as this is what enables receiving responses to other requests,
     // including `subscribe` itself
     subscribe(
@@ -223,12 +225,12 @@ function setupSubscriptions() {
 
 
 function onDisconnect() {
-  teardownConnection(); 
-  const reconnectInterval = setInterval(async function() {
-      setupConnection();
-      clearInterval(reconnectInterval);
-      connectCallbacks.forEach(callback => callback());
-  }, 5000);
+    teardownConnection(); 
+    const reconnectInterval = setInterval(async function() {
+        await setupConnection();
+        clearInterval(reconnectInterval);
+        connectCallbacks.forEach(callback => callback());
+    }, 5000);
 }
 
 function callConnectCallbacks() {
