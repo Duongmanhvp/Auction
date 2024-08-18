@@ -27,7 +27,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -73,7 +72,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(Long) product[6],
+						null
 				)).collect(Collectors.toList());
 	}
 	
@@ -160,7 +161,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(Long) product[5],
+						null
 				)).collect(Collectors.toList());
 		
 	}
@@ -220,4 +223,32 @@ public class ProductServiceImpl implements ProductService {
 		pageAuctionResponse.setContent(productResponses);
 		return pageAuctionResponse;
 	}
+	
+	@Override
+	public List<ProductResponse> getTop5MostPopularProducts() {
+		List<ProductResponse> topProducts = new ArrayList<>();
+		List<Object[]> products = userProductRepository.findTop5MostPopularProducts();
+		
+		for (Object[] result : products) {
+			Long productId = (Long) result[0];
+			Long userCount = (Long) result[1];
+			Product product = productRepository.findById(productId).orElseThrow(
+					() -> new NotFoundException("Product not found")
+			);
+			String owner = userRepository.findById(product.getOwnerId()).orElseThrow(
+					() -> new NotFoundException("Owner not found")
+			).getFullName();
+			ProductResponse productResponse = ProductResponse.builder()
+					.owner(owner)
+					.name(product.getName())
+					.category(product.getCategory())
+					.description(product.getDescription())
+					.image(product.getImage())
+					.productId(product.getId())
+					.quantity(userCount)
+					.build();
+			topProducts.add(productResponse);
+	}
+		return topProducts;
+}
 }

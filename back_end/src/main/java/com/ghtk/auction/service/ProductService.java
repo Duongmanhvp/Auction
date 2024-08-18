@@ -33,5 +33,7 @@ public interface ProductService {
 	
 	List<ProductResponse> searchProductbyCategory(ProductFilterRequest request);
 
-    PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize);
+	PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize);
+	
+	List<ProductResponse> getTop5MostPopularProducts();
 }

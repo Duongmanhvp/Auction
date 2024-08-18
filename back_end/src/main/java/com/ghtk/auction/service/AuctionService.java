@@ -26,7 +26,7 @@ public interface AuctionService {
 
     List<AuctionResponse> getRegisActiveAuctions(Jwt principal);
     // List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);//
-    
+    public List<Auction> getMyRegisteredAuction(Jwt principal);
     // ADMIN
     PageResponse<Auction> getAllList(int pageNo, int pageSize, String sortBy, String sortDir);
     
