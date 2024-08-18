@@ -22,33 +22,29 @@
                 <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
-                    <h2 class="text-md font-semibold text-gray-700 mb-2">Auction start {{ formattedTimeUntilStart }}
+                    <h2 class="text-md font-semibold text-green-600 mb-2">Auction start {{ formattedTimeUntilStart }}
                     </h2>
                 </div>
                 <div class="mb-4">
-                    <h2 class="text-md font-semibold text-gray-700 mb-2">Time remaining: {{ formattedTimeLeft }}</h2>
+                    <h2 class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ formattedTimeLeft }}</h2>
                 </div>
-
+                <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Details</h2>
-                    <p class="text-gray-600">{{ auction.description }}</p>
-                </div>
-                <div class="mb-4">
-                    <h2 class="text-xl font-semibold text-gray-700 mb-2">Session Details</h2>
-                    <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ auction.sessionDetail.description }}
-                    </p>
+                    <h2 class="text-xl font-semibold text-gray-700 mb-6">Session Details</h2>
+                    <!-- <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ auction.sessionDetail.description }}</p> -->
                     <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ auction.sessionDetail.startBid }}</p>
                     <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.sessionDetail.startTime }}</p>
                     <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.sessionDetail.endTime }}</p>
-                    <div class="flex items-center mb-6">
-                        <span class="text-gray-700 mr-2"><strong>Price per Step:</strong></span>
+                    <div class="flex items-center">
+                        <span class="text-gray-700 mr-2"><strong>Stepping Price:</strong></span>
                         <span class="text-gray-700 mr-2">{{ auction.sessionDetail.pricePerStep }}</span>
                     </div>
-                    <p class="text-gray-700 mb-2"><strong>Current Price:</strong> {{ currentPrice }}</p>
-                    <div class="flex items-center mb-4">
-                        <span class="text-gray-700 mr-2"><strong>Increase Price:</strong></span>
+                    <div class="border-b-2 border-gray-300 my-8"></div>
+                    <p class="text-gray-700 mb-2 text-xl"><strong>Current Price:</strong> {{ currentPrice }}</p>
+                    <div class="flex items-center mb-4 text-xl">
+                        <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
                         <input v-model.number="increasePrice" @input="adjustIncreasePrice" type="number"
-                            class="border p-2 rounded w-32 mr-2" step="pricePerStep" />
+                            class="border p-2 rounded w-44 mr-2" step="pricePerStep" />
                         VND
                     </div>
                     <button @click="handleAction" class="bg-green-500 text-white p-2 rounded mt-4 w-full">
@@ -56,6 +52,7 @@
                     </button>
                 </div>
             </div>
+            <div class="h-full w-px bg-gray-300 ml-4"></div>
             <div class="w-1/2">
                 <div class="p-4">
                     <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
@@ -87,7 +84,6 @@
                     </template>
                 </a-list>
             </div>
-
         </div>
     </div>
 </template>
