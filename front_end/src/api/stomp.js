@@ -1,7 +1,7 @@
 import { Client } from '@stomp/stompjs';
 import Websocket from 'ws';
 import { v4 as uuidv4 } from 'uuid';
-import jwt from 'jsonwebtoken';
+import { jwtDecode } from 'jwt-decode';
 
 /// convention for global function declaration:
 /// - stateful functions (functions that refer to global variables) are declared with function expressions
@@ -34,9 +34,13 @@ const stompApi = {
     },
 
     async setup() {
-        await setupConnection();
+        const token = localStorage.getItem('token');
+        if (!token) {
+            throw new Error('No token found');
+        }
+        stompState.userId = jwtDecode(token).id;
         stompState.receiptCallbackRegistry = {};
-        stompState.userId = jwt.decode(token).id;
+        await setupConnection();
     },
     
     async teardown() {
