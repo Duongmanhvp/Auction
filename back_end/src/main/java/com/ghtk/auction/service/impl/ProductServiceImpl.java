@@ -3,6 +3,8 @@ package com.ghtk.auction.service.impl;
 import com.ghtk.auction.dto.request.product.ProductCreationRequest;
 import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.product.ProductResponse;
+import com.ghtk.auction.dto.response.user.PageResponse;
+import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.User;
 import com.ghtk.auction.entity.UserProduct;
@@ -16,12 +18,15 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -67,7 +72,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(Long) product[6],
+						null
 				)).collect(Collectors.toList());
 	}
 	
@@ -154,7 +161,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						(String) product[4],
+						(Long) product[5],
+						null
 				)).collect(Collectors.toList());
 		
 	}
@@ -187,4 +196,59 @@ public class ProductServiceImpl implements ProductService {
 		).collect(Collectors.toList());
 		
 	}
+
+	@Override
+	public PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize) {
+		Pageable pageable= PageRequest.of(pageNo,pageSize);
+		List<Product> products = productRepository.findProductByName(key, pageable);
+//		Map<Long,String> ownerMap = new HashMap<>();
+//		products.forEach(product -> {
+//			if (!ownerMap.containsKey(product.getOwnerId())) {
+//				ownerMap.put(product.getOwnerId()
+//						,userRepository.findById(product.getOwnerId()).get().getFullName());
+//			}
+//		});
+		List<ProductResponse> productResponses = products.stream().map(
+				product -> ProductResponse.builder()
+						.owner(userRepository.findById(product.getOwnerId()).get().getFullName())
+						.name(product.getName())
+						.category(product.getCategory())
+						.description(product.getDescription())
+						.image(product.getImage())
+						.build()
+		).collect(Collectors.toList());
+		PageResponse<ProductResponse> pageAuctionResponse = new PageResponse<>();
+		pageAuctionResponse.setPageNo(pageNo);
+		pageAuctionResponse.setPageSize(pageSize);
+		pageAuctionResponse.setContent(productResponses);
+		return pageAuctionResponse;
+	}
+	
+	@Override
+	public List<ProductResponse> getTop5MostPopularProducts() {
+		List<ProductResponse> topProducts = new ArrayList<>();
+		List<Object[]> products = userProductRepository.findTop5MostPopularProducts();
+		
+		for (Object[] result : products) {
+			Long productId = (Long) result[0];
+			Long userCount = (Long) result[1];
+			Product product = productRepository.findById(productId).orElseThrow(
+					() -> new NotFoundException("Product not found")
+			);
+			String owner = userRepository.findById(product.getOwnerId()).orElseThrow(
+					() -> new NotFoundException("Owner not found")
+			).getFullName();
+			ProductResponse productResponse = ProductResponse.builder()
+					.owner(owner)
+					.name(product.getName())
+					.category(product.getCategory())
+					.description(product.getDescription())
+					.image(product.getImage())
+					.productId(product.getId())
+					.quantity(userCount)
+					.build();
+			topProducts.add(productResponse);
+	}
+		return topProducts;
+}
 }

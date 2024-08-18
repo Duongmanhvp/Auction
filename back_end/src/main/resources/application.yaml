@@ -7,7 +7,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: true
 #    properties:
 #      hibernate:
@@ -45,6 +45,10 @@ spring:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
 
+  devtools:
+    restart:
+      enabled: false
+
 
 jwt:
   signerKey: ${JWT_SIGNER_KEY:}
@@ -59,4 +63,10 @@ server:
 websocket:
   endpoint: /ws
 
-alloworigins: http://localhost:3000
+allowed-origins: >
+  *
+
+cloudinary:
+  name: ${CLOUD_NAME:}
+  key: ${API_KEY:}
+  secret: ${API_SECRET:}

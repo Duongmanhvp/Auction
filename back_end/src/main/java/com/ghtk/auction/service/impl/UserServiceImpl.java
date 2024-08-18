@@ -254,7 +254,31 @@ public class UserServiceImpl implements UserService {
 				.avatar(user.getAvatar())
 				.build();
 	}
-	
+
+	@Override
+	public PageResponse<UserResponse> getAllUserByStatus(UserStatus statusAccount, int pageNo, int pageSize, String sortBy, String sortDir) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+		Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+
+		Page<User> users = userRepository.findAllByStatusAccount(pageable,statusAccount);
+
+		List<User> listOfUser =users.getContent();
+
+		List<UserResponse> content =listOfUser.stream().map(userMapper::toUserResponse).toList();
+
+		PageResponse<UserResponse> pageUserResponse = new PageResponse<>();
+		pageUserResponse.setPageNo(pageNo);
+		pageUserResponse.setPageSize(pageSize);
+		pageUserResponse.setTotalPages(users.getTotalPages());
+		pageUserResponse.setTotalElements(users.getTotalElements());
+		pageUserResponse.setLast(users.isLast());
+		pageUserResponse.setContent(content);
+
+		return pageUserResponse;
+	}
+
 	private String generateOTP() {
 		//return String.valueOf((int) (Math.random() * 900000) + 100000);
 		return  String.format("%06d", new Random().nextInt(999999));
