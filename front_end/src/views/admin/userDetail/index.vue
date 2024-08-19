@@ -1,0 +1,75 @@
+<template>
+    <div v-show="isVisible" title="User Details" @click.self="closeModal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="modal-content relative bg-white p-6 rounded-lg w-full max-w-screen-lg mx-4 mt-28">
+            <button @click="closeModal" class="absolute top-4 right-4">
+                <img src="../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
+            </button>
+            <div class=" flex space-y-2">
+                <div class="w-1/3 flex items-center justify-center">
+                    <p><strong>User:</strong>
+                        <img src="../../../assets/images/j5m.jpg" alt="avatar" class=" w-52 h-52">
+                    </p>
+                </div>
+                <div class="w-2/3 space-y-2">
+                    <p><strong>Full Name:</strong> {{ user.fullName }}</p>
+                    <p><strong>Birthday:</strong> {{ user.dateOfBirth }}</p>
+                    <p><strong>Phone:</strong> {{ user.phone }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Address:</strong> {{ user.address }}</p>
+                    <p><strong>Gender:</strong> {{ user.gender }}</p>
+                    <select v-model="status" @change="updateStatus"
+                        class="form-select w-full border border-gray-300 rounded-md px-2 py-2">
+                        <option v-for="sta in statusOptions" :key="sta" :value="sta">{{ sta }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex flex-col items-center justify-center mt-4 space-y-4">
+                <button
+                    class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
+                    <img src="../../../assets/icon/accept.svg" alt="Accept User" class="w-6 h-6 mr-3" />
+                    Update
+                </button>
+                <button
+                    class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
+                    <img src="../../../assets/icon/delete-account.svg" alt="Accept User" class="w-6 h-6 mr-3" />
+                    Add to blacklist
+                </button>
+                <button
+                    class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
+                    <img src="../../../assets/icon/delete.svg" alt="Delete User" class="w-6 h-6 mr-3" />
+                    Delete User
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup>
+import { defineProps, defineEmits, ref } from 'vue';
+
+const props = defineProps({
+    user: Object,
+    isVisible: Boolean
+});
+
+const emit = defineEmits(['close']);
+
+const statusOptions = ref(['Active', 'Block', 'Ban']);
+const status = ref(props.user.status || 'Active');
+
+const closeModal = () => {
+    emit('close');
+};
+
+const updateStatus = () => {
+    console.log(`User ${props.user.fullName} status changed to: ${status.value}`);
+};
+</script>
+
+<style scoped>
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+</style>
