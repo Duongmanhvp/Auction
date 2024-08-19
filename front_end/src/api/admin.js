@@ -52,7 +52,7 @@ const adminApi = {
          if(!pageNo) {
             pageNo = 0;
          }
-         const response = await api.get('/v1/auctions/get-all-auction?pageNo=' + pageNo ,{ headers: { Authorization: `Bearer ${token}` } });
+         const response = await api.get('/v1/auctions/get-all-auction?sortBy=createdAt&sortDir=desc&pageNo=' + pageNo ,{ headers: { Authorization: `Bearer ${token}` } });
          console.log(response.data.data.content);
          return response.data.data;
       } catch (error) {
@@ -66,7 +66,7 @@ const adminApi = {
          if(!pageNo) {
             pageNo = 0;
          }
-         const response = await api.get('/v1/auctions/get-all-auction-by-status?statusAuction=' + status + '&pageNo=' + pageNo ,{ headers: { Authorization: `Bearer ${token}` } });
+         const response = await api.get('/v1/auctions/get-all-auction-by-status?sortBy=createdAt&sortDir=desc&statusAuction=' + status + '&pageNo=' + pageNo ,{ headers: { Authorization: `Bearer ${token}` } });
          console.log(response.data.data.content);
          return response.data.data;
       } catch (error) {
@@ -74,6 +74,18 @@ const adminApi = {
          throw error;
       }
    },
+
+   async confirmAuction(id) {
+      try {
+         const token = localStorage.getItem('token');
+         const response = await api.post('/v1/auctions/confirm/' + id , { headers: { Authorization: `Bearer ${token}` } });
+         message.success(response.data.message);
+         window.location.reload();
+      } catch (error) {
+         message.error(error.response.data.message);
+         throw error;
+      }
+   }
    
 
 };
