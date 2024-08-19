@@ -30,7 +30,7 @@ public interface AuctionService {
     List<AuctionResponse> getRegisActiveAuctions(Jwt principal);
     // List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);//
     // ADMIN
-    PageResponse<Auction> getAllList(int pageNo, int pageSize, String sortBy, String sortDir);
+    PageResponse<AuctionResponse> getAllList(int pageNo, int pageSize, String sortBy, String sortDir);
     
     // thay doi trang thai PENDING -> OPENING,
     // them fiels confirm_date, end_regis, start_time, end_time

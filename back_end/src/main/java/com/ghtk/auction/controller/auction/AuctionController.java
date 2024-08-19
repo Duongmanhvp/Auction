@@ -168,7 +168,7 @@ public class AuctionController {
     return ApiResponse.success(auctionRealtimeService.getComments(userId, auctionId, filter));
   }
 	@GetMapping("")
-	public ResponseEntity<ApiResponse<PageResponse<Auction>>> getAllAuction(
+	public ResponseEntity<ApiResponse<PageResponse<AuctionResponse>>> getAllAuction(
 			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
 			@RequestParam(value = "sort_by", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,

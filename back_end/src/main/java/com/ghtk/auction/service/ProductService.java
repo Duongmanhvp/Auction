@@ -36,4 +36,8 @@ public interface ProductService {
 	PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize);
 	
 	List<ProductResponse> getTop5MostPopularProducts();
+
+    PageResponse<ProductResponse> getAllProductByCategory(ProductCategory category, int pageNo, int pageSize, String sortBy, String sortDir);
+
+	PageResponse<ProductResponse> getAllProduct(int pageNo, int pageSize, String sortBy, String sortDir);
 }

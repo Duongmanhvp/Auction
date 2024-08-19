@@ -4,11 +4,14 @@ package com.ghtk.auction.controller.product;
 import com.ghtk.auction.dto.request.product.ProductCreationRequest;
 import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.ApiResponse;
+import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
 import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.Product;
+import com.ghtk.auction.enums.AuctionStatus;
+import com.ghtk.auction.enums.ProductCategory;
 import com.ghtk.auction.service.ProductService;
 import com.ghtk.auction.utils.AppConstants;
 import lombok.AccessLevel;
@@ -95,5 +98,26 @@ public class ProductController {
 			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
 	){
 		return ResponseEntity.ok(ApiResponse.success(productService.searchProduct(key, pageNo, pageSize)));
+	}
+
+	@GetMapping("/get-all-product-by-category")
+	public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getProductsByCategory(
+			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sort_by", defaultValue = "name", required = false) String sortBy,
+			@RequestParam(value = "sort_dir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@RequestParam(value ="category") ProductCategory category
+	){
+		return ResponseEntity.ok(ApiResponse.success(productService.getAllProductByCategory(category,pageNo, pageSize, sortBy, sortDir)));
+	}
+
+	@GetMapping("/get-all-product")
+	public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProduct(
+			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sort_by", defaultValue = "name", required = false) String sortBy,
+			@RequestParam(value = "sort_dir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+	){
+		return ResponseEntity.ok(ApiResponse.success(productService.getAllProduct(pageNo, pageSize, sortBy, sortDir)));
 	}
 }
