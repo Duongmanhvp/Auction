@@ -86,9 +86,9 @@ router.beforeEach((to, from, next) => {
       // } else if (requiresVerification && !email) {
       //     next({ path: '/login/verify2', query: { redirect: to.fullPath } });
       } else if (token && (to.path.startsWith('/login') || to.path === '/register' || to.path === '/home/default')) {
-          next(isAdmin ? '/admin/requestSession' : '/user/default');
+          next(isAdmin ? '/admin/auctionManagement' : '/user/default');
       } else if (token && isAdmin && to.path.startsWith('/user')) {
-          next('/admin/requestSession');
+          next('/admin/auctionManagement');
       } else {
           next();
       }
