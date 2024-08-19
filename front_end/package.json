@@ -22,8 +22,7 @@
     "vue": "^3.4.31",
     "vue-router": "^4.4.0",
     "vuex": "^4.0.2",
-    "vuex-persistedstate": "^4.1.0",
-    "ws": "^8.18.0"
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
