@@ -116,4 +116,16 @@ public class UserController {
 	){
 		return ResponseEntity.ok(ApiResponse.ok(userService.updateStatus(status,id)));
 	}
+	
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/get-all-info-by-status")
+	public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllUserByStatus(
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@RequestParam(value = "statusAccount") UserStatus statusAccount
+	){
+		return ResponseEntity.ok(ApiResponse.success(userService.getAllUserByStatus(statusAccount,pageNo, pageSize, sortBy, sortDir)));
+	}
 }
