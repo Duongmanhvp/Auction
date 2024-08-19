@@ -8,7 +8,7 @@ const config = {
 let auctionJoinRegistry = {};
 
 stompApi.setOnDisconnect(() => {
-    for (const session of auctionJoinRegistry) {
+    for (const session in auctionJoinRegistry) {
         session.leave();
     }
     auctionJoinRegistry = {};
