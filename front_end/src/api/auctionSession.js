@@ -8,7 +8,7 @@ const config = {
 let auctionJoinRegistry = {};
 
 stompApi.setOnDisconnect(() => {
-    for (const session of auctionJoinRegistry) {
+    for (const session in auctionJoinRegistry) {
         session.leave();
     }
     auctionJoinRegistry = {};
@@ -59,6 +59,10 @@ async function joinAuctionRoom(auctionId, callbacks) {
                 get: () => auctionJoinRegistry[auctionId] === session,
                 writable: false
             },
+            isActive: {
+                get: () => session.isJoined ? sessionActive : undefined,
+                writable: false
+            },
             leave: {
                 value: async function () {
                     if (this.isJoined) {
@@ -84,8 +88,8 @@ async function joinAuctionRoom(auctionId, callbacks) {
                 }
                 if (type === "end") {
                     sessionActive = false;
-                    if (sessionJoined) {
-                      session.leave();
+                    if (session.isJoined) {
+                        session.leave();
                     }
                     session.onEnd?.(body);
                 }
