@@ -3,6 +3,7 @@ package com.ghtk.auction.service.impl;
 import com.ghtk.auction.dto.request.product.ProductCreationRequest;
 import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.product.ProductResponse;
+import com.ghtk.auction.dto.response.product.ProductSearchResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.Product;
@@ -13,6 +14,7 @@ import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.repository.ProductRepository;
 import com.ghtk.auction.repository.UserProductRepository;
 import com.ghtk.auction.repository.UserRepository;
+import com.ghtk.auction.service.ImageService;
 import com.ghtk.auction.service.ProductService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
 	final ProductRepository productRepository;
 	final UserRepository userRepository;
 	final UserProductRepository userProductRepository;
+	final ImageService imageService;
 	
 	@Override
 	public Product createProduct(ProductCreationRequest request) {
@@ -52,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setOwnerId(user.getId());
 		product.setCategory(request.getCategory());
 		product.setDescription(request.getDescription());
-		product.setImage(request.getImage());
+		product.setImage(imageService.normalizeImageUrls(request.getImage()));
 		
 		return productRepository.save(product);
 		
@@ -73,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						imageService.restoreImageUrls((String) product[4])
 				)).collect(Collectors.toList());
 	}
 	
@@ -106,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
 						.name(product.getName())
 						.category(product.getCategory())
 						.description(product.getDescription())
-						.image(product.getImage())
+						.image(imageService.restoreImageUrls(product.getImage()))
 //						.buyer(buyerMap.get(product.getBuyerId()))
 						.build()
 		).collect(Collectors.toList());
@@ -125,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
 				.name(product.getName())
 				.category(product.getCategory())
 				.description(product.getDescription())
-				.image(product.getImage())
+				.image(imageService.restoreImageUrls(product.getImage()))
 				.build();
 	}
 	
@@ -160,7 +163,7 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						(String) product[4]
+						imageService.restoreImageUrls((String) product[4])
 				)).collect(Collectors.toList());
 		
 	}
@@ -188,36 +191,21 @@ public class ProductServiceImpl implements ProductService {
 						.name(product.getName())
 						.category(product.getCategory())
 						.description(product.getDescription())
-						.image(product.getImage())
+						.image(imageService.restoreImageUrls(product.getImage()))
 						.build()
 		).collect(Collectors.toList());
 		
 	}
 
 	@Override
-	public PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize) {
+	public PageResponse<ProductSearchResponse> searchProduct(String key, int pageNo, int pageSize) {
 		Pageable pageable= PageRequest.of(pageNo,pageSize);
-		List<Product> products = productRepository.findProductByName(key, pageable);
-//		Map<Long,String> ownerMap = new HashMap<>();
-//		products.forEach(product -> {
-//			if (!ownerMap.containsKey(product.getOwnerId())) {
-//				ownerMap.put(product.getOwnerId()
-//						,userRepository.findById(product.getOwnerId()).get().getFullName());
-//			}
-//		});
-		List<ProductResponse> productResponses = products.stream().map(
-				product -> ProductResponse.builder()
-						.owner(userRepository.findById(product.getOwnerId()).get().getFullName())
-						.name(product.getName())
-						.category(product.getCategory())
-						.description(product.getDescription())
-						.image(product.getImage())
-						.build()
-		).collect(Collectors.toList());
-		PageResponse<ProductResponse> pageAuctionResponse = new PageResponse<>();
+		List<ProductSearchResponse> products = productRepository.findProductByName(key, pageable);
+		PageResponse<ProductSearchResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
-		pageAuctionResponse.setContent(productResponses);
+		pageAuctionResponse.setLast(true);
+		pageAuctionResponse.setContent(products);
 		return pageAuctionResponse;
 	}
 }

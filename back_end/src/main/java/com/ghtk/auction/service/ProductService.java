@@ -4,6 +4,7 @@ package com.ghtk.auction.service;
 import com.ghtk.auction.dto.request.product.ProductCreationRequest;
 import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.product.ProductResponse;
+import com.ghtk.auction.dto.response.product.ProductSearchResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.enums.ProductCategory;
@@ -33,5 +34,5 @@ public interface ProductService {
 	
 	List<ProductResponse> searchProductbyCategory(ProductFilterRequest request);
 
-    PageResponse<ProductResponse> searchProduct(String key, int pageNo, int pageSize);
+    PageResponse<ProductSearchResponse> searchProduct(String key, int pageNo, int pageSize);
 }

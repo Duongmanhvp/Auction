@@ -6,6 +6,7 @@ import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.product.ProductDeletedResponse;
 import com.ghtk.auction.dto.response.product.ProductResponse;
+import com.ghtk.auction.dto.response.product.ProductSearchResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.Product;
@@ -84,7 +85,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/search")
-	public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> searchProduct(
+	public ResponseEntity<ApiResponse<PageResponse<ProductSearchResponse>>> searchProduct(
 			@RequestParam(value = "key", required = false) String key,
 			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
