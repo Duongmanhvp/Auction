@@ -217,7 +217,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     long lastPrice = getAuctionLastPrice(auctionId).get().getBid();
 
     boolean valid = bid >= info.getStartBid() 
-        && bid > lastPrice + info.getPricePerStep();
+        && bid >= lastPrice + info.getPricePerStep();
 
     if (!valid) {
       throw new ForbiddenException("Gia dau gia khong hop le");
