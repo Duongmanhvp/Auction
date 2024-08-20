@@ -76,7 +76,7 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						imageService.restoreImageUrls((String) product[4]),
+						(String) product[4],
 						(Long) product[6],
 						null
 				)).collect(Collectors.toList());
@@ -111,7 +111,7 @@ public class ProductServiceImpl implements ProductService {
 						.name(product.getName())
 						.category(product.getCategory())
 						.description(product.getDescription())
-						.image(imageService.restoreImageUrls(product.getImage()))
+						.image(product.getImage())
 //						.buyer(buyerMap.get(product.getBuyerId()))
 						.build()
 		).collect(Collectors.toList());
@@ -130,7 +130,7 @@ public class ProductServiceImpl implements ProductService {
 				.name(product.getName())
 				.category(product.getCategory())
 				.description(product.getDescription())
-				.image(imageService.restoreImageUrls(product.getImage()))
+				.image(product.getImage())
 				.build();
 	}
 	
@@ -165,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						imageService.restoreImageUrls((String) product[4]),
+						(String) product[4],
 						(Long) product[5],
 						null
 				)).collect(Collectors.toList());
@@ -195,7 +195,7 @@ public class ProductServiceImpl implements ProductService {
 						.name(product.getName())
 						.category(product.getCategory())
 						.description(product.getDescription())
-						.image(imageService.restoreImageUrls(product.getImage()))
+						.image(product.getImage())
 						.build()
 		).collect(Collectors.toList());
 		
@@ -232,7 +232,7 @@ public class ProductServiceImpl implements ProductService {
 					.name(product.getName())
 					.category(product.getCategory())
 					.description(product.getDescription())
-					.image(imageService.restoreImageUrls(product.getImage()))
+					.image(product.getImage())
 					.productId(product.getId())
 					.quantity(userCount)
 					.build();
