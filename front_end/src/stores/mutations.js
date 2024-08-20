@@ -3,6 +3,7 @@ export default {
    //    Object.assign(state, getDefaultState());
    //  },
    setUser(state, user) {
+      state.user.id = user.id || '';
       state.user.fullName = user.fullName || '';
       state.user.dateOfBirth = user.dateOfBirth || '';
       state.user.email = user.email || '';

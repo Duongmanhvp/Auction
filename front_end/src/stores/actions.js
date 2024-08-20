@@ -19,7 +19,7 @@ export default {
 
       localStorage.setItem("token", response.token);
       const decodedToken = jwtDecode(response.token);
-      commit("setUser", { email: decodedToken.sub });
+      commit("setUser", { id: decodedToken.id, email: decodedToken.sub });
       commit("setLoginState", true);
       const scope = decodedToken.scope;
       if (scope === "ROLE_ADMIN") {
@@ -36,8 +36,9 @@ export default {
 
   async logout({ commit }) {
     try {
-      await authApi.logout(); 
+      const promise = authApi.logout(); 
       commit("setUser", {
+        id: null,
         fullName: '',
         dateOfBirth:'' ,
         email: '',
@@ -48,7 +49,9 @@ export default {
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
+      localStorage.removeItem("token");
       stompApi.teardown();
+      return promise;
     } catch (error) {
       throw error;
     }
