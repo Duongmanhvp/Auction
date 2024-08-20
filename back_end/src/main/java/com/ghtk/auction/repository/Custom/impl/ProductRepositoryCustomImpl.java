@@ -24,16 +24,18 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final ImageService imageService;
-
     @Override
-    public List<ProductSearchResponse> findProductByName(String key, Pageable pageable) {
+    public List<ProductSearchResponse> findProduct(String key, Pageable pageable, ProductCategory category) {
         StringBuilder sql = new StringBuilder("SELECT p.id, u.full_name, p.name, p.category, p.description, p.image FROM product p ");
         StringBuilder where = new StringBuilder("WHERE 1=1 ");
+        sql.append("join user u on u.id = p.owner_id ");
         if(key != null && !key.equals("")) {
-            sql.append("join user u on u.id = p.owner_id ");
             where.append("AND p.name like " + "'" + key + "%' ");
         }
+        if(category != null) {
+            where.append("AND p.category = " + "'" + category.toString() + "' ");
+        }
+        where.append("ORDER BY id DESC ");
         sql.append(where);
         sql.append(" LIMIT ").append(pageable.getPageSize()).append("\n");
         sql.append(" OFFSET ").append(pageable.getOffset());
@@ -43,11 +45,12 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         for (Object[] result : results) {
             ProductSearchResponse response = new ProductSearchResponse();
+            response.setId((Long) result[0]);
             response.setOwner((String) result[1]);
             response.setName((String) result[2]);
             response.setCategory(ProductCategory.valueOf((String) result[3]));
             response.setDescription((String) result[4]);
-            response.setImage(imageService.restoreImageUrls((String) result[5]));
+            response.setImage((String) result[5]);
             responses.add(response);
         }
 

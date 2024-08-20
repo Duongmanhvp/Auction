@@ -204,7 +204,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public PageResponse<ProductSearchResponse> searchProduct(String key, int pageNo, int pageSize) {
 		Pageable pageable= PageRequest.of(pageNo,pageSize);
-		List<ProductSearchResponse> products = productRepository.findProductByName(key, pageable);
+		List<ProductSearchResponse> products = productRepository.findProduct(key, pageable, null);
 		PageResponse<ProductSearchResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
@@ -242,48 +242,50 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	@Override
-	public PageResponse<ProductResponse> getAllProductByCategory(ProductCategory category, int pageNo, int pageSize, String sortBy, String sortDir) {
-		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-		
-		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-		
-		Page<Product> products =productRepository.findAllByCategory(category, pageable);
-		
-		List<Product> listOfProducts =products.getContent();
-		
-		List<ProductResponse> content =listOfProducts.stream().map(productMapper::toProductResponse).toList();
+	public PageResponse<ProductResponse> getAllProductByCategory(ProductCategory category, int pageNo, int pageSize) {
+		Pageable pageable= PageRequest.of(pageNo,pageSize);
+
+		List<ProductSearchResponse> products = productRepository.findProduct(null, pageable, category);
+
+		List<ProductResponse> content = products.stream().map(product ->
+				ProductResponse.builder()
+						.owner(product.getOwner())
+						.image(product.getImage())
+						.productId(product.getId())
+						.description(product.getDescription())
+						.category(product.getCategory())
+						.name(product.getName())
+						.quantity(null)
+						.build()
+		).toList();
 		
 		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
 		pageProductResponse.setPageNo(pageNo);
 		pageProductResponse.setPageSize(pageSize);
-		pageProductResponse.setTotalPages(products.getTotalPages());
-		pageProductResponse.setTotalElements(products.getTotalElements());
-		pageProductResponse.setLast(products.isLast());
 		pageProductResponse.setContent(content);
 		return pageProductResponse;
 	}
 	
 	@Override
-	public PageResponse<ProductResponse> getAllProduct(int pageNo, int pageSize, String sortBy, String sortDir) {
-		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+	public PageResponse<ProductResponse> getAllProduct(int pageNo, int pageSize) {
+		Pageable pageable= PageRequest.of(pageNo,pageSize);
 		
-		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+		List<ProductSearchResponse> products = productRepository.findProduct(null, pageable, null);
 		
-		Page<Product> products =productRepository.findAll(pageable);
-		
-		List<Product> listOfAuction =products.getContent();
-		
-		List<ProductResponse> content =listOfAuction.stream().map(productMapper::toProductResponse).toList();
-		
-		
+		List<ProductResponse> content = products.stream().map(product ->
+				ProductResponse.builder()
+						.owner(product.getOwner())
+						.image(product.getImage())
+						.productId(product.getId())
+						.description(product.getDescription())
+						.category(product.getCategory())
+						.name(product.getName())
+						.quantity(null)
+						.build()
+				).toList();
 		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
 		pageProductResponse.setPageNo(pageNo);
 		pageProductResponse.setPageSize(pageSize);
-		pageProductResponse.setTotalPages(products.getTotalPages());
-		pageProductResponse.setTotalElements(products.getTotalElements());
-		pageProductResponse.setLast(products.isLast());
 		pageProductResponse.setContent(content);
 		return pageProductResponse;
 	}

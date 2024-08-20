@@ -3,6 +3,7 @@ package com.ghtk.auction.service.impl;
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
+import com.ghtk.auction.dto.response.auction.AuctionListResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.*;
@@ -222,26 +223,17 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	// ADMIN
 	@Override
-	public PageResponse<AuctionResponse> getAllList(int pageNo, int pageSize, String sortBy, String sortDir) {
+	public PageResponse<AuctionListResponse> getAllList(int pageNo, int pageSize) {
     // TODO:
-		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		Pageable pageable = PageRequest.of(pageNo,pageSize);
 
-		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
-
-		Page<Auction> auctions =auctionRepository.findAll(pageable);
-
-		List<Auction> listOfAuction =auctions.getContent();
-		
-		List<AuctionResponse> content =listOfAuction.stream().map(auctionMapper::toAuctionResponse).toList();
-		
-		PageResponse<AuctionResponse> pageAuctionResponse = new PageResponse<>();
+		List<AuctionListResponse> auctions = auctionRepository.getAllAuctionListResponse(pageable,null);
+		PageResponse<AuctionListResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
-		pageAuctionResponse.setTotalPages(auctions.getTotalPages());
-		pageAuctionResponse.setTotalElements(auctions.getTotalElements());
-		pageAuctionResponse.setLast(auctions.isLast());
-		pageAuctionResponse.setContent(content);
+		pageAuctionResponse.setLast(true);
+		pageAuctionResponse.setContent(auctions);
+
 		return pageAuctionResponse;
 	}
 	
@@ -305,25 +297,16 @@ public class AuctionServiceImpl implements AuctionService {
 	}
 	
 	@Override
-	public PageResponse<AuctionResponse> getAllAuctionByStatus(AuctionStatus auctionStatus, int pageNo, int pageSize, String sortBy, String sortDir) {
-		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+	public PageResponse<AuctionListResponse> getAllAuctionByStatus(AuctionStatus auctionStatus, int pageNo, int pageSize) {
 		
-		Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
+		Pageable pageable = PageRequest.of(pageNo,pageSize);
 		
-		Page<Auction> auctions = auctionRepository.findAllByStatus(auctionStatus,pageable);
-		
-		List<Auction> auctionList =auctions.getContent();
-		
-		List<AuctionResponse> content =auctionList.stream().map(auctionMapper::toAuctionResponse).toList();
-		
-		PageResponse<AuctionResponse> pageAuctionResponse = new PageResponse<>();
+		List<AuctionListResponse> auctions = auctionRepository.getAllAuctionListResponse(pageable,auctionStatus);
+		PageResponse<AuctionListResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
-		pageAuctionResponse.setTotalPages(auctions.getTotalPages());
-		pageAuctionResponse.setTotalElements(auctions.getTotalElements());
-		pageAuctionResponse.setLast(auctions.isLast());
-		pageAuctionResponse.setContent(content);
+		pageAuctionResponse.setLast(true);
+		pageAuctionResponse.setContent(auctions);
 		
 		return pageAuctionResponse;
 	}

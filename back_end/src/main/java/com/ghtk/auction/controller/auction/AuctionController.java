@@ -6,6 +6,7 @@ import com.ghtk.auction.dto.request.comment.CommentFilter;
 import com.ghtk.auction.dto.response.ApiResponse;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
 import com.ghtk.auction.dto.response.auction.AuctionJoinResponse;
+import com.ghtk.auction.dto.response.auction.AuctionListResponse;
 import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.dto.stomp.CommentMessage;
@@ -169,23 +170,19 @@ public class AuctionController {
     return ApiResponse.success(auctionRealtimeService.getComments(userId, auctionId, filter));
   }
 	@GetMapping("/get-all-auction")
-	public ResponseEntity<ApiResponse<PageResponse<AuctionResponse>>> getAllAuction(
-			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+	public ResponseEntity<ApiResponse<PageResponse<AuctionListResponse>>> getAllAuction(
+			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
 	){
-		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllList(pageNo, pageSize, sortBy, sortDir)));
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllList(pageNo, pageSize)));
 	}
 	
 	@GetMapping("/get-all-auction-by-status")
-	public ResponseEntity<ApiResponse<PageResponse<AuctionResponse>>> getAllAuctionByStatus(
-			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-			@RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-			@RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
-			@RequestParam(value ="statusAuction") AuctionStatus status
+	public ResponseEntity<ApiResponse<PageResponse<AuctionListResponse>>> getAllAuctionByStatus(
+			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value ="status_auction") AuctionStatus status
 	){
-		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllAuctionByStatus(status,pageNo, pageSize, sortBy, sortDir)));
+		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllAuctionByStatus(status,pageNo, pageSize)));
 	}
 }

@@ -259,26 +259,14 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public PageResponse<UserResponse> getAllUserByStatus(UserStatus statusAccount, int pageNo, int pageSize, String sortBy, String sortDir) {
-		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-		
-		Pageable pageable = PageRequest.of(pageNo,pageSize,sort);
-		
-		Page<User> users = userRepository.findAllByStatusAccount(pageable,statusAccount);
-		
-		List<User> listOfUser =users.getContent();
-		
-		List<UserResponse> content =listOfUser.stream().map(userMapper::toUserResponse).toList();
-		
+	public PageResponse<UserResponse> getAllUserByStatus(UserStatus statusAccount, int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo,pageSize);
+		List<UserResponse> content = userRepository.findUsersAll(pageable, statusAccount);
 		PageResponse<UserResponse> pageUserResponse = new PageResponse<>();
 		pageUserResponse.setPageNo(pageNo);
 		pageUserResponse.setPageSize(pageSize);
-		pageUserResponse.setTotalPages(users.getTotalPages());
-		pageUserResponse.setTotalElements(users.getTotalElements());
-		pageUserResponse.setLast(users.isLast());
+		pageUserResponse.setLast(true);
 		pageUserResponse.setContent(content);
-		
 		return pageUserResponse;
 	}
 	
