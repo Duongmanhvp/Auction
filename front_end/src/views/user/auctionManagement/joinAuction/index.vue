@@ -3,7 +3,7 @@
         <button @click="goBack" class="absolute -top-16 right-96 z-50 text-gray-500 hover:text-gray-700 mt-20">
             <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
         </button>
-        <div class="w-1/2 bg-black">
+        <div class="w-1/3 bg-black">
             <div class="flex justify-center items-center h-screen relative">
                 <img v-for="(image, index) in images" :key="index" :src="image.src" alt="Session"
                     v-show="index === currentImageIndex" class="max-w-full max-h-full object-contain" />
@@ -17,38 +17,40 @@
                 </button>
             </div>
         </div>
-        <div class="flex w-1/2 p-4 bg-white max-h-screen">
+        <div class="flex w-2/3 p-4 bg-white max-h-screen">
             <div class="w-1/2">
                 <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
-                <div class="mb-4">
-                    <h2 class="text-md font-semibold text-green-600 mb-2">Auction start {{ formattedTimeUntilStart }}
-                    </h2>
+                <div v-if="sessionState === 'PENDING'" class="mb-4">
+                    <h2 class="text-md font-semibold text-blue-400-600 mb-2">Auction start after: {{ timeUntilStart }} </h2>
                 </div>
-                <div class="mb-4">
-                    <h2 class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ formattedTimeLeft }}</h2>
+                <div v-else-if="sessionState === 'IN_PROGRESS'" class="mb-4">
+                    <h2 class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ timeLeft }}</h2>
+                </div>
+                <div v-else-if="sessionState === 'ENDED'" class="mb-4">
+                    <h2 class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
                 </div>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
                     <h2 class="text-xl font-semibold text-gray-700 mb-6">Session Details</h2>
                     <!-- <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ auction.sessionDetail.description }}</p> -->
-                    <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ formattedStartingBid }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Starting Price:</strong> {{ formattedStartingBid }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Stepping Price:</strong> {{ formattedSteppingPrice }}</p>
                     <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.startTime ?? '?' }}</p>
                     <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.endTime ?? '?' }}</p>
-                    <div class="flex items-center">
-                        <span class="text-gray-700 mr-2"><strong>Stepping Price:</strong></span>
-                        <span class="text-gray-700 mr-2">{{ formattedSteppingPrice }}</span>
-                    </div>
                     <div class="border-b-2 border-gray-300 my-8"></div>
                     <p :class="{'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours}" 
                             class="text-gray-700 mb-2 text-xl">
-                        <strong>Current Price:</strong> {{ formattedCurrentPrice }}
+                        <strong>Current Price:</strong> {{ formattedCurrentPrice }} VND
                     </p>
                     <div class="flex items-center mb-4 text-xl">
                         <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
-                        <input v-model="yourPriceInput" @input="adjustYourPrice" @keydown.enter="handlePlaceBid" type="text"
-                            class="border p-2 rounded w-44 mr-2" step="pricePerStep" />
-                        VND
+                        <input v-model="yourPriceInput" type="text" 
+                            @input="adjustYourPrice" 
+                            @keydown.enter="handlePlaceBid" 
+                            @keydown.up="increasePrice"
+                            @keydown.down="decreasePrice"
+                                class="border p-2 rounded w-44 text-right font-mono" :step="steppingPrice" /> VND
                     </div>
                     <button @click="handlePlaceBid" :disabled="!biddable" 
                             :class="[biddable ? 'bg-green-500' : 'bg-gray-500']" 
@@ -60,29 +62,24 @@
             <div class="h-full w-px bg-gray-300 ml-4"></div>
             <div class="w-1/2">
                 <div class="p-4">
-                    <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
+                    <a-card v-for="(noti, index) in notifications" :key="index" hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
                         <template #actions>
                         </template>
-                        <a-card-meta title="Notification 1" description="This is the description"></a-card-meta>
-                    </a-card>
-                    <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
-                        <template #actions>
-                        </template>
-                        <a-card-meta title="Notification 2" description="This is the description"></a-card-meta>
+                        <a-card-meta :title="index+1" :description="noti.content"></a-card-meta>
                     </a-card>
                 </div>
                 <div></div>
-                <a-list item-layout="horizontal" :data-source="data"
+                <a-list item-layout="horizontal" :data-source="comments"
                     class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
                     <template #renderItem="{ item }">
-                        <a-list-item>
+                        <a-list-item :key="item.id">
                             <a-list-item-meta
-                                description="Ant Design, a design language for background applications, is refined by Ant UED Team">
+                                :description="item.content">
                                 <template #title>
-                                    <a class="font-bold" href="https://www.antdv.com/">{{ item.title }}</a>
+                                    <a class="font-bold" href="https://www.antdv.com/">{{ item.name }}</a>
                                 </template>
                                 <template #avatar>
-                                    <a-avatar src="https://joeschmoe.io/api/v1/random" />
+                                    <a-avatar src="image1" />
                                 </template>
                             </a-list-item-meta>
                         </a-list-item>
@@ -96,7 +93,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, watchEffect, defineProps } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { formatDistance, parse, parseISO } from 'date-fns';
+import { differenceInMilliseconds, differenceInSeconds, formatDistance, parse, parseISO } from 'date-fns';
 import { useStore } from 'vuex';
 import { jwtDecode } from 'jwt-decode';
 import stompApi from '../../../../api/stomp';
@@ -134,7 +131,7 @@ import image1 from '../../../../assets/images/image1.jpg';
 import image2 from '../../../../assets/images/image2.jpg';
 import image3 from '../../../../assets/images/image3.jpg';
 const images = computed(() => {
-    return product.value?.image?.split(', ').map((src) => ({ src })) ||
+    return (false && !product.value?.image?.split(/,(\s)?/).map((src) => ({ src }))) ||
     [
         { src: image1 },
         { src: image2 },
@@ -161,58 +158,52 @@ function nextImage() {
 };
 
 
-const now = ref(new Date());
+const baseDate = new Date();
+let diffseconds = 0;
+const now = ref(baseDate);
 const timeUntilStart = computed(() => {
     if (!auction.value.startTime) {
         return null;
     }
-    const startTime = 123;// parseISO(auction.value.startTime);
-    if (now.value < startTime) {
-        return startTime - now.value;
-    }
-    return 0;
+    const startTime = parse(auction.value.startTime, 'yyyy-MM-dd HH:mm:ss', new Date());
+    return formatTimeLeft(now.value, startTime);
 })
 const timeLeft = computed(() => {
     if (!auction.value.endTime) {
         return null;
     }
-    const endTime = 456;// parseISOauction.value.endTime;
-    if (now.value < endTime) {
-        return endTime - now.value;
-    }
-    return 0;
+    const endTime = parse(auction.value.endTime, 'yyyy-MM-dd HH:mm:ss', new Date());
+    return formatTimeLeft(now.value, endTime);
 })
+
+function updateCountdown() {
+    const theNow = new Date();
+    const diff = Math.floor(differenceInSeconds(theNow, baseDate));
+    if (diff > diffseconds) {
+        diffseconds = diff;
+        now.value = theNow;
+    }
+};
 
 let countdownInterval = null;
 
-function updateCountdown() {
-    now.value = new Date();
-};
+function formatTimeLeft(from, to) {
+    let inSeconds = differenceInSeconds(to, from);
+    const negative = inSeconds < 0;
+    inSeconds = Math.abs(inSeconds);
+    const hours = Math.floor(inSeconds / 3600);
+    const minutes = Math.floor(inSeconds / 60) % 60;
+    const seconds = inSeconds % 60;
+    return `${negative ? '-' : ''}${formatUnit(hours)}:${formatUnit(minutes)}:${formatUnit(seconds)}`;
 
-const formattedTimeUntilStart = computed(() => {
-    if (timeUntilStart.value == null) {
-        return '';
+    function formatUnit(unit) {
+        return unit.toString().padStart(2, '0');
     }
-    // return timeUntilStart.value > 0
-    //     ? formatDistance(new Date(timeUntilStart.value), 0, { addSuffix: true })
-    //     : 'now';
-    return 123;
-});
-
-const formattedTimeLeft = computed(() => {
-    if (timeLeft.value == null) {
-        return '';
-    }
-    // return timeLeft.value > 0
-    //     ? formatDistance(new Date(timeLeft.value), 0, { addSuffix: true })
-    //     : `Auction has not started`;
-    return 456;
-});
+}
 
 
 
-
-const ongoing = ref(false);
+const sessionState = ref(null);
 const startingPrice = computed(() => auction.value.startBid);
 const steppingPrice = computed(() => auction.value.pricePerStep);
 const currentPrice = ref(null);
@@ -235,23 +226,65 @@ const formattedCurrentPrice = computed(() => {
 // });
 
 const biddable = computed(() => {
-    console.log('biddable', ongoing.value, parsePrice(yourPriceInput.value), currentPrice.value + auction.value.pricePerStep);
-    return ongoing.value && parsePrice(yourPriceInput.value) >= currentPrice.value + auction.value.pricePerStep;
+    const minimumPrice = currentPrice.value + steppingPrice.value;
+    const yourPrice = parsePrice(yourPriceInput.value);
+    return sessionState.value === "IN_PROGRESS" && yourPrice >= minimumPrice;
 });
 
-function parsePrice(priceStr) {
-    return parseInt(priceStr.replace(/\D/g, '')) || 0;
+function adjustYourPrice(event) {
+    const newPrice = parsePrice(event.target.value);
+    const oldCursorPos = event.target.selectionStart;
+    const digitsToTheRight = event.target.value.substring(oldCursorPos).match(/\d/g)?.length || 0;
+
+    const formatted = formatPrice(newPrice);
+    let newCursorPos = formatted.length;
+    let dgcount = 0;
+    while (dgcount < digitsToTheRight && newCursorPos > 0) {
+        if (formatted[newCursorPos - 1].match(/\d/)) {
+            dgcount++;
+        }
+        newCursorPos--;
+    }
+    if (dgcount < digitsToTheRight) {
+        newCursorPos = formatted.length;
+    }
+    yourPriceInput.value = formatted;
+    setTimeout(() => {
+        event.target.setSelectionRange(newCursorPos, newCursorPos);
+    }, 0);
 };
 
-function formatPrice(priceNum) {
-    return priceNum == null ? "" :
-        `${priceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-};
+function increasePrice() {
+    if (!auctionInfoRef.value) {
+        return;
+    }
+    const yourPrice = parsePrice(yourPriceInput.value);
+    const addedPrice = yourPrice + steppingPrice.value;
+    const minimumPrice = Math.max(startingPrice.value, 
+        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
 
-function adjustYourPrice() {
-    const newPrice = parsePrice(yourPriceInput.value);
-    yourPriceInput.value = formatPrice(newPrice);
-};
+    if (addedPrice < minimumPrice) {
+        yourPriceInput.value = formatPrice(minimumPrice);
+    } else {
+        yourPriceInput.value = formatPrice(addedPrice);
+    }
+}
+
+function decreasePrice() {
+    if (!auctionInfoRef.value) {
+        return;
+    }
+    const yourPrice = parsePrice(yourPriceInput.value);
+    const decreasedPrice = yourPrice - steppingPrice.value;
+    const minimumPrice = Math.max(0, startingPrice.value, 
+        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
+
+    if (decreasedPrice < minimumPrice) {
+        yourPriceInput.value = formatPrice(minimumPrice);
+    } else {
+        yourPriceInput.value = formatPrice(decreasedPrice);
+    }
+}
 
 function handlePlaceBid() {
     if (!biddable.value) {
@@ -265,6 +298,15 @@ function updateBid(bid) {
     currentPrice.value = bid.bid;
     isCurrentPriceYours.value = bid.userId === userId;
 }
+
+function parsePrice(priceStr) {
+    return (parseInt(priceStr.replace(/\./g, '')) || 0);
+};
+
+function formatPrice(priceNum) {
+    return priceNum == null ? "" :
+        `${priceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
 
 
 
@@ -283,8 +325,8 @@ onMounted(() => {
     .then((res) => {
         console.log(res)
         auctionInfoRef.value = res;
-        ongoing.value = auctionInfoRef.value?.status === 'IN_PROGRESS';
-        if (ongoing.value) {
+        sessionState.value = res.status === "CLOSED" ? "PENDING" : res.status;
+        if (sessionState.value === "IN_PROGRESS") {
             sessionApi.getCurrentPrice(auctionId).then((res) => {
                 updateBid(res.data);
             });
@@ -296,24 +338,33 @@ onMounted(() => {
 
     sessionApi.joinAuctionRoom(auctionId, {
         onStart: () => {
-            ongoing.value = true;
+            sessionState.value = "IN_PROGRESS";
             console.log('auction started');
+            sessionApi.getCurrentPrice(auctionId).then((res) => {
+                updateBid(res.data);
+            });
         },
         onEnd: () => {
-            ongoing.value = false;
+            sessionState.value = "ENDED";
+            console.log('auction ended');
         },
         onBid: updateBid,
         onComment: (data) => {
-            comments.value.push(data);
+            const { commentId, userId, content } = data;
+            // TODO: get user name using api
+            Promise.resolve({ name: "NPC" }).then((user) => {
+                comments.value.push({ id: commentId, userId, name: user.name, content });
+            })
         },
         onNotification: (data) => {
+            console.log('notification', data);
             notifications.value.push(data);
         },
     }).catch((err) => {
         console.error(err);
     });
 
-    countdownInterval = setInterval(updateCountdown, 1000);
+    countdownInterval = setInterval(updateCountdown, 100);
     window.addEventListener('beforeunload', handleUnload);
 });
 
