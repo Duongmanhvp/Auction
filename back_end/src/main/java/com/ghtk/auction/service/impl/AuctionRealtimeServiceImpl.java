@@ -133,7 +133,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   public void leaveAuction(Long userId, Long auctionId) {
     UserAuction ua = userAuctionRepository.findByUserIdAndAuctionId(userId, auctionId);
     LocalDateTime joinTime = getUserLastJoinAuction(userId, auctionId).orElseThrow(
-        () -> new RuntimeException("Chua tham gia dau gia")
+        () -> new ForbiddenException("Chua tham gia dau gia")
     );
     LocalDateTime leaveTime = LocalDateTime.now();
     TimeHistory entry = TimeHistory.builder()
@@ -161,7 +161,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
       throw new ForbiddenException("Phien dau gia chua bat dau");
     }
     getUserLastJoinAuction(userId, auctionId).orElseThrow(() ->
-        new RuntimeException("Chua tham gia dau gia")
+        new ForbiddenException("Chua tham gia dau gia")
     );
   }
 
@@ -176,11 +176,11 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   }
 
   @Override
-  public Long getCurrentPrice(Long userId, Long auctionId) {
+  public BidMessage getCurrentPrice(Long userId, Long auctionId) {
     if (!isAuctionActive(auctionId)) {
       throw new ForbiddenException("Phien dau gia chua bat dau");
     }
-    Long result = getAuctionLastPrice(auctionId).orElse(0L);
+    BidMessage result = getAuctionLastPrice(auctionId).get();
     return result;
   }
 
@@ -214,7 +214,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
         () -> new NotFoundException("Khong tim thay phien dau gia")
     );
 
-    long lastPrice = getAuctionLastPrice(auctionId).get();
+    long lastPrice = getAuctionLastPrice(auctionId).get().getBid();
 
     boolean valid = bid >= info.getStartBid() 
         && bid > lastPrice + info.getPricePerStep();
@@ -231,8 +231,8 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
       time
     );
     addBid(auctionId, auctionBid);
-    setAuctionLastPrice(auctionId, bid); 
     BidMessage message = new BidMessage(userId, auctionBid.getBid(), auctionBid.getCreatedAt());
+    setAuctionLastPrice(auctionId, message); 
     eventPublisher.publishEvent(new BidEvent(auctionId, userId, bid, time));
     return message;
 	}
@@ -291,7 +291,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
       throw new ForbiddenException("Phien dau gia da bat dau");
     }
     setAuctionActive(auctionId);
-    setAuctionLastPrice(auctionId, 0L);
+    setAuctionLastPrice(auctionId, new BidMessage(null, 0L, LocalDateTime.now()));
     eventPublisher.publishEvent(new AuctionStartEvent(auctionId));
   }
 
@@ -309,7 +309,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
       deleteAuctionActive(auctionId);
 
       Product product = auction.getProduct();
-      long lastPrice = getAuctionLastPrice(auctionId).get();
+      long lastPrice = getAuctionLastPrice(auctionId).get().getBid();
       List<AuctionBid> bids = getBids(auctionId);
 
       if (!bids.isEmpty()) {
@@ -458,15 +458,15 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     return String.format("auction:%d:last_price", auctionId);
   }
 
-  private Optional<Long> getAuctionLastPrice(long auctionId) {
+  private Optional<BidMessage> getAuctionLastPrice(long auctionId) {
     String key = getLastPriceKey(auctionId);
-    return Optional.ofNullable(redisTemplate.opsForValue().get(key))
-        .map(Long::parseLong);
+    var template = redisTemplateFactory.get(BidMessage.class);
+    return Optional.ofNullable(template.opsForValue().get(key));
   }
 
-  private void setAuctionLastPrice(long auctionId, Long bid) {
+  private void setAuctionLastPrice(long auctionId, BidMessage bid) {
     String key = getLastPriceKey(auctionId);
-    redisTemplate.opsForValue().set(key, bid.toString());
+    redisTemplateFactory.get(BidMessage.class).opsForValue().set(key, bid);
   }
 
   private void deleteAuctionLastPrice(Long auctionId) {
