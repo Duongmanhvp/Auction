@@ -89,12 +89,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { formatDistance, parseISO } from 'date-fns';
-import image1 from '../../../../assets/images/image1.jpg';
-import image2 from '../../../../assets/images/image2.jpg';
-import image3 from '../../../../assets/images/image3.jpg';
+import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { formatDistance, parseISO } from "date-fns";
+import image1 from "../../../../assets/images/image1.jpg";
+import image2 from "../../../../assets/images/image2.jpg";
+import image3 from "../../../../assets/images/image3.jpg";
+import { useStore } from "vuex";
 
 const data = [
     {
@@ -122,6 +123,8 @@ const increasePrice = ref(0);
 const timeUntilStart = ref(0);
 const timeLeft = ref(0);
 let countdownInterval = null;
+const store = useStore();
+let images = reactive([])
 
 const parsePrice = (priceStr) => {
     return parseInt(priceStr.replace('VND', '').trim());

@@ -11,7 +11,7 @@
                 <div class="flex-1 relative">
                     <div class="w-full h-64 overflow-hidden rounded-md">
                         <div class="flex-1">
-                            <img v-for="(image, index) in images[pos]" :key="index" :src='image' alt="Image"
+                            <img v-for="(image, index) in arrayImage" :key="index" :src='image' alt="Image"
                                 v-show="index === currentImageIndex" class="h-max w-max" />
                             <button @click="prevImage"
                                 class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, ref, toRefs, computed } from 'vue';
+import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useStore } from 'vuex';
 
 
@@ -62,32 +62,31 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
-const store = useStore();
+// const store = useStore();
 
-const products = ref([]);
-products.value = store.getters.getProducts;
+// let productDetail = store.getters.getProductDetail;
+// const images = productDetail.images;
+// console.log(images);
+// const bum = images.split(', ');
+// console.log(bum);
+// const productImages = ref([]);
 
+// bum.forEach(image => {
+//     productImages.value.push('https://res.cloudinary.com/dorl0yxpe/image/upload/'.concat(image));
+// });
 
-const images = ref([]);
+// watch(() => productDetail, images, bum, productImages, {immediate : true});
 
+const arrayImage = ref([]);
 
-
-for (let i = 0; i < products.value.length; i++) {
-    const productImages = products.value[i].image.split(', ');
-    images.value[i] = [];
-    productImages.forEach(image => {
-        images.value[i].push('https://res.cloudinary.com/dorl0yxpe/image/upload/'.concat(image));
-    });
+const updateArrayImage = () => {
+    if (props.product) {
+        arrayImage.value = props.product.image.split(', ').map(img => `https://res.cloudinary.com/dorl0yxpe/image/upload/` + img.trim());
+        console.log(arrayImage.value)
+    }
 }
 
-const productImages = ref([]);
-
-let a = computed(
-    () => { return props.pos });
-
-console.log(images.value[a]);
-
-productImages.value = images.value[a];
+watch(() => props.product, updateArrayImage, { immediate: true });
 
 const currentImageIndex = ref(0);
 
@@ -95,12 +94,12 @@ const prevImage = () => {
     if (currentImageIndex.value > 0) {
         currentImageIndex.value--;
     } else {
-        currentImageIndex.value = productImages.value?.length - 1;
+        currentImageIndex.value = arrayImage.value.length - 1;
     }
 };
 
 const nextImage = () => {
-    if (currentImageIndex.value < productImages.value?.length - 1) {
+    if (currentImageIndex.value < arrayImage.value.length - 1) {
         currentImageIndex.value++;
     } else {
         currentImageIndex.value = 0;

@@ -209,7 +209,7 @@ const handleSignIn = async () => {
     const isAdmin = store.getters.getIsAdmin;
     console.log(isAdmin);
     if (isAdmin) {
-      router.push("/admin/requestSession");
+      router.push("/admin/auctionManagement");
     } else {
       router.push("/user/default");
     }

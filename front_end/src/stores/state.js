@@ -6,7 +6,7 @@ export default {
       phone : '',
       address : '',
       gender : '',
-      avatarUrl : ''
+      avatar : ''
    },  
    isLogin : false,
    isAdmin : false,
@@ -14,4 +14,15 @@ export default {
    // email: '',
    images: [],
    products: [],
+   auction:[],
+   filterProducts: [],
+   productDetail: {
+      id: '',
+      name: '',
+      category: '',
+      description: '',
+      images: '',
+      owner: '',
+   },
+   sessions: [],
 };

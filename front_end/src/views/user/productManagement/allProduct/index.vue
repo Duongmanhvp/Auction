@@ -25,12 +25,12 @@
                             </button>
                         </div>
                         <template #cover>
-                            <img src="../../../../assets/images/auction.jpg" alt="Product" />
+                            <img class="h-44" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" alt="No Image" />
                         </template>
                         <a-card-meta :title="product.name" :description="product.category">
-                            <template #avatar>
+                            <!-- <template #avatar>
                                 <a-avatar :src="product.image" />
-                            </template>
+                            </template> -->
                         </a-card-meta>
                     </a-card>
                 </div>
@@ -53,23 +53,22 @@
         <EditProductModal :visible="editModalVisible" :product="selectedProduct" @close="closeEditProductModal" />
 
     </div>
-</template>
+</template> 
 
 <script setup>
 import MenuProductManagement from '../../../../components/MenuProductManagement/index.vue';
-import { ref, computed } from 'vue';
+import { ref, reactive, computed, watch, defineProps } from 'vue';
 import ProductDetailModal from '../productDetail/index.vue';
 import EditProductModal from '../editProduct/index.vue';
 import { useStore } from 'vuex'
 
 const store = useStore();
 const products = ref([]);
-
 products.value = store.getters.getProducts;
+let totalProducts = products.value.length;
 
 const currentPage = ref(1);
 const pageSize = 4;
-const totalProducts = products.value.length;
 const selectedProduct = ref(null);
 const viewModalVisible = ref(false);
 const editModalVisible = ref(false);
@@ -77,8 +76,18 @@ const a = ref(1000);
 
 const selectProduct = (product, index) => {
     selectedProduct.value = product;
-    viewModalVisible.value = true;
     a.value = index;
+    store.commit('setProductDetail',
+        {
+            id: product.productId,
+            name: product.name,
+            category: product.category,
+            description: product.description,
+            images: product.image,
+            owner: product.owner,
+        }
+    );
+    viewModalVisible.value = true;
 };
 
 const editProduct = (product) => {
@@ -88,6 +97,15 @@ const editProduct = (product) => {
 
 const closeProductDetailModal = () => {
     viewModalVisible.value = false;
+    store.commit('setProductDetail',
+        {
+            id: '',
+            name: '',
+            category: '',
+            description: '',
+            images: '',
+            owner: '',
+        });
 };
 
 const closeEditProductModal = () => {
@@ -110,6 +128,17 @@ const nextSlide = () => {
         currentPage.value++;
     }
 };
+
+store.watch((state, getters) => getters.getFilterProducts, (newValue, oldValue) => {
+    if (newValue.length === 0) {
+        products.value = store.getters.getProducts;
+    } else {
+        products.value = newValue;
+    }
+    totalProducts = products.value.length;
+    currentPage.value = 1;
+    console.log('AAAAA', products.value);
+});
 
 </script>
 
