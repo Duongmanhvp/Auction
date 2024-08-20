@@ -232,12 +232,12 @@ public class ProductServiceImpl implements ProductService {
 					.name(product.getName())
 					.category(product.getCategory())
 					.description(product.getDescription())
-					.image(product.getImage())
+					.image(imageService.restoreImageUrls(product.getImage()))
 					.productId(product.getId())
 					.quantity(userCount)
 					.build();
 			topProducts.add(productResponse);
-	}
+		}
 		return topProducts;
-}
+	}
 }
