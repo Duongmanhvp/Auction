@@ -55,7 +55,7 @@ public class ProductServiceImpl implements ProductService {
 		product.setOwnerId(user.getId());
 		product.setCategory(request.getCategory());
 		product.setDescription(request.getDescription());
-		product.setImage(imageService.normalizeImageUrls(request.getImage()));
+		product.setImage(request.getImage());
 		
 		return productRepository.save(product);
 		
