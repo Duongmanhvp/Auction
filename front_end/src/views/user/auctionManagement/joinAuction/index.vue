@@ -1,5 +1,5 @@
 <template>
-    <div v-if="auction" class=" fixed left-0 top-24 container max-w-fit flex p-1">
+    <div v-if="auction" class=" fixed left-0 top-24 container flex p-1">
         <button @click="goBack" class="absolute -top-16 right-96 z-50 text-gray-500 hover:text-gray-700 mt-20">
             <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
         </button>
@@ -32,23 +32,28 @@
                 <div class="mb-4">
                     <h2 class="text-xl font-semibold text-gray-700 mb-6">Session Details</h2>
                     <!-- <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ auction.sessionDetail.description }}</p> -->
-                    <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ auction.sessionDetail.startBid }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.sessionDetail.startTime }}</p>
-                    <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.sessionDetail.endTime }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ formattedStartingBid }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.startTime ?? '?' }}</p>
+                    <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.endTime ?? '?' }}</p>
                     <div class="flex items-center">
                         <span class="text-gray-700 mr-2"><strong>Stepping Price:</strong></span>
-                        <span class="text-gray-700 mr-2">{{ auction.sessionDetail.pricePerStep }}</span>
+                        <span class="text-gray-700 mr-2">{{ formattedSteppingPrice }}</span>
                     </div>
                     <div class="border-b-2 border-gray-300 my-8"></div>
-                    <p class="text-gray-700 mb-2 text-xl"><strong>Current Price:</strong> {{ currentPrice }}</p>
+                    <p :class="{'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours}" 
+                            class="text-gray-700 mb-2 text-xl">
+                        <strong>Current Price:</strong> {{ formattedCurrentPrice }}
+                    </p>
                     <div class="flex items-center mb-4 text-xl">
                         <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
-                        <input v-model.number="increasePrice" @input="adjustIncreasePrice" type="number"
+                        <input v-model="yourPriceInput" @input="adjustYourPrice" @keydown.enter="handlePlaceBid" type="text"
                             class="border p-2 rounded w-44 mr-2" step="pricePerStep" />
                         VND
                     </div>
-                    <button @click="handleAction" class="bg-green-500 text-white p-2 rounded mt-4 w-full">
-                        {{ auctionIsOpen ? 'Join Auction' : 'Bid' }}
+                    <button @click="handlePlaceBid" :disabled="!biddable" 
+                            :class="[biddable ? 'bg-green-500' : 'bg-gray-500']" 
+                            class="text-white p-2 rounded mt-4 w-full" >
+                        Place Bid
                     </button>
                 </div>
             </div>
@@ -89,69 +94,57 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, reactive } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { formatDistance, parseISO } from "date-fns";
-import image1 from "../../../../assets/images/image1.jpg";
-import image2 from "../../../../assets/images/image2.jpg";
-import image3 from "../../../../assets/images/image3.jpg";
-import { useStore } from "vuex";
+import { ref, computed, onMounted, onUnmounted, watchEffect, defineProps } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { formatDistance, parse, parseISO } from 'date-fns';
+import { useStore } from 'vuex';
+import { jwtDecode } from 'jwt-decode';
+import stompApi from '../../../../api/stomp';
+import sessionApi from '../../../../api/auctionSession';
+import auctionApi from '../../../../api/auctions';
+import productApi from '../../../../api/products';
 
-const data = [
-    {
-        title: 'Elon Muc',
-    },
-    {
-        title: 'Bin Ghet',
-    },
-    {
-        title: 'Mac Zubot',
-    },
-    {
-        title: 'Rach Mar',
-    },
-    {
-        title: 'Donan Chum',
-    },
-];
+const store = useStore();
 
 const route = useRoute();
 const router = useRouter();
-const auction = ref(null);
-const currentPrice = ref('');
-const increasePrice = ref(0);
-const timeUntilStart = ref(0);
-const timeLeft = ref(0);
-let countdownInterval = null;
-const store = useStore();
-let images = reactive([])
 
-const parsePrice = (priceStr) => {
-    return parseInt(priceStr.replace('VND', '').trim());
-};
+// const props = defineProps({
+//     auctionId: {
+//         type: Number,
+//         required: true,
+//     }
+// });
 
-const formatPrice = (priceNum) => {
-    return `${priceNum} VND`;
-};
+// const { auctionId } = props;
 
-const adjustIncreasePrice = () => {
-    const pricePerStep = parsePrice(auction.value.sessionDetail.pricePerStep);
-    increasePrice.value = Math.ceil(increasePrice.value / pricePerStep) * pricePerStep;
-};
+const auctionId = route.params.id;
+const userId = jwtDecode(localStorage.getItem('token')).id;
+console.log(userId);
+
+const auctionInfoRef = ref(null);
+const auction = computed(() => auctionInfoRef.value || {});
+const product = computed(() => auction.value.product || {});
 
 const goBack = () => {
     router.back();
 };
 
-const images = ref([
-    { src: image1 },
-    { src: image2 },
-    { src: image3 },
-]);
+import image1 from '../../../../assets/images/image1.jpg';
+import image2 from '../../../../assets/images/image2.jpg';
+import image3 from '../../../../assets/images/image3.jpg';
+const images = computed(() => {
+    return product.value?.image?.split(', ').map((src) => ({ src })) ||
+    [
+        { src: image1 },
+        { src: image2 },
+        { src: image3 },
+    ];
+});
 
 const currentImageIndex = ref(0);
 
-const prevImage = () => {
+function prevImage() {
     if (currentImageIndex.value > 0) {
         currentImageIndex.value--;
     } else {
@@ -159,7 +152,7 @@ const prevImage = () => {
     }
 };
 
-const nextImage = () => {
+function nextImage() {
     if (currentImageIndex.value < images.value.length - 1) {
         currentImageIndex.value++;
     } else {
@@ -167,67 +160,170 @@ const nextImage = () => {
     }
 };
 
-const updateCountdown = () => {
-    const now = new Date();
-    const startTime = parseISO(auction.value.sessionDetail.startTime);
-    const endTime = parseISO(auction.value.sessionDetail.endTime);
 
-    if (now < startTime) {
-        timeUntilStart.value = startTime - now;
-        timeLeft.value = 0;
-    } else if (now < endTime) {
-        timeUntilStart.value = 0;
-        timeLeft.value = endTime - now;
-    } else {
-        clearInterval(countdownInterval);
-        timeUntilStart.value = 0;
-        timeLeft.value = 0;
+const now = ref(new Date());
+const timeUntilStart = computed(() => {
+    if (!auction.value.startTime) {
+        return null;
     }
+    const startTime = 123;// parseISO(auction.value.startTime);
+    if (now.value < startTime) {
+        return startTime - now.value;
+    }
+    return 0;
+})
+const timeLeft = computed(() => {
+    if (!auction.value.endTime) {
+        return null;
+    }
+    const endTime = 456;// parseISOauction.value.endTime;
+    if (now.value < endTime) {
+        return endTime - now.value;
+    }
+    return 0;
+})
+
+let countdownInterval = null;
+
+function updateCountdown() {
+    now.value = new Date();
 };
 
 const formattedTimeUntilStart = computed(() => {
-    return timeUntilStart.value > 0
-        ? formatDistance(new Date(timeUntilStart.value), new Date(0), { addSuffix: true })
-        : 'now';
+    if (timeUntilStart.value == null) {
+        return '';
+    }
+    // return timeUntilStart.value > 0
+    //     ? formatDistance(new Date(timeUntilStart.value), 0, { addSuffix: true })
+    //     : 'now';
+    return 123;
 });
 
 const formattedTimeLeft = computed(() => {
-    return timeLeft.value > 0
-        ? formatDistance(new Date(timeLeft.value), new Date(0), { addSuffix: true })
-        : `Auction has not started`;
+    if (timeLeft.value == null) {
+        return '';
+    }
+    // return timeLeft.value > 0
+    //     ? formatDistance(new Date(timeLeft.value), 0, { addSuffix: true })
+    //     : `Auction has not started`;
+    return 456;
 });
 
+
+
+
+const ongoing = ref(false);
+const startingPrice = computed(() => auction.value.startBid);
+const steppingPrice = computed(() => auction.value.pricePerStep);
+const currentPrice = ref(null);
+const isCurrentPriceYours = ref(false);
+const yourPriceInput = ref('0');
+
+const formattedSteppingPrice = computed(() => {
+    return formatPrice(steppingPrice.value);
+});
+
+const formattedStartingBid = computed(() => {
+    return formatPrice(startingPrice.value);
+});
+
+const formattedCurrentPrice = computed(() => {
+    return formatPrice(currentPrice.value);
+});
+// const formattedYourPrice = computed(() => {
+//     return formatPrice(yourPrice.value);
+// });
+
+const biddable = computed(() => {
+    console.log('biddable', ongoing.value, parsePrice(yourPriceInput.value), currentPrice.value + auction.value.pricePerStep);
+    return ongoing.value && parsePrice(yourPriceInput.value) >= currentPrice.value + auction.value.pricePerStep;
+});
+
+function parsePrice(priceStr) {
+    return parseInt(priceStr.replace(/\D/g, '')) || 0;
+};
+
+function formatPrice(priceNum) {
+    return priceNum == null ? "" :
+        `${priceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
+
+function adjustYourPrice() {
+    const newPrice = parsePrice(yourPriceInput.value);
+    yourPriceInput.value = formatPrice(newPrice);
+};
+
+function handlePlaceBid() {
+    if (!biddable.value) {
+      return;
+    }
+    const newPrice = parsePrice(yourPriceInput.value);
+    sessionApi.bid(auction.value.id, newPrice);
+};
+
+function updateBid(bid) {
+    currentPrice.value = bid.bid;
+    isCurrentPriceYours.value = bid.userId === userId;
+}
+
+
+
+const comments = ref([]);
+const notifications = ref([]);
+
+const data = [];
+
+function handleUnload() {
+    console.log('leaving room');
+    sessionApi.leaveAuctionRoom(auctionId);
+};
+
 onMounted(() => {
-    const auctionId = parseInt(route.params.id, 10);
-
-    const auctions = [
-        {
-            id: 1,
-            title: 'Demo Auction',
-            description: 'Details about the auction here.',
-            sessionDetail: {
-                description: 'Session details description.',
-                startBid: '20000000 VND',
-                pricePerStep: '1000000 VND',
-                startTime: '2024-08-15',
-                endTime: '2024-08-21'
-            },
+    auctionApi.getAuctionById(auctionId)
+    .then((res) => {
+        console.log(res)
+        auctionInfoRef.value = res;
+        ongoing.value = auctionInfoRef.value?.status === 'IN_PROGRESS';
+        if (ongoing.value) {
+            sessionApi.getCurrentPrice(auctionId).then((res) => {
+                updateBid(res.data);
+            });
         }
-    ];
+    })
+    .catch((err) => {
+        console.error(err);
+    });
 
-    auction.value = auctions.find(a => a.id === auctionId) || {};
-    currentPrice.value = auction.value.sessionDetail.startBid;
-    increasePrice.value = 0;
+    sessionApi.joinAuctionRoom(auctionId, {
+        onStart: () => {
+            ongoing.value = true;
+            console.log('auction started');
+        },
+        onEnd: () => {
+            ongoing.value = false;
+        },
+        onBid: updateBid,
+        onComment: (data) => {
+            comments.value.push(data);
+        },
+        onNotification: (data) => {
+            notifications.value.push(data);
+        },
+    }).catch((err) => {
+        console.error(err);
+    });
 
-    updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
+    window.addEventListener('beforeunload', handleUnload);
 });
 
 onUnmounted(() => {
-    if (countdownInterval) {
-        clearInterval(countdownInterval);
-    }
+    console.log('leaving room');
+    clearInterval(countdownInterval);
+    sessionApi.leaveAuctionRoom(auctionId);
+    window.removeEventListener('beforeunload', handleUnload);
 });
+
 
 </script>
 

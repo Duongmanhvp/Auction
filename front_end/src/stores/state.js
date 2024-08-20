@@ -1,5 +1,6 @@
 export default {
    user:{
+      id: null,
       fullName: '',
       dateOfBirth: '',
       email: '',

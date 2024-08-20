@@ -33,7 +33,7 @@ const auctionApi = {
 
   async getAuctionById(id){
    try {
-      const response =  await api.get('/v1/auctions/' + id);
+      const response = await api.get('/v1/auctions/' + id);
       return response.data.data;
    } catch (error) {
       message.error(error.response.data.message);
