@@ -53,7 +53,8 @@ public class AuctionComponent {
         Auction auction = auctionRepository.findById(auctionId).orElseThrow(
               () -> new NotFoundException("Auction not found")
         );
-        return userAuctionRepository.existsByUserAndAuction(user,auction);
+        boolean result = userAuctionRepository.existsByUserAndAuction(user,auction);
+        return result;
     }
 
     public boolean canParticipateAuction(Long auctionId, Jwt principal) {
