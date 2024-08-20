@@ -12,7 +12,9 @@ import com.ghtk.auction.repository.UserRepository;
 import com.ghtk.auction.service.AuctionRealtimeService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuctionSessionEventListener {
@@ -30,7 +32,7 @@ public class AuctionSessionEventListener {
       try {
         auctionRealtimeService.leaveAuction(userId, userAuction.getAuction().getId());
       } catch (Exception e) {
-        e.printStackTrace();
+        log.debug(e.getMessage());
       }
     });
   }
