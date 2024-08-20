@@ -40,6 +40,6 @@ public interface UserProductRepository extends JpaRepository<UserProduct, Long> 
 					ORDER BY
 					    quantity
 					DESC
-					LIMIT 4;""", nativeQuery = true)
+					LIMIT 8;""", nativeQuery = true)
 	List<Object[]> findTop5MostPopularProducts();
 }

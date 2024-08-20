@@ -5,12 +5,12 @@ import com.ghtk.auction.dto.request.product.ProductFilterRequest;
 import com.ghtk.auction.dto.response.product.ProductResponse;
 import com.ghtk.auction.dto.response.product.ProductSearchResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
-import com.ghtk.auction.entity.Auction;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.User;
 import com.ghtk.auction.entity.UserProduct;
 import com.ghtk.auction.enums.ProductCategory;
 import com.ghtk.auction.exception.NotFoundException;
+import com.ghtk.auction.mapper.ProductMapper;
 import com.ghtk.auction.repository.ProductRepository;
 import com.ghtk.auction.repository.UserProductRepository;
 import com.ghtk.auction.repository.UserRepository;
@@ -29,7 +29,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.security.Principal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,6 +41,7 @@ public class ProductServiceImpl implements ProductService {
 	final UserRepository userRepository;
 	final UserProductRepository userProductRepository;
 	final ImageService imageService;
+	final ProductMapper productMapper;
 
 	@Override
 	public Product createProduct(ProductCreationRequest request) {
@@ -237,7 +237,54 @@ public class ProductServiceImpl implements ProductService {
 					.quantity(userCount)
 					.build();
 			topProducts.add(productResponse);
-		}
+	}
 		return topProducts;
+	}
+	
+	@Override
+	public PageResponse<ProductResponse> getAllProductByCategory(ProductCategory category, int pageNo, int pageSize, String sortBy, String sortDir) {
+		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+		
+		Page<Product> products =productRepository.findAllByCategory(category, pageable);
+		
+		List<Product> listOfProducts =products.getContent();
+		
+		List<ProductResponse> content =listOfProducts.stream().map(productMapper::toProductResponse).toList();
+		
+		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
+		pageProductResponse.setPageNo(pageNo);
+		pageProductResponse.setPageSize(pageSize);
+		pageProductResponse.setTotalPages(products.getTotalPages());
+		pageProductResponse.setTotalElements(products.getTotalElements());
+		pageProductResponse.setLast(products.isLast());
+		pageProductResponse.setContent(content);
+		return pageProductResponse;
+	}
+	
+	@Override
+	public PageResponse<ProductResponse> getAllProduct(int pageNo, int pageSize, String sortBy, String sortDir) {
+		Sort sort =sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+				? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+		
+		Pageable pageable= PageRequest.of(pageNo,pageSize,sort);
+		
+		Page<Product> products =productRepository.findAll(pageable);
+		
+		List<Product> listOfAuction =products.getContent();
+		
+		List<ProductResponse> content =listOfAuction.stream().map(productMapper::toProductResponse).toList();
+		
+		
+		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
+		pageProductResponse.setPageNo(pageNo);
+		pageProductResponse.setPageSize(pageSize);
+		pageProductResponse.setTotalPages(products.getTotalPages());
+		pageProductResponse.setTotalElements(products.getTotalElements());
+		pageProductResponse.setLast(products.isLast());
+		pageProductResponse.setContent(content);
+		return pageProductResponse;
 	}
 }
