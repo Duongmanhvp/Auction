@@ -42,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 	final UserRepository userRepository;
 	final UserProductRepository userProductRepository;
 	final ImageService imageService;
-	
+
 	@Override
 	public Product createProduct(ProductCreationRequest request) {
 		var context = SecurityContextHolder.getContext();
@@ -76,7 +76,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						imageService.restoreImageUrls((String) product[4])
+						imageService.restoreImageUrls((String) product[4]),
+						(Long) product[6],
+						null
 				)).collect(Collectors.toList());
 	}
 	
@@ -163,7 +165,9 @@ public class ProductServiceImpl implements ProductService {
 						(String) product[1],
 						(ProductCategory.valueOf((String) product[2])),
 						(String) product[3],
-						imageService.restoreImageUrls((String) product[4])
+						imageService.restoreImageUrls((String) product[4]),
+						(Long) product[5],
+						null
 				)).collect(Collectors.toList());
 		
 	}
@@ -208,4 +212,32 @@ public class ProductServiceImpl implements ProductService {
 		pageAuctionResponse.setContent(products);
 		return pageAuctionResponse;
 	}
+
+	@Override
+	public List<ProductResponse> getTop5MostPopularProducts() {
+		List<ProductResponse> topProducts = new ArrayList<>();
+		List<Object[]> products = userProductRepository.findTop5MostPopularProducts();
+
+		for (Object[] result : products) {
+			Long productId = (Long) result[0];
+			Long userCount = (Long) result[1];
+			Product product = productRepository.findById(productId).orElseThrow(
+					() -> new NotFoundException("Product not found")
+			);
+			String owner = userRepository.findById(product.getOwnerId()).orElseThrow(
+					() -> new NotFoundException("Owner not found")
+			).getFullName();
+			ProductResponse productResponse = ProductResponse.builder()
+					.owner(owner)
+					.name(product.getName())
+					.category(product.getCategory())
+					.description(product.getDescription())
+					.image(product.getImage())
+					.productId(product.getId())
+					.quantity(userCount)
+					.build();
+			topProducts.add(productResponse);
+	}
+		return topProducts;
+}
 }

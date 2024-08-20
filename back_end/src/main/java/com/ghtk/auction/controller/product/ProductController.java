@@ -60,7 +60,7 @@ public class ProductController {
 	@PostMapping("/interest/{id}")
 	public ResponseEntity<ApiResponse<Void>> interest(@AuthenticationPrincipal Jwt principal , @PathVariable Long id) {
 		productService.interestProduct(principal, id);
-		return ResponseEntity.ok(ApiResponse.success("Da thich"));
+		return ResponseEntity.ok(ApiResponse.ok("Da thich"));
 	}
 	
 	@GetMapping("/interest/{id}")
@@ -82,6 +82,11 @@ public class ProductController {
 	@GetMapping("/{id}")
 	public ResponseEntity<ApiResponse<Product>> getProduct(@PathVariable Long id) {
 		return ResponseEntity.ok(ApiResponse.success(productService.getById(id)));
+	}
+	
+	@GetMapping("/top-popular")
+	public ResponseEntity<ApiResponse<List<ProductResponse>>> getTop5MostPopularProducts() {
+		return ResponseEntity.ok(ApiResponse.success(productService.getTop5MostPopularProducts()));
 	}
 
 	@GetMapping("/search")
