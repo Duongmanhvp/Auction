@@ -97,7 +97,7 @@ async function joinAuctionRoom(auctionId, callbacks) {
         const notificationPromise = stompApi.subscribe(`/topic/auction/${auctionId}/notifications`, 
             (message) => {
                 const { body } = message;
-                session.onNotification?.(body);
+                session.onNotification?.(JSON.parse(body));
             }); 
 
         const bidPromise = wasActive ? subscribeBid(auctionId, session) : null;
