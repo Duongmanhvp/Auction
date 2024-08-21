@@ -27,8 +27,18 @@ const auctionApi = {
    },
    
    async getMyJoined(){
-      const response =  await api.get('/v1/auctions/get-my-registered');
+      const token = localStorage.getItem('token');
+      const response =  await api.get('/v1/auctions/get-my-registered', { headers: { Authorization: `Bearer ${token}` } });
       return response.data.data;
+  },
+
+  async getAllAuctionByStatus(status,pageNo){
+   const response = await api.get('/v1/auctions/get-all-auction-by-status?statusAuction='+status+'&pageSize=4'+'&pageNo='+pageNo)
+   return response.data.data;
+  },
+
+  async registerAuction(id) {
+   const response = await api.post('/v1/auctions/'+id+'/regis-join');
   }
 
 }

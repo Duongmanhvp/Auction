@@ -62,7 +62,7 @@
         </div>
       </div>
       <div class="flex justify-center mt-4">
-        <a-pagination v-model:current="currentPage" :total="totalAuctions" :pageSize="pageSize * 2" />
+        <a-pagination v-model="currentPage" :total="totalAuctions" :pageSize="pageSize * 2" />
       </div>
     </div>
   </div>
@@ -110,7 +110,7 @@ const filterByDate = () => {
 };
 
 const getUrlImage = (image) => {
-  return `https://res.cloudinary.com/dorl0yxpe/image/upload/` + image.split(', ')[0];
+  return  `https://res.cloudinary.com/dorl0yxpe/image/upload/` + image.split(', ')[0];
 }
 
 const getUrlAvatar = async (ownerId) => {
@@ -124,7 +124,6 @@ const goToAuction = (auctionId) => {
 };
 
 const renderAuction = async () => {
-  await store.dispatch('getMyJoined');
   for (let auction of auctions) {
     const avatarUrl = await getUrlAvatar(auction.product.ownerId);
     auction.product.avatarUrl = avatarUrl;

@@ -44,7 +44,7 @@
                 <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
             </button>
             <div class="flex justify-center mt-4">
-                <a-pagination v-model:current="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
+                <a-pagination v-model="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
             </div>
         </div>
 

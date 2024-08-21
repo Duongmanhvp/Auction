@@ -208,9 +208,17 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const auctionManagement = () => {
-    router.push('/user/allAuction');
-    hideDropdown();
+const auctionManagement = async() => {
+    try{
+        const response = await store.dispatch('getMyJoined');
+        router.push('/user/allAuction');
+        hideDropdown();
+    }catch (error) {
+        message.error("Người dùng chưa đăng kí phiên đấu giá nào!");
+    }finally{
+        hideDropdown();
+    }
+    
 };
 
 const productManagement = async() => {
