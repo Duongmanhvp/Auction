@@ -24,7 +24,7 @@
                 <div class="mb-4 min-h-[1.5em]">
                     <h2 v-if="sessionState === 'PENDING'" class="text-md font-semibold text-blue-400-600 mb-2">Auction start after: {{ timeUntilStart }} </h2>
                     <h2 v-else-if="sessionState === 'IN_PROGRESS'" class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ timeLeft }}</h2>
-                    <h2 v-else-if="sessionState === 'ENDED'" class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
+                    <h2 v-else-if="sessionState === 'FINISHED'" class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
                 </div>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
@@ -333,7 +333,7 @@ onMounted(() => {
         console.log(res)
         auctionInfoRef.value = res;
         sessionState.value = 
-            ["IN_PROGRESS", "ENDED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
+            ["IN_PROGRESS", "FINISHED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
         if (sessionState.value === "IN_PROGRESS") {
             sessionApi.getCurrentPrice(auctionId).then((res) => {
                 updateBid(res.data);
@@ -353,7 +353,7 @@ onMounted(() => {
             });
         },
         onEnd: () => {
-            sessionState.value = "ENDED";
+            sessionState.value = "FINISHED";
             console.log('auction ended');
         },
         onBid: updateBid,
