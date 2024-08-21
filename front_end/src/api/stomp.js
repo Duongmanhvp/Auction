@@ -135,10 +135,15 @@ export default {
 
 
 async function setupConnection() {
-    stompState.connection = await createConnection(localStorage.getItem('token'));  
-    setupErrorHandler();
-    setupSubscriptions();
-    callConnectCallbacks();
+    const connection = await createConnection(localStorage.getItem('token'));
+    if (stompState && !stompState.connection) {
+        stompState.connection = connection;  
+        setupErrorHandler();
+        setupSubscriptions();
+        callConnectCallbacks();
+    } else {
+      connection.deactivate();
+    }
 }
 
 function teardownConnection() {
