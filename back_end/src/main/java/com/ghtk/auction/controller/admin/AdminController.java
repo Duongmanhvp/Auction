@@ -73,7 +73,7 @@ public class AdminController {
   public ApiResponse<Void> publishNotification(
     @RequestBody String message,
     @PathVariable Long auctionId) {
-    stompService.sendGlobalNotification(new NotifyMessage(message, LocalDateTime.now()));
+    stompService.broadcastAuctionNotification(auctionId, new NotifyMessage(message, LocalDateTime.now()));
     return ApiResponse.ok("ok");
   }
 }
