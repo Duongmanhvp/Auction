@@ -13,7 +13,7 @@
             <div class="session-list grid grid-cols-4 gap-4">
                 <div v-for="session in paginatedSessions" :key="session.id"
                     class="session-item bg-white shadow-lg rounded-lg cursor-pointer"
-                    @click="goToSessionDetail(session.id)">
+                    @click="openModal(session)">
 
                     <a-card hoverable>
                         <template #cover>
@@ -38,43 +38,35 @@
             <div class="flex justify-center mt-4">
                 <a-pagination v-model:current="currentPage" :total="totalSessions" :pageSize="pageSize * 2" />
             </div>
+            <SessionModal :isVisible="isModalVisible" :session="selectedSession" @close="closeModal" />
         </div>
     </div>
 </template>
 
 <script setup>
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
-import { ref, computed,reactive } from 'vue';
+import SessionModal from '../sessionDetail/index.vue';
+import { ref, computed, reactive, onBeforeMount, watch } from 'vue';
 import { useStore } from 'vuex';
 
 
 const store = useStore();
-// const sessions = ref([
-//     { id: 1, title: 'Demo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 2', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 3', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 4', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 5', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 6', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 7', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 8', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-//     { title: 'Session 9', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-// ]);
 
-
-let sessions = reactive([]);
-sessions = store.getters.getSessions;
+const isModalVisible = ref(false);
+const selectedSession = ref(null);
+const sessions = ref([]);
+// sessions = store.getters.getSessions;
 //sessions.push(...store.state.sessions);
 
 
 const currentPage = ref(1);
 const pageSize = 4;
-const totalSessions = sessions.length;
+let totalSessions = sessions.value.length;
 
 const paginatedSessions = computed(() => {
     const start = (currentPage.value - 1) * pageSize * 2;
     const end = start + pageSize * 2;
-    return sessions.slice(start, end);
+    return sessions.value.slice(start, end);
 });
 
 const prevSlide = () => {
@@ -89,9 +81,27 @@ const nextSlide = () => {
     }
 };
 
-const goToSessionDetail = (id) => {
-    router.push({ name: 'SessionDetail', params: { id } });
+const openModal = (session) => {
+    selectedSession.value = session;
+    isModalVisible.value = true;
 };
+
+const closeModal = () => {
+    isModalVisible.value = false;
+};
+
+watch(sessions, () => {
+    totalSessions = sessions.value.length;
+});
+
+onBeforeMount(async () => {
+    try {
+        const res = await store.dispatch('getMyAuction');
+        sessions.value = store.getters.getSessions;
+    } catch (error) {
+        message.error('Fetch failed');
+    }
+});
 
 </script>
 

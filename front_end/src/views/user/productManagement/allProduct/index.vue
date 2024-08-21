@@ -13,7 +13,7 @@
             <div class="product-list grid grid-cols-4 gap-4">
                 <div v-for="(product, index) in paginatedProducts" :key="index" :product="product" :index="index"
                     class=" product-item bg-white shadow-lg rounded-lg">
-                    <a-card hoverable @click="selectProduct(product, index)" class="h-72 ">
+                    <a-card hoverable @click="selectProduct(product, index)" class="h-full ">
                         <div class=" flex absolute right-0 top-0 m-4 space-x-2">
                             <button @click.stop="editProduct(product)"
                                 class="flex justify-center items-center w-8 bg-teal-300 text-black hover:bg-teal-400 outline-gray-600 shadow-lg font-bold py-2 rounded">
@@ -25,7 +25,9 @@
                             </button>
                         </div>
                         <template #cover>
-                            <img class="h-44" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" alt="No Image" />
+                            <img class="h-64"
+                                :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/` + product.image.split(', ')[0]"
+                                alt="No Image" />
                         </template>
                         <a-card-meta :title="product.name" :description="product.category">
                             <!-- <template #avatar>
@@ -44,7 +46,7 @@
                 <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
             </button>
             <div class="flex justify-center mt-4">
-                <a-pagination v-model="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
+                <a-pagination v-model:current="currentPage" :total="totalProducts" :pageSize="pageSize * 2" />
             </div>
         </div>
 
@@ -57,15 +59,16 @@
 
 <script setup>
 import MenuProductManagement from '../../../../components/MenuProductManagement/index.vue';
-import { ref, reactive, computed, watch, defineProps } from 'vue';
+import { ref, reactive, computed, watch, defineProps, onBeforeMount } from 'vue';
 import ProductDetailModal from '../productDetail/index.vue';
 import EditProductModal from '../editProduct/index.vue';
 import { useStore } from 'vuex'
 
 
 const store = useStore();
+
 const products = ref([]);
-products.value = store.getters.getProducts;
+// products.value = store.getters.getProducts;
 let totalProducts = products.value.length;
 
 let currentPage = ref(1);
@@ -141,6 +144,24 @@ store.watch((state, getters) => getters.getFilterProducts, (newValue, oldValue) 
     console.log('AAAAA', products.value);
 });
 
+watch(products, () => {
+  totalProducts = products.value.length;
+});
+
+onBeforeMount(async () => {
+    try {
+        const res = await store.dispatch('getProducts');
+        products.value = store.getters.getProducts;
+    } catch (error) {
+        message.error('Fetch failed');
+    }
+});
 </script>
 
-<style lang="scss" src="./style.scss" scoped />
+<style scoped>
+.product-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+}
+</style>

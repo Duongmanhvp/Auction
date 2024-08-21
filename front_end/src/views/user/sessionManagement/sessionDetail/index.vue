@@ -13,10 +13,10 @@
                 <div class="w-1/2 p-4 border-l border-gray-300">
                     <h2 class="text-2xl font-bold mb-4">{{ session.title }}</h2>
                     <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ session.description }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ session.startBid }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Price per Step:</strong> {{ session.pricePerStep }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ session.startTime }}</p>
-                    <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ session.endTime }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ session.start_bid }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Price per Step:</strong> {{ session.price_per_step }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ session.start_time }}</p>
+                    <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ session.end_time }}</p>
                 </div>
             </div>
         </div>

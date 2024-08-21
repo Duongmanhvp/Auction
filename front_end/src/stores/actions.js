@@ -49,7 +49,11 @@ export default {
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
+      commit("setProducts", []);
+      commit("setAuction",[]);
+      commit("setSessions", []);
       localStorage.removeItem("token");
+      sessionStorage.clear();
       stompApi.teardown();
       return promise;
     } catch (error) {

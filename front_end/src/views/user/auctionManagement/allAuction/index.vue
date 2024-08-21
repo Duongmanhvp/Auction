@@ -124,14 +124,13 @@ const goToAuction = (auctionId) => {
 };
 
 const renderAuction = async () => {
-  await store.dispatch('getMyJoined');
   for (let auction of auctions) {
     const avatarUrl = await getUrlAvatar(auction.product.ownerId);
     auction.product.avatarUrl = avatarUrl;
   }
   console.log(auctions)
 }
-onMounted(() => renderAuction())
+ onMounted(() => renderAuction())
 </script>
 
 <style scoped>

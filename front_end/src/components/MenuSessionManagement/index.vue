@@ -51,7 +51,7 @@
 import { ref } from 'vue';
 
 const searchKeyword = ref('');
-const tags = ref(['Pending', 'Opening', 'Close', 'In Progress', 'Finish', 'Canceled']);
+const tags = ref(['PENDING', 'OPENING', 'CLOSED', 'IN_PROGRESS', 'FINISHED', 'CANCELED']);
 const selectedTags = ref([]);
 
 const filterByTag = (tag) => {

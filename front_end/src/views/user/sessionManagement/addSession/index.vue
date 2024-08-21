@@ -8,8 +8,20 @@
                 <h1 class="text-2xl font-bold text-center text-gray-800">Add Auction Session</h1>
                 <div class="border-b-2 border-white mt-2 mb-8"></div>
             </div>
-            <form @submit.prevent="submitAuction" class="flex space-x-8 ml-20">
-                <div class="w-1/3">
+            <router-link to="/user/allProduct"
+                class="absolute right-16 top-36 flex items-center space-x-2 -ml-16 mb-4 text-gray-600 hover:text-gray-900">
+                <img src="../../../../assets/icon/auth-back.svg" alt="Back" class="w-6 h-6" />
+                <span>Back to Product</span>
+            </router-link>
+            <form @submit.prevent="submitAuction" class="flex space-x-8 ">
+                <div v-if="product.id === ''" class="w-1/3">
+                    <p class="text-red-500 mb-4">Please select product before creating auction!!</p>
+                    <router-link to="/user/allProduct"
+                        class="bg-slate-400 text-white px-4 py-2 rounded hover:bg-slate-500">Select product
+                        now
+                    </router-link>
+                </div>
+                <div v-if="product.id !== ''" class="w-1/3">
                     <h1 class="text-xl font-bold text-gray-800 mb-4">Product Infor</h1>
                     <div class="flex mb-1 ">
                         <label for="productId" class="block text-gray-700 text-lg font-semibold mr-2">Product
@@ -51,13 +63,13 @@
 
                     <div class="mb-5">
                         <label for="startBid" class="block text-gray-700 mb-3 font-semibold">Start Bid</label>
-                        <input type="number" id="startBid" v-model="auction.startBid"
+                        <input type="number" id="startBid" v-model="auction.start_bid"
                             class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                     </div>
 
                     <div class="mb-5">
                         <label for="pricePerStep" class="block text-gray-700 mb-3 font-semibold">Price per Step</label>
-                        <input type="number" id="pricePerStep" v-model="auction.pricePerStep"
+                        <input type="number" id="pricePerStep" v-model="auction.price_per_step"
                             class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                     </div>
 
@@ -78,6 +90,7 @@ import TheChevron from '../../../../components/Chevron/index.vue';
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
 import { ref } from 'vue';
 import { useStore } from 'vuex'
+import auctionApi from '../../../../api/auctions.js';
 
 const store = useStore();
 
@@ -86,48 +99,24 @@ const product = store.getters.getProductDetail;
 const auction = ref({
     title: '',
     description: '',
-    startBid: '',
-    pricePerStep: '',
-    startTime: '',
-    endTime: '',
-    product: {
-        name: '',
-        category: '',
-        image: ''
-    }
+    start_bid: '',
+    price_per_step: '',
+    product_id: ''
 });
 
-const imagePreview = ref(null);
 
-const categories = ['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other'];
-
-// const submitAuction = () => {
-//     baseService.post('/auctions', auction.value)
-//         .then(() => {
-//             alert('Auction session added successfully!');
-//             resetForm();
-//         })
-//         .catch(error => {
-//             console.error('Error adding auction session:', error);
-//         });
-// };
-
-// const handleImageUpload = (event) => {
-//     const file = event.target.files[0];
-//     if (file) {
-//         const formData = new FormData();
-//         formData.append('file', file);
-
-//         baseService.post('/products/upload-image', formData)
-//             .then(response => {
-//                 imagePreview.value = URL.createObjectURL(file);
-//                 auction.value.product.image = response.data;
-//             })
-//             .catch(error => {
-//                 console.error('Error uploading image:', error);
-//             });
-//     }
-// };
+const submitAuction = async () => {
+    try {
+        auction.value.product_id = product.id;
+        const response = await auctionApi.addAuction(auction.value);
+        store.commit('setProductDetail', '');
+    } catch (error) {
+        console.log(error);
+    }
+    finally {
+        resetForm();
+    }
+};
 
 const resetForm = () => {
     auction.value = {
@@ -135,14 +124,11 @@ const resetForm = () => {
         description: '',
         startBid: '',
         pricePerStep: '',
-        startTime: '',
-        endTime: '',
         product: {
             name: '',
             category: '',
             image: ''
         }
     };
-    imagePreview.value = null;
 };
 </script>

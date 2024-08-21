@@ -208,50 +208,72 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const auctionManagement = () => {
-    router.push('/user/allAuction');
-    hideDropdown();
-};
-
-const productManagement = async() => {
+const auctionManagement = async () => {
     try {
-        const response = await store.dispatch('getProducts');
-        message.success('Get all product successfully');
-        router.push('/user/allProduct');
+        const response = await store.dispatch('getMyJoined');
+        message.success('Get all auctions successfully');
+        
     } catch (error) {
-        message.error('Get product failed');
+        message.error('Get auctions failed');
     }finally{
+        router.push('/user/allAuction');
         hideDropdown();
     }
-    
-
 };
 
-const auctionSessionManagement = async () => {
-    try {
-        const response = await store.dispatch('getMyAuction');
-        router.push('/user/allSession');
+// const productManagement = async() => {
+//     try {
+//         const response = await store.dispatch('getProducts');
+//         message.success('Get all products successfully');
+//         router.push('/user/allProduct');
+//     } catch (error) {
+//         message.error('Get products failed');
+//     }finally{
+//         hideDropdown();
+//     } 
+    
+
+// };
+
+const productManagement= () => {
+    router.push('/user/allProduct');
     hideDropdown();
-    } catch (error) {
-        message.error('Get session failed');
-    }
-    
 };
 
-const profileManagement = async () => {
-    try {
-        const response = await store.dispatch('getMyProfile');
-        console.log(store.getters.getUser);
-        message.success('Get profile successfully');
-        router.push('/user/profile');
-    } catch (error) {
-        console.log(error);
-        message.error('Get profile failed');
-    } finally {
-        hideDropdown();
-    }
+// const auctionSessionManagement = async () => {
+//     try {
+//         const response = await store.dispatch('getMyAuction');
+//         router.push('/user/allSession');
+//     hideDropdown();
+//     } catch (error) {
+//         message.error('Get sessions failed');
+//     }
+    
+// };
+
+const auctionSessionManagement = () => {
+    router.push('/user/allSession');
+    hideDropdown();
+};
+// const profileManagement = async () => {
+//     try {
+//         const response = await store.dispatch('getMyProfile');
+//         console.log(store.getters.getUser);
+//         message.success('Get profile successfully');
+//         router.push('/user/profile');
+//     } catch (error) {
+//         console.log(error);
+//         message.error('Get profile failed');
+//     } finally {
+//         hideDropdown();
+//     }
 
 
+// };
+
+const profileManagement =  () =>{
+    router.push('/user/profile');
+    hideDropdown();
 };
 
 const handleLogout = async () => {

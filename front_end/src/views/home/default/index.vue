@@ -131,7 +131,7 @@
                 <div v-for="(product, index) in newProducts" :key="index" class=" bg-white shadow-lg rounded-lg p-4">
                     <a-card hoverable @click="selectProduct(product, index)" class="h-full">
                         <template #cover>
-                            <img class="h-56 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
+                            <img class="h-64 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
                         </template>
                         <template #actions>
                         </template>
