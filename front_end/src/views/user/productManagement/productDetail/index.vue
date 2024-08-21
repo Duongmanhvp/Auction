@@ -9,13 +9,14 @@
             <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             <div class="flex space-x-8">
                 <div class="flex-1 relative">
-                    <div class="w-full h-auto overflow-hidden rounded-md">
+                    <div class="w-full h-64 overflow-hidden rounded-md">
                         <div class="flex-1">
                             <img v-for="(image, index) in arrayImage" :key="index" :src='image' alt="Image"
                                 v-show="index === currentImageIndex" class="h-max w-max" />
                             <button @click="prevImage"
                                 class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
-                                <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
+                                <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous"
+                                    class="w-6 h-6" />
                             </button>
                             <button @click="nextImage"
                                 class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full">
@@ -33,6 +34,8 @@
                         <label for="description" class="block text-gray-700 mb-3 text-lg font-bold">Description</label>
                         <p id="description" class="text-gray-800">{{ product.description }}</p>
                     </div>
+                    <button @click="createSession" class="bg-green-500 text-white px-4 py-2 rounded">Create Auction
+                        Session</button>
                 </div>
             </div>
         </div>
@@ -42,7 +45,13 @@
 <script setup>
 import { defineProps, defineEmits, ref, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
+
+const createSession = () => {
+    router.push('/user/addSession')
+}
 
 const props = defineProps({
     visible: {
