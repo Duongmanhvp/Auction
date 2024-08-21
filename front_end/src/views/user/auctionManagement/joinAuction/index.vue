@@ -311,9 +311,20 @@ function formatPrice(priceNum) {
 
 
 const comments = ref([]);
+
+const myCommentInput = ref('');
+
+function handleComment() {
+    if (!myCommentInput.value) {
+        return;
+    }
+    sessionApi.comment(auctionId, myCommentInput.value);
+    myCommentInput.value = '';
+};
+
+
 const notifications = ref([]);
 
-const data = [];
 
 function handleUnload() {
     console.log('leaving room');
