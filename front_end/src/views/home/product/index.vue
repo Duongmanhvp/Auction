@@ -1,9 +1,6 @@
 <template>
     <div class="relative mt-20">
         <TheCard />
-        <TheCard />
-        <TheCard />
-        <TheCard />
     </div>
 </template>
 

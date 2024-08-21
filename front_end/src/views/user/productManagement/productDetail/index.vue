@@ -9,7 +9,7 @@
             <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             <div class="flex space-x-8">
                 <div class="flex-1 relative">
-                    <div class="w-full h-64 overflow-hidden rounded-md">
+                    <div class="w-full h-auto overflow-hidden rounded-md">
                         <div class="flex-1">
                             <img v-for="(image, index) in arrayImage" :key="index" :src='image' alt="Image"
                                 v-show="index === currentImageIndex" class="h-max w-max" />
