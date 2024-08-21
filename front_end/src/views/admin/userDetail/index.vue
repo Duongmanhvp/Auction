@@ -8,7 +8,7 @@
             <div class=" flex space-y-2">
                 <div class="w-1/3 flex items-center justify-center">
                     <p><strong></strong>
-                        <img src="../../../assets/images/j5m.jpg" alt="avatar" class=" w-52 h-52">
+                        <img :src="avatar" alt="avatar" class=" w-52 h-52">
                     </p>
                 </div>
                 <div class="w-2/3 space-y-2">
@@ -48,6 +48,7 @@
 <script setup>
 import { defineProps, defineEmits, ref, reactive, watch } from 'vue';
 import adminApi from "../../../api/admin.js";
+import defaultAvt from '../../../assets/images/defaultAvt.png';
 
 const props = defineProps({
     user: Object,
@@ -62,9 +63,13 @@ const data = reactive({
     UserId: '',
     newStatus: ''
 });
+
+const avatar = ref( );
+
 watch(() => props.user, () => {
     status.value = props.user.statusAccount;
     data.UserId = props.user.id;
+    avatar.value = props.user.avatar || defaultAvt;
 });
 const closeModal = () => {
     emit('close');

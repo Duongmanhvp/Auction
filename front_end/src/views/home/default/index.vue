@@ -108,7 +108,7 @@
                 <div v-for="(product, index) in topProducts" :key="index" class=" bg-white shadow-lg rounded-lg p-4">
                     <a-card hoverable @click="selectProduct(product, index)" class="h-full">
                         <template #cover>
-                            <img class="h-56 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
+                            <img class="h-64 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
                         </template>
                         <template #actions>
                         </template>
@@ -128,57 +128,21 @@
             </div>
 
             <div class="product-list grid grid-cols-4 gap-4">
-                <a-card hoverable class="h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/new_product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Card title" description="This is the description">
-                        <template #avatar>
-                            <a-avatar src="../../../assets/images/new_product.jpg" />
+                <div v-for="(product, index) in newProducts" :key="index" class=" bg-white shadow-lg rounded-lg p-4">
+                    <a-card hoverable @click="selectProduct(product, index)" class="h-full">
+                        <template #cover>
+                            <img class="h-56 w-44" alt="example" :src="`https://res.cloudinary.com/dorl0yxpe/image/upload/`+ product.image.split(', ')[0]" />
                         </template>
-                    </a-card-meta>
-                </a-card>
-
-                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/new_product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Card title" description="This is the description">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
+                        <template #actions>
                         </template>
-                    </a-card-meta>
-                </a-card>
-
-                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/new_product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Card title" description="This is the description">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                        </template>
-                    </a-card-meta>
-                </a-card>
-
-                <a-card hoverable class=" h-auto bg-white shadow-lg rounded-lg p-4">
-                    <template #cover>
-                        <img alt="example" src="../../../assets/images/new_product.jpg" />
-                    </template>
-                    <template #actions>
-                    </template>
-                    <a-card-meta title="Card title" description="This is the description">
-                        <template #avatar>
-                            <a-avatar src="https://joeschmoe.io/api/v1/random" />
-                        </template>
-                    </a-card-meta>
-                </a-card>
+                        <a-card-meta :title="product.name" :description="product.description">
+                            <template #avatar>
+                                <a-avatar :src="product.avatar" />
+                            </template>
+                        </a-card-meta>
+                    </a-card>
+                </div>
+               
             </div>
 
             <TheChevron />
@@ -198,6 +162,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 const carouselRef = ref(null);
 let topProducts = reactive([])
+let newProducts = reactive([])
 const selectedProduct = ref(null);
 const viewModalVisible = ref(false);
 const a = ref(1000);
@@ -207,7 +172,21 @@ const getTopProducts = async () => {
         const response = await productApi.getTopProducts();
         console.log(response);
         // topProducts = response;
-        topProducts.splice(0, topProducts.length, ...response);
+        topProducts.length = 0;
+        topProducts.push(...response);
+        //topProducts.splice(0, topProducts.length, ...response);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const getNewProducts = async () => {
+    try {
+        const response = await productApi.getNewProducts();
+        console.log(response.content);
+        newProducts.length = 0;
+        newProducts.push(...response.content);
+        console.log(newProducts);
     } catch (error) {
         console.log(error);
     }
@@ -227,34 +206,35 @@ const nextSlide = () => {
 const selectProduct = async (product, index) => {
     selectedProduct.value = product;
     a.value = index;
-    store.commit('setProductDetail',
-        {
-            id: product.productId,
-            name: product.name,
-            category: product.category,
-            description: product.description,
-            images: product.image,
-            owner: product.owner,
-        }
-    );
+    // store.commit('setProductDetail',
+    //     {
+    //         id: product.productId,
+    //         name: product.name,
+    //         category: product.category,
+    //         description: product.description,
+    //         images: product.image,
+    //         owner: product.owner,
+    //     }
+    // );
     viewModalVisible.value = true;
 };
 
 const closeProductDetailModal = () => {
     viewModalVisible.value = false;
-    store.commit('setProductDetail',
-        {
-            id: '',
-            name: '',
-            category: '',
-            description: '',
-            images: '',
-            owner: '',
-        });
+    // store.commit('setProductDetail',
+    //     {
+    //         id: '',
+    //         name: '',
+    //         category: '',
+    //         description: '',
+    //         images: '',
+    //         owner: '',
+    //     });
 };
 
 onMounted(() => {
     getTopProducts();
+    getNewProducts();
 });
 </script>
 
