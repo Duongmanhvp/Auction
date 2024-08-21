@@ -19,16 +19,12 @@
         </div>
         <div class="flex w-2/3 p-4 bg-white max-h-screen">
             <div class="w-1/2">
-                <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
+                <h1 class="text-2xl font-bold text-gray-800 mb-4 min-h-[1.5em]">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
-                <div v-if="sessionState === 'PENDING'" class="mb-4">
-                    <h2 class="text-md font-semibold text-blue-400-600 mb-2">Auction start after: {{ timeUntilStart }} </h2>
-                </div>
-                <div v-else-if="sessionState === 'IN_PROGRESS'" class="mb-4">
-                    <h2 class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ timeLeft }}</h2>
-                </div>
-                <div v-else-if="sessionState === 'ENDED'" class="mb-4">
-                    <h2 class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
+                <div class="mb-4 min-h-[1.5em]">
+                    <h2 v-if="sessionState === 'PENDING'" class="text-md font-semibold text-blue-400-600 mb-2">Auction start after: {{ timeUntilStart }} </h2>
+                    <h2 v-else-if="sessionState === 'IN_PROGRESS'" class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ timeLeft }}</h2>
+                    <h2 v-else-if="sessionState === 'ENDED'" class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
                 </div>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
@@ -336,7 +332,8 @@ onMounted(() => {
     .then((res) => {
         console.log(res)
         auctionInfoRef.value = res;
-        sessionState.value = res.status === "CLOSED" ? "PENDING" : res.status;
+        sessionState.value = 
+            ["IN_PROGRESS", "ENDED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
         if (sessionState.value === "IN_PROGRESS") {
             sessionApi.getCurrentPrice(auctionId).then((res) => {
                 updateBid(res.data);
