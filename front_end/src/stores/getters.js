@@ -19,5 +19,17 @@ export default {
    },
    getProducts(state) {
       return state.products;
+   },
+   getAuction(state){
+      return state.auction;
+   },
+   getFilterProducts(state) {
+      return state.filterProducts;
+   },
+   getProductDetail(state) {
+      return state.productDetail;
+   },
+   getSessions(state) {
+      return state.sessions;
    }
 } 

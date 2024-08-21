@@ -8,7 +8,7 @@
             <a-card hoverable class=" w-full h-auto bg-white shadow-lg rounded-lg p-4">
                 <div class="flex items-center justify-center">
                     <div class="relative inline-block group">
-                        <img :src="avatarUrl" alt="Avatar" class="w-48 h-48 mr-4 ml-1 shadow-lg rounded-lg" />
+                        <img :src="avatar" alt="Avatar" class="w-48 h-48 mr-4 ml-1 shadow-lg rounded-lg" />
                         <button @click="changeAvatar"
                             class="absolute -bottom-2 right-12 transform translate-x-1/2 -translate-y-1/2 bg-slate-400 bg-opacity-50 p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <img src="../../../../assets/icon/change-avatar.svg" alt="Change Avatar" class="w-6 h-6" />
@@ -78,7 +78,7 @@ const address = ref('');
 const gender = ref('');
 
 const showUploadModal = ref(false);
-const avatarUrl = ref('');
+const avatar = ref('');
 const imagePreview = ref('');
 
 let selectedFile = ref('');
@@ -94,23 +94,13 @@ if (user) {
     phone.value = user.phone;
     address.value = user.address;
     gender.value = user.gender;
-    avatarUrl.value = user.avatarUrl;
+    avatar.value = user.avatar;
 }
 
 const changeAvatar = () => {
     showUploadModal.value = true;
 };
 
-// const handleFileChange = (event) => {
-//     const file = event.target.files[0];
-//     if (file) {
-//         const reader = new FileReader();
-//         reader.onload = (e) => {
-//             imagePreview.value = e.target.result;
-//         };
-//         reader.readAsDataURL(file);
-//     }
-// };
 const handleFileChange = (event) => {
 
     const files = event.target.files;
@@ -123,7 +113,7 @@ const handleFileChange = (event) => {
 
 const confirmUpload = async () => {
     try {
-        avatarUrl.value = imagePreview.value;
+        avatar.value = imagePreview.value;
 
         const formData = new FormData();
         formData.append('files', selectedFile);

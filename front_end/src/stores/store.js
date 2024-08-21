@@ -7,6 +7,7 @@ import actions from "./actions.js";
 import getters from "./getters.js";
 
 const store = createStore({
+  strict: false,
   plugins: [
     createPersistedState({
       storage: window.sessionStorage,

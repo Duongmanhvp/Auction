@@ -1,5 +1,6 @@
 import stompApi from './stomp';
 import httpApi from './axios';
+import { KeepAlive } from 'vue';
 
 const config = {
     onJoinableAuction: null,
@@ -8,7 +9,7 @@ const config = {
 let auctionJoinRegistry = {};
 
 stompApi.setOnDisconnect(() => {
-    for (const session of auctionJoinRegistry) {
+    for (const session in auctionJoinRegistry) {
         session.leave();
     }
     auctionJoinRegistry = {};
@@ -39,8 +40,8 @@ stompApi.setOnDisconnect(() => {
  */
 async function joinAuctionRoom(auctionId, callbacks) {
     try {
-        const response = await (await httpApi.post(`/v1/auctions/${auctionId}/join`)).json();
-        const wasActive = response['is_active'];
+        const response = (await httpApi.post(`/v1/auctions/${auctionId}/join`)).data.data;
+        const wasActive = response['started'];
 
         const session = {
             onStart: callbacks.onStart,
@@ -56,12 +57,10 @@ async function joinAuctionRoom(auctionId, callbacks) {
                 writable: false
             },
             isJoined: {
-                get: () => auctionJoinRegistry[auctionId] === session,
-                writable: false
+                get: () => auctionJoinRegistry[auctionId] === session
             },
             isActive: {
-                get: () => session.isJoined ? sessionActive : undefined,
-                writable: false
+                get: () => session.isJoined ? sessionActive : undefined
             },
             leave: {
                 value: async function () {
@@ -98,7 +97,7 @@ async function joinAuctionRoom(auctionId, callbacks) {
         const notificationPromise = stompApi.subscribe(`/topic/auction/${auctionId}/notifications`, 
             (message) => {
                 const { body } = message;
-                session.onNotification?.(body);
+                session.onNotification?.(JSON.parse(body));
             }); 
 
         const bidPromise = wasActive ? subscribeBid(auctionId, session) : null;
@@ -114,15 +113,17 @@ async function joinAuctionRoom(auctionId, callbacks) {
 }
       
 async function leaveAuctionRoom(auctionId) {
-    if (!auctionJoinRegistry[auctionId]) {
-        return;
-    }
+    console.log('registry: ', auctionJoinRegistry[auctionId]);
+    // if (!auctionJoinRegistry[auctionId]) {
+    //     return;
+    // }
     stompApi.unsubscribe(`/topic/auction/${auctionId}/bids`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/comments`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/notifications`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/control`);
     delete auctionJoinRegistry[auctionId];
-    await httpApi.post(`/v1/auctions/${auctionId}/leave`);
+    console.log('leaving auction room');
+    await httpApi.post(`/v1/auctions/${auctionId}/leave`, {}, { keepAlive: true });
 }
 
 async function bid(auctionId, amount) {
@@ -134,6 +135,7 @@ async function comment(auctionId, content) {
 }
 
 async function getCurrentPrice(auctionId) {
+    console.log('getting current price');
     return stompApi.send(`/app/auction/${auctionId}/last-price`);
 }
 
@@ -157,7 +159,7 @@ export default auctionSessionApi;
 function subscribeBid(auctionId, callbacks) {
     return stompApi.subscribe(`/topic/auction/${auctionId}/bids`, (message) => {
         const body = JSON.parse(message.body);
-        body['created_at'] = parseDateTimeArray(body['created_at']);
+        body['createdAt'] = parseDateTimeArray(body['createdAt']);
         callbacks.onBid?.(body);
     });
 }
@@ -165,7 +167,7 @@ function subscribeBid(auctionId, callbacks) {
 function subscribeComment(auctionId, callbacks) {
     return stompApi.subscribe(`/topic/auction/${auctionId}/comments`, (message) => {
         const body = JSON.parse(message.body);
-        body['created_at'] = parseDateTimeArray(body['created_at']);
+        body['createdAt'] = parseDateTimeArray(body['createdAt']);
         callbacks.onComment?.(body);
     });
 }

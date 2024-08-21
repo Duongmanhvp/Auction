@@ -1,11 +1,11 @@
 import AdminLayout from "../layouts/AdminLayout.vue";
-import AllRequestSession from "../views/admin/allRequestSession/index.vue";
-import Product from "../views/home/product/index.vue";
-import Session from "../views/home/session/index.vue";
-import News from "../views/home/news/index.vue";
-import History from "../views/home/history/index.vue";
-import Introduction from "../views/home/introduction/index.vue";
-import Contact from "../views/home/contact/index.vue";
+import AuctionManagement from "../views/admin/auctionManagement/index.vue";
+import ProductManagement from "../views/admin/productManagement/index.vue";
+import UserManagement from "../views/admin/userManagement/index.vue";
+import ProfileManagement from "../views/admin/profileManagement/profile/index.vue";
+import Profile from "../views/admin/profileManagement/profile/index.vue";
+import EditProfile from "../views/admin/profileManagement/editProfile/index.vue";
+import ChangePassword from "../views/admin/profileManagement/changePassword/index.vue";
 
 const adminRoutes = [
     {
@@ -14,39 +14,40 @@ const adminRoutes = [
         meta: { requiresAuth: true, requiresAdmin: true },
         children: [
             {
-                path: "requestSession",
-                name: "request-session",
-                component: AllRequestSession
+                path: "auctionManagement",
+                name: "auction-management",
+                component: AuctionManagement
             },
             {
-                path: "product",
-                name: "admin-product",
-                component: Product
+                path: "productManagement",
+                name: "product-management",
+                component: ProductManagement
             },
             {
-                path: "session",
-                name: "admin-session",
-                component: Session
+                path: "userManagement",
+                name: "user-management",
+                component: UserManagement
             },
             {
-                path: "news",
-                name: "admin-news",
-                component: News
+                path: "profileManagement",
+                name: "profile-management",
+                component: ProfileManagement
             },
             {
-                path: "history",
-                name: "admin-history",
-                component: History
+                path: "profile",
+                name: "admin-profile",
+                component: Profile
             },
             {
-                path: "introduction",
-                name: "admin-introduction",
-                component: Introduction
+                path: "editProfile",
+                name: "admin-edit-profile",
+                component: EditProfile
             },
             {
-                path: "contact",
-                name: "admin-contact",
-                component: Contact
+                path: "changePassword",
+                name: "admin-changePassword",
+                component: ChangePassword,
+                meta: { requiresVerification: true }
             },
         ]
     }

@@ -17,7 +17,7 @@
 
                     <a-card hoverable>
                         <template #cover>
-                            <img src=" ../../../../assets/images/product.jpg" alt="Session" />
+                            <img src="../../../../assets/images/auction.jpg" alt="Session" />
                         </template>
                         <a-card-meta :title="session.title" :description="session.status">
                             <template #avatar>
@@ -44,28 +44,37 @@
 
 <script setup>
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
-import { ref, computed } from 'vue';
+import { ref, computed,reactive } from 'vue';
+import { useStore } from 'vuex';
 
-const sessions = ref([
-    { id: 1, title: 'Demo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 2', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 3', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 4', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 5', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 6', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 7', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 8', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-    { title: 'Session 9', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
-]);
+
+const store = useStore();
+// const sessions = ref([
+//     { id: 1, title: 'Demo Session', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 2', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 3', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 4', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 5', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 6', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 7', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 8', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+//     { title: 'Session 9', avatar: 'https://joeschmoe.io/api/v1/random', status: "Pending" },
+// ]);
+
+
+let sessions = reactive([]);
+sessions = store.getters.getSessions;
+//sessions.push(...store.state.sessions);
+
 
 const currentPage = ref(1);
 const pageSize = 4;
-const totalSessions = sessions.value.length;
+const totalSessions = sessions.length;
 
 const paginatedSessions = computed(() => {
     const start = (currentPage.value - 1) * pageSize * 2;
     const end = start + pageSize * 2;
-    return sessions.value.slice(start, end);
+    return sessions.slice(start, end);
 });
 
 const prevSlide = () => {
@@ -86,10 +95,4 @@ const goToSessionDetail = (id) => {
 
 </script>
 
-<style scoped>
-.session-list {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-}
-</style>
+<style lang="scss" src="./style.scss" scoped />

@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, reactive } from 'vue';
 
 const props = defineProps({
     visible: Boolean,
@@ -68,10 +68,22 @@ const props = defineProps({
 
 const emit = defineEmits(['update:visible', 'product-updated']);
 
-const categories = ['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other'];
+const categories = ['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHER'];
+
+// let id = ref(0);
+
+// const l = () => {
+//     if (props.product) {
+//         id = props.product.productId;
+//         console.log(id);
+//     }
+// };
 
 const images = ref([]);
 const currentImage = ref(null);
+
+// watch(() => props.product, l, {immediate : true});    
+
 
 const handleImageUpload = (event) => {
     const files = event.target.files;

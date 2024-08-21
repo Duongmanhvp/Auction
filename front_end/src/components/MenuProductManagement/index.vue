@@ -1,4 +1,4 @@
-<template>
+<template >
     <div class="z-10">
         <a-card hoverable class="h-auto bg-white shadow-lg rounded-md mt-6">
             <h1 class="text-lg font-bold">Asset Management</h1>
@@ -48,18 +48,35 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { useStore } from 'vuex';
+
+const store = useStore();
 
 const searchKeyword = ref('');
-const tags = ref(['Art', 'License Plate', 'Vehicles', 'Antiques', 'Other']);
-const selectedTags = ref([]);
+const tags = ref(['ART', 'LICENSE_PLATE', 'VEHICLES', 'ANTIQUES', 'OTHER']);
+const selectedTags = ref('');
 
 const filterByTag = (tag) => {
-    if (selectedTags.value.includes(tag)) {
-        selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    // if (selectedTags.value.includes(tag)) {
+    //     selectedTags.value = selectedTags.value.filter(t => t !== tag);
+    // } else {
+    //     selectedTags.value.push(tag);
+    // }
+    if (selectedTags.value === tag) {
+        selectedTags.value = '';
     } else {
-        selectedTags.value.push(tag);
+        selectedTags.value = tag;
     }
-    console.log('Filtering products by tags:', selectedTags.value);
+    //console.log('Filtering products by tags:', selectedTags.value);
 };
+
+watch(selectedTags, (newValue, oldValue) => {
+    console.log('Selected tags:', newValue);
+  
+    const products = store.getters.getProducts.filter(product => product.category === newValue);
+    store.commit('setFilterProducts', products);
+    //store.state.filterProducts = products;
+    //console.log('Filtered products:', products);
+});
 </script>
