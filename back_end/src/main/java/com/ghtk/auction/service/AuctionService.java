@@ -24,7 +24,7 @@ public interface AuctionService {
     Auction getAuctionById(Long auctionId);
 
     List<Auction> getMyJoinedAuction(Jwt principal);
-    UserAuction registerJoinAuction(Jwt principal, Long auctionId);
+    String registerJoinAuction(Jwt principal, Long auctionId);
 
     List<AuctionResponse> getRegisActiveAuctions(Jwt principal);
     // List<BidResponse> getBids(Jwt principal, Long auctionId, BidFilter filter);//

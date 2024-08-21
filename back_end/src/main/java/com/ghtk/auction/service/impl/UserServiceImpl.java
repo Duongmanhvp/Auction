@@ -79,7 +79,6 @@ public class UserServiceImpl implements UserService {
 		
 		return UserResponse.builder()
 				.email(request.getEmail())
-				.password(request.getPassword())
 				.isVerified(false)
 				.build();
 	}

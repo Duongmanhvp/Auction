@@ -8,6 +8,7 @@ import com.ghtk.auction.dto.response.auction.AuctionResponse;
 import com.ghtk.auction.dto.response.user.PageResponse;
 import com.ghtk.auction.entity.*;
 import com.ghtk.auction.enums.AuctionStatus;
+import com.ghtk.auction.exception.AlreadyExistsException;
 import com.ghtk.auction.exception.ForbiddenException;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.AuctionMapper;
@@ -167,7 +168,7 @@ public class AuctionServiceImpl implements AuctionService {
 	
 	@PreAuthorize("@auctionComponent.isAuctionOpening(#auctionId)")
 	@Override
-	public UserAuction registerJoinAuction(Jwt principal, Long auctionId) {
+	public String registerJoinAuction(Jwt principal, Long auctionId) {
 		
 		Long userId = (Long)principal.getClaims().get("id");
 		User user = userRepository.findById(userId).orElseThrow(
@@ -176,13 +177,16 @@ public class AuctionServiceImpl implements AuctionService {
 		Auction auction = auctionRepository.findById(auctionId).orElseThrow(
 				() -> new NotFoundException("Khong tim thay product hop le")
 		);
+		if(userAuctionRepository.existsByUserAndAuction(user, auction)) {
+			throw new AlreadyExistsException("Ban da tham gia phien dau gia truoc do roi");
+		}
 		UserAuction userAuction = new UserAuction();
-		
+
 		userAuction.setUser(user);
 		userAuction.setAuction(auction);
-		
+
 		userAuctionRepository.save(userAuction);
-		return userAuction;
+		return "Ban da tham gia dau gia thanh cong";
 	}
 
   @Override

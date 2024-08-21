@@ -78,7 +78,7 @@ public class AuctionController {
 	}
 	
 	@PostMapping("/{id}/regis-join")
-	public ResponseEntity<ApiResponse<UserAuction>> regisJoinAuction(
+	public ResponseEntity<ApiResponse<String>> regisJoinAuction(
 			@AuthenticationPrincipal Jwt jwt,
 			@PathVariable Long id
 	) {
