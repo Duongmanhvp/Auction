@@ -44,6 +44,4 @@ public interface ProductRepository extends JpaRepository<Product,Long>, ProductR
 	List<Product> findAllByOwnerIdAndCategory(Long userId, ProductCategory category);
 	
 	List<Product> findAllByCategory(ProductCategory productCategory);
-
-
 }

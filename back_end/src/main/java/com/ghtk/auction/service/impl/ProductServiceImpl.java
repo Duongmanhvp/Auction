@@ -9,6 +9,7 @@ import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.entity.User;
 import com.ghtk.auction.entity.UserProduct;
 import com.ghtk.auction.enums.ProductCategory;
+import com.ghtk.auction.exception.AlreadyExistsException;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.ProductMapper;
 import com.ghtk.auction.repository.ProductRepository;
@@ -137,9 +138,12 @@ public class ProductServiceImpl implements ProductService {
 		Product productId = productRepository.findById(id).orElseThrow(
 				() -> new  NotFoundException("Product not found")
 		);
-		
+		User user = userRepository.findById(userId).get();
+		if(userProductRepository.existsByUserIDAndProductID(user, productId)) {
+			throw new AlreadyExistsException("Ban da quan tam san pham nay roi");
+		}
 		userProductRepository.save(UserProduct.builder()
-						.userID(userRepository.findById(userId).get())
+						.userID(user)
 						.productID(productId)
 						.build());
 	}

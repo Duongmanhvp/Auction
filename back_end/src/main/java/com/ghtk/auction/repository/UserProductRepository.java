@@ -1,6 +1,7 @@
 package com.ghtk.auction.repository;
 
 import com.ghtk.auction.entity.Product;
+import com.ghtk.auction.entity.User;
 import com.ghtk.auction.entity.UserProduct;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -30,19 +31,6 @@ public interface UserProductRepository extends JpaRepository<UserProduct, Long> 
 	List<Object[]> findMyInterestByUserID(@Param("userID") Long userId);
 	
 	Long countByProductID(Product product);
-	
-	@Query(value =
-			"""
-					SELECT
-					    up.product_id,
-					    COUNT(user_id) AS quantity
-					FROM
-					    user_product up
-					GROUP BY
-					    up.product_id
-					ORDER BY
-					    quantity
-					DESC
-					LIMIT 8;""", nativeQuery = true)
-	List<Object[]> findTop5MostPopularProducts();
+
+	boolean existsByUserIDAndProductID(User user, Product product);
 }

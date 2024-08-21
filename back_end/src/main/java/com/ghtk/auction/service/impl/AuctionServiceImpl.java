@@ -178,7 +178,7 @@ public class AuctionServiceImpl implements AuctionService {
 				() -> new NotFoundException("Khong tim thay product hop le")
 		);
 		if(userAuctionRepository.existsByUserAndAuction(user, auction)) {
-			throw new AlreadyExistsException("Ban da tham gia phien dau gia truoc do roi");
+			throw new AlreadyExistsException("Ban da dang ki phien dau gia truoc do roi");
 		}
 		UserAuction userAuction = new UserAuction();
 
