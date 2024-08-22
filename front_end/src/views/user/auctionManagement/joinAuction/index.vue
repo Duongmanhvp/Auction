@@ -379,6 +379,45 @@ onMounted(() => {
         console.error(err);
     });
 
+    const callbacks = {
+        onStart: () => {
+            sessionState.value = "IN_PROGRESS";
+            console.log('auction started');
+            sessionApi.getCurrentPrice(auctionId).then((res) => {
+                updateBid(res.data);
+            });
+        },
+        onEnd: () => {
+            sessionState.value = "FINISHED";
+            console.log('auction ended');
+        },
+        onBid: updateBid,
+        onComment: (data) => {
+            const { commentId, userId, content } = data;
+            // TODO: get user name using api
+            Promise.resolve({ name: "NPC" }).then((user) => {
+                comments.value.push({ id: commentId, userId, name: user.name, content });
+            })
+        },
+        onNotification: (data) => {
+            console.log('notification', data);
+            notifications.value.push(data);
+        },
+    };
+
+    const join = () => sessionApi.joinAuctionRoom(auctionId, callbacks)
+    .catch((err) => {
+        if (err.isAxiosError && err.response) {
+            if (err.response.data?.message === 'da tham gia dau gia') {
+                sessionApi.leaveAuctionRoom(auctionId).finally(() => {
+                    setTimeout(join, 1000);
+                });
+            }
+        }
+        console.error(err);
+    });
+    join();
+
     countdownInterval = setInterval(updateCountdown, 100);
     window.addEventListener('beforeunload', handleUnload);
 });
