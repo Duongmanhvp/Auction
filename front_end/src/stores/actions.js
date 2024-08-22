@@ -119,7 +119,7 @@ export default {
   async updateMyInfo({ commit }, data) {
     try {
       const response = await authApi.updateMyInfo(data);
-      commit("setUser",response);
+      commit("setUser",response); 
     } catch (error) {
       throw error;
     }

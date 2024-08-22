@@ -72,7 +72,7 @@ import { useStore } from "vuex";
 const activeKey = ref('1');
 
 const showUploadModal = ref(false);
-
+const avatar = ref('');
 const imagePreview = ref('');
 
 let selectedFile = ref('');
@@ -103,14 +103,15 @@ const confirmUpload = async () => {
         const formData = new FormData();
         formData.append('files', selectedFile);
         formData.append('name', selectedFile.name);
+        console.log(formData);
         const url = await store.dispatch('uploadImage', formData);
-
-        const response = await store.dispatch('updateMyInfo', { avatar: url });
+        
+        const response = await store.dispatch('updateMyInfo', { avatar : url });
         console.log(response);
 
         showUploadModal.value = false;
     } catch (error) {
-        message.error('Upload failed');
+        message.error('OOps! Something went wrong');
     }
 
 };
