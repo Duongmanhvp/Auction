@@ -81,9 +81,9 @@
           </template>
         </a-list>
         <div class="mt-4 flex rounded space-x-2">
-          <input v-model="newComment" type="text" placeholder="Enter your comment..."
+          <input v-model="myCommentInput" type="text" placeholder="Enter your comment..."
             class="flex-1 ml-3 border p-2 rounded-lg" />
-          <button @click="sendComment" class="bg-green-300 text-white p-2 rounded-lg hover:bg-green-400">
+          <button @click="handleComment" class="bg-green-300 text-white p-2 rounded-lg hover:bg-green-400">
             <img src="../../../../assets/icon/send.svg" alt="Next" class="w-6 h-6" />
           </button>
         </div>
