@@ -3,7 +3,6 @@ import authApi from "../api/auths.js";
 import imageApi from "../api/images.js";
 import stompApi from "../api/stomp.js";
 import productApi from "../api/products.js";
-import auctionSessionApi from "../api/auctionSession.js";
 import auctionApi from "../api/auctions.js";
 import { jwtDecode } from "jwt-decode";
 
@@ -36,11 +35,11 @@ export default {
 
   async logout({ commit }) {
     try {
-      const promise = authApi.logout(); 
+      const promise = authApi.logout();
       commit("setUser", {
         id: null,
         fullName: '',
-        dateOfBirth:'' ,
+        dateOfBirth: '',
         email: '',
         phone: '',
         address: '',
@@ -49,7 +48,11 @@ export default {
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
+      commit("setProducts", []);
+      commit("setAuction", []);
+      commit("setSessions", []);
       localStorage.removeItem("token");
+      sessionStorage.clear();
       stompApi.teardown();
       return promise;
     } catch (error) {
@@ -115,7 +118,7 @@ export default {
   async updateMyInfo({ commit }, data) {
     try {
       const response = await authApi.updateMyInfo(data);
-      commit("setUser",response);
+      commit("setUser", response);
     } catch (error) {
       throw error;
     }
@@ -149,17 +152,17 @@ export default {
     try {
       const response = await productApi.getProducts();
       commit("setProducts", response);
-      console.log (response);
+      console.log(response);
     } catch (error) {
       throw error;
     }
   },
 
   //auction
-  async getMyJoined({commit}) {
+  async getMyJoined({ commit }) {
     try {
       const response = await auctionApi.getMyJoined();
-      commit("setAuction",response);
+      commit("setAuction", response);
     }
     catch (error) {
       throw error;
@@ -176,7 +179,7 @@ export default {
     }
   },
 
-  async getAnotherInfo({commit},ownerId) {
+  async getAnotherInfo({ commit }, ownerId) {
     try {
       const response = await authApi.getAnotherInfo(ownerId);
       return response;
@@ -185,5 +188,5 @@ export default {
       throw error;
     }
   }
-  
+
 };

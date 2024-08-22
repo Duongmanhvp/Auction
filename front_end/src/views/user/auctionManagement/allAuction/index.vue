@@ -130,7 +130,7 @@ const renderAuction = async () => {
   }
   console.log(auctions)
 }
-onMounted(() => renderAuction())
+ onMounted(() => renderAuction())
 </script>
 
 <style scoped>

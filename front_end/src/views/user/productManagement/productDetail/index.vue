@@ -1,7 +1,7 @@
 <template>
     <div v-if="visible" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
         @click="closeModal">
-        <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 relative" @click.stop>
+        <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 h- relative" @click.stop>
             <button @click="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
                 <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
             </button>
@@ -9,7 +9,7 @@
             <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
             <div class="flex space-x-8">
                 <div class="flex-1 relative">
-                    <div class="w-full h-64 overflow-hidden rounded-md">
+                    <div class="w-full h-full overflow-hidden rounded-md">
                         <div class="flex-1">
                             <img v-for="(image, index) in arrayImage" :key="index" :src='image' alt="Image"
                                 v-show="index === currentImageIndex" class="h-max w-max" />
