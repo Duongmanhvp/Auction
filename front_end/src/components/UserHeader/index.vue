@@ -104,12 +104,6 @@
           </a-dropdown>
 
           <ul class="navbar-item font-bold cursor-pointer">
-            <router-link to="/user/history" class="block w-full h-full hover:text-teal-600 rounded"
-              active-class="text-teal-600">
-              <div class="w-full h-full p-5 flex items-center justify-center">History</div>
-            </router-link>
-          </ul>
-          <ul class="navbar-item font-bold cursor-pointer">
             <router-link to="/user/introduction" class="block w-full h-full p-5 hover:text-teal-600 rounded"
               active-class="text-teal-600">
               <div class="w-full h-full flex items-center justify-center">Introduction</div>
@@ -208,7 +202,7 @@ const hideDropdown = () => {
 const auctionManagement = async () => {
   try {
     const response = await store.dispatch('getMyJoined');
-    message.success('Get all auctions successfully');
+    // message.success('Get all auctions successfully');
 
   } catch (error) {
     message.error('Get auctions failed');
@@ -276,7 +270,7 @@ const profileManagement = () => {
 const handleLogout = async () => {
   try {
     const response = await store.dispatch('logout');
-    message.success('You have successfully logout');
+    // message.success('You have successfully logout');
     router.push('/');
   } catch (error) {
     message.error('Logout. Please try again.');
