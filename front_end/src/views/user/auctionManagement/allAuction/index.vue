@@ -14,19 +14,15 @@
         </a-card>
       </div>
       <div class="z-10">
-        <a-card hoverable class="bg-white shadow-lg rounded-md mt-6">
-          <h1 class="text-lg font-bold">Filter by Date</h1>
-          <div class="flex flex-col items-center mt-2 space-y-4">
-            <input type="date" v-model="startDate" class="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="Start Date" />
-            <span>TO</span>
-            <input type="date" v-model="endDate" class="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="End Date" />
-            <button @click="filterByDate"
-              class="flex items-center justify-center p-2 w-full bg-blue-50 font-bold hover:bg-teal-200 rounded-md outline-gray-400 shadow-lg">
-              <img src="../../../../assets/icon/search.svg" alt="Search" class="w-5 h-5 mr-3" />
-              Search
-            </button>
+        <a-card hoverable class="h-50 bg-white shadow-lg rounded-md mt-6">
+          <h1 class="text-lg font-bold">Status</h1>
+          <div class="flex items-center justify-center flex-wrap mt-4">
+            <div v-for="tag in tags" :key="tag" class="mt-1 mx-1">
+              <button @click="filterByTag(tag)"
+                :class="['p-2 rounded-full shadow-lg', { 'bg-teal-200': selectedTags.includes(tag), 'bg-blue-50': !selectedTags.includes(tag) }]">
+                {{ tag }}
+              </button>
+            </div>
           </div>
         </a-card>
       </div>
@@ -55,7 +51,7 @@
             </template>
             <a-card-meta :title="auction.title" :description="auction.status">
               <template #avatar>
-                <a-avatar :src=auction.product.avatarUrl alt="Auction" />
+                <a-avatar :src="auction.product.avatarUrl" alt="Auction" />
               </template>
             </a-card-meta>
           </a-card>
@@ -70,25 +66,67 @@
 
 <script setup>
 import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, watch, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 const router = useRouter();
 const store = useStore();
 
-const auctions = store.getters.getAuction;
+const auctions = ref([]);
+let totalAuctions = auctions.value.length;
 
 const currentPage = ref(1);
 const pageSize = 4;
-const totalAuctions = ref(auctions.length);
+
 
 
 const paginatedAuctions = computed(() => {
   const start = (currentPage.value - 1) * pageSize * 2;
   const end = start + pageSize * 2;
-  return auctions.slice(start, end);
+  return auctions.value.slice(start, end);
 });
+
+const tags = ref(['OPENING', 'CLOSED', 'IN_PROGRESS', 'FINISHED']);
+const selectedTags = ref([]);
+
+const filterByTag = (tag) => {
+  if (selectedTags.value === tag) {
+    selectedTags.value = '';
+  } else {
+    selectedTags.value = tag;
+  }
+ 
+};
+
+watch(selectedTags, (newValue, oldValue) => {
+  console.log('Selected tags:', newValue);
+
+  const products = store.getters.getAuction.filter(auction => auction.status === newValue);
+  store.commit('setFilterAuctions', products);
+  //store.state.filterProducts = products;
+  //console.log('Filtered products:', products);
+});
+
+
+
+
+store.watch((state, getters) => getters.getFilterAuctions, (newValue, oldValue) => {
+  if (newValue.length === 0) {
+    auctions.value = store.getters.getAuction;
+  } else {
+    auctions.value = newValue;
+  }
+  totalAuctions = auctions.value.length;
+  currentPage.value = 1;
+  console.log('AAAAA', auctions.value);
+});
+
+
+watch(auctions, () => {
+  totalAuctions = auctions.value.length;
+});
+
 
 const prevSlide = () => {
   if (currentPage.value > 1) {
@@ -102,12 +140,6 @@ const nextSlide = () => {
   }
 };
 
-const filterByDate = () => {
-  if (!startDate.value || !endDate.value) {
-    alert("Please select both start and end dates");
-    return;
-  }
-};
 
 const getUrlImage = (image) => {
   return `https://res.cloudinary.com/dorl0yxpe/image/upload/` + image.split(', ')[0];
@@ -124,13 +156,21 @@ const goToAuction = (auctionId) => {
 };
 
 const renderAuction = async () => {
-  for (let auction of auctions) {
-    const avatarUrl = await getUrlAvatar(auction.product.ownerId);
-    auction.product.avatarUrl = avatarUrl;
+  try {
+    const response = await store.dispatch('getMyJoined');
+    auctions.value = store.getters.getAuction;
+    // console.log(auctions.value)
+    // for (let auction of auctions) {
+    //   const avatarUrl = await getUrlAvatar(auction.product.ownerId);
+    //   auction.product.avatarUrl = avatarUrl;
+    // }
+  } catch (error) {
+    console.log(error);
+
   }
-  console.log(auctions)
 }
- onMounted(() => renderAuction())
+onBeforeMount(() => renderAuction());
+
 </script>
 
 <style scoped>

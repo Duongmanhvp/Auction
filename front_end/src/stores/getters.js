@@ -31,5 +31,8 @@ export default {
    },
    getSessions(state) {
       return state.sessions;
+   },
+   getFilterAuctions(state){
+      return state.filterAuctions;
    }
 } 

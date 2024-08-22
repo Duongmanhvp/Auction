@@ -208,18 +208,23 @@ const hideDropdown = () => {
     showDropdown.value = false;
 };
 
-const auctionManagement = async () => {
-    try {
-        const response = await store.dispatch('getMyJoined');
-        message.success('Get all auctions successfully');
-        
-    } catch (error) {
-        message.error('Get auctions failed');
-    }finally{
+const auctionManagement = () => {
         router.push('/user/allAuction');
-        hideDropdown();
-    }
+        hideDropdown();   
 };
+
+// const auctionManagement = async () => {
+//     try {
+//         const response = await store.dispatch('getMyJoined');
+//         message.success('Get all auctions successfully');
+        
+//     } catch (error) {
+//         message.error('Get auctions failed');
+//     }finally{
+//         router.push('/user/allAuction');
+//         hideDropdown();
+//     }
+// };
 
 // const productManagement = async() => {
 //     try {
