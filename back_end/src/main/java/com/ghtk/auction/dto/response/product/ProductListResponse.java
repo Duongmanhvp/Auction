@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ProductSearchResponse {
+public class ProductListResponse {
     Long id;
 
     String owner;
@@ -23,4 +23,6 @@ public class ProductSearchResponse {
     String description;
 
     String image;
+
+    Long quantity;
 }

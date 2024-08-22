@@ -10,9 +10,9 @@ import java.util.List;
 
 @Repository
 public interface UserAuctionRepository extends JpaRepository<UserAuction, Long> {
-  UserAuction findByUserIdAndAuctionId(Long userId, Long auctionId);
-	boolean existsByUserAndAuction(User user, Auction auction);
-	List<UserAuction> findAllByUser(User user);
-  List<UserAuction> findAllByUserAndAuctionStatus(User user, AuctionStatus auctionStatus);
-  List<UserAuction> findAllByAuction(Auction auction);
+    UserAuction findByUserIdAndAuctionId(Long userId, Long auctionId);
+    boolean existsByUserAndAuction(User user, Auction auction);
+    List<UserAuction> findAllByUser(User user);
+    List<UserAuction> findAllByAuction(Auction auction);
+
 }
