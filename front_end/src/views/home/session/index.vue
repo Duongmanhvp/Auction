@@ -1,18 +1,10 @@
 <template>
     <div class="relative mt-20">
-        <TheCard />
-        <TheCard />
-        <TheCard />
-        <TheCard />
+        <TheCard :statusAuction="'IN_PROGRESS'" />
+        <TheCard :statusAuction="'OPENING'" />
     </div>
 </template>
 
-<script>
-import TheCard from '../../../components/Card/index.vue';
-
-export default {
-    components: {
-        TheCard,
-    }
-}
+<script setup>
+import TheCard from '../../../components/CardAuction/index.vue';
 </script>

@@ -58,7 +58,7 @@ const productApi = {
     }
   },
 
-  async getProductsByCategory(category) {
+  async getAllProductByCategory(category) {
     try {
       const response = await api.get("/v1/products/get-all-product-by-category?category=" + category);
       return response.data.data;
@@ -66,6 +66,18 @@ const productApi = {
       message.error(error.response.data.message);
       throw error;
     }
+  },
+
+  async interestProduct(id) {
+    try {
+      const response = await api.post('/v1/products/interest/' + id);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      message.error(error.response.data.message);
+      throw error;
+    }
   }
-};
+
+}
 export default productApi;
