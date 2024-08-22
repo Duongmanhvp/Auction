@@ -11,4 +11,6 @@ public interface ProductRepositoryCustom {
     List<ProductListResponse> findProduct(String key, Pageable pageable, ProductCategory category);
 
     List<ProductListResponse> getInterestProductTop(Long limit);
+    
+    public long countTotalProducts(String key, ProductCategory category);
 }

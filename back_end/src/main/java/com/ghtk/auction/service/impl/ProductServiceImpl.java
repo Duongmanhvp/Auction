@@ -233,7 +233,9 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public PageResponse<ProductResponse> getAllProductByCategory(ProductCategory category, int pageNo, int pageSize) {
 		Pageable pageable= PageRequest.of(pageNo,pageSize);
-
+		
+		Long total = productRepository.countByCategory(category);
+		
 		List<ProductListResponse> products = productRepository.findProduct(null, pageable, category);
 
 		List<ProductResponse> content = products.stream().map(product ->
@@ -251,6 +253,7 @@ public class ProductServiceImpl implements ProductService {
 		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
 		pageProductResponse.setPageNo(pageNo);
 		pageProductResponse.setPageSize(pageSize);
+		pageProductResponse.setTotalElements(total);
 		pageProductResponse.setContent(content);
 		return pageProductResponse;
 	}
@@ -258,6 +261,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public PageResponse<ProductResponse> getAllProduct(int pageNo, int pageSize) {
 		Pageable pageable= PageRequest.of(pageNo,pageSize);
+		
+		Long total = productRepository.countAll();
 		
 		List<ProductListResponse> products = productRepository.findProduct(null, pageable, null);
 		
@@ -275,6 +280,7 @@ public class ProductServiceImpl implements ProductService {
 		PageResponse<ProductResponse> pageProductResponse = new PageResponse<>();
 		pageProductResponse.setPageNo(pageNo);
 		pageProductResponse.setPageSize(pageSize);
+		pageProductResponse.setTotalElements(total);
 		pageProductResponse.setContent(content);
 		return pageProductResponse;
 	}

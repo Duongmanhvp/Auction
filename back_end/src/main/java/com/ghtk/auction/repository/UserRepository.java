@@ -21,5 +21,5 @@ public interface UserRepository extends JpaRepository<User,Long>, UserRepository
 	Page<User> findAllByStatusAccount(Pageable pageable, UserStatus statusAccount);
 	
 	
-	
+	Long countByStatusAccount(UserStatus statusAccount);
 }
