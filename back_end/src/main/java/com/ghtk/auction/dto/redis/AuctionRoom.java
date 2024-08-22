@@ -10,8 +10,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuctionRedisResponse implements Serializable {
+public class AuctionRoom implements Serializable {
   Long ownerId;
   Long startBid;
   Long pricePerStep;
+  boolean isStarted;
 }
