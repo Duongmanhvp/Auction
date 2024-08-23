@@ -76,7 +76,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (auctionSessionRepository.getAuctionRoom(auctionId).isEmpty()) {
       throw new ForbiddenException("phong dau gia chua mo");
     }
-    if (auctionSessionRepository.existsJoinable(auctionId, userId)) {
+    if (!auctionSessionRepository.existsJoinable(auctionId, userId)) {
       throw new ForbiddenException("Khong co quyen tham gia dau gia");
     }
   }
@@ -86,7 +86,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (auctionSessionRepository.getAuctionRoom(auctionId).isEmpty()) {
       throw new ForbiddenException("phong dau gia chua mo");
     }
-    if (auctionSessionRepository.existsJoinable(auctionId, userId)) {
+    if (!auctionSessionRepository.existsJoinable(auctionId, userId)) {
       throw new ForbiddenException("Khong co quyen tham gia dau gia");
     }
   }
@@ -96,7 +96,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (!isAuctionStarted(auctionId)) {
       throw new ForbiddenException("dau gia chua bat dau");
     }
-    if (auctionSessionRepository.existsJoinable(auctionId, userId)) {
+    if (!auctionSessionRepository.existsJoinable(auctionId, userId)) {
       throw new ForbiddenException("Khong co quyen tham gia dau gia");
     }
   }
@@ -106,7 +106,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (!isAuctionStarted(auctionId)) {
       throw new ForbiddenException("dau gia chua bat day");
     }
-    if (auctionSessionRepository.existsJoinable(auctionId, userId)) {
+    if (!auctionSessionRepository.existsJoinable(auctionId, userId)) {
       throw new ForbiddenException("Khong co quyen tham gia dau gia");
     }
   }
@@ -198,7 +198,10 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (!isAuctionStarted(auctionId)) {
       throw new ForbiddenException("Phien dau gia chua bat dau");
     }
-    BidMessage result = auctionSessionRepository.getLastBid(auctionId).get();
+    BidMessage result = auctionSessionRepository.getLastBid(auctionId)
+        .orElseGet(() -> {
+            return new BidMessage(0L, 0L, null);
+        });
     return result;
   }
 
@@ -310,7 +313,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
     if (room.isStarted()) {
       throw new ForbiddenException("Phien dau gia da bat dau");
     }
-    room.setStarted(false);
+    room.setStarted(true);
     auctionSessionRepository.setAuctionRoom(auctionId, room);
     eventPublisher.publishEvent(new AuctionStartEvent(auctionId));
   }

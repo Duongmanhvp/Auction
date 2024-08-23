@@ -1,6 +1,5 @@
 package com.ghtk.auction.repository.Custom.impl;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
@@ -31,7 +30,7 @@ public class AuctionSessionRepositoryImpl implements AuctionSessionRepository {
 
     @Override
     public boolean existsJoinable(Long auctionId, Long userId) {
-        String key = getUserJoinableKey(auctionId);
+        String key = getUserJoinableKey(userId);
         return redisTemplate.opsForSet().isMember(key, auctionId.toString());
     }
     @Override
