@@ -1,5 +1,5 @@
 <template>
-    <div v-if="auction" class=" fixed left-0 top-24 container flex p-1">
+    <div v-if="auction" class=" fixed left-0 top-24 container flex p-1 h-5/6">
         <button @click="goBack" class="absolute -top-16 right-96 z-50 text-gray-500 hover:text-gray-700 mt-20">
             <img src="../../../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
         </button>
@@ -17,8 +17,8 @@
                 </button>
             </div>
         </div>
-        <div class="flex w-2/3 p-4 bg-white max-h-screen">
-            <div class="w-1/2">
+        <div class="flex w-2/3  p-4 bg-white">
+            <div class="relative w-1/2">
                 <h1 class="text-2xl font-bold text-gray-800 mb-4 min-h-[1.5em]">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4 min-h-[1.5em]">
@@ -38,24 +38,27 @@
                     <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.startTime ?? '?' }}</p>
                     <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.endTime ?? '?' }}</p>
                     <div class="border-b-2 border-gray-300 my-8"></div>
-                    <p :class="{ 'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours }"
-                            class="text-gray-700 mb-2 text-xl">
-                        <strong>Current Price:</strong> {{ formattedCurrentPrice }} VND
-                    </p>
-                    <div class="flex items-center mb-4 text-xl">
-                        <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
-                        <input v-model="yourPriceInput" type="text" @input="adjustYourPrice" @keydown.enter="handlePlaceBid"
-                            @keydown.up="increasePrice" @keydown.down="decreasePrice"
-                            class="border p-2 rounded w-44 text-right font-mono" :step="steppingPrice" /> VND
+                    <div class="absolute bottom-0">
+                        <p :class="{ 'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours }"
+                                class="text-gray-700 mb-2 text-xl">
+                            <strong>Current Price:</strong> {{ formattedCurrentPrice }} VND
+                        </p>
+                        <div class="flex items-center mb-4 text-xl">
+                            <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
+                            <input v-model="yourPriceInput" type="text" @input="adjustYourPrice" @keydown.enter="handlePlaceBid"
+                                @keydown.up="increasePrice" @keydown.down="decreasePrice"
+                                class="border p-2 rounded w-44 text-right font-mono" :step="steppingPrice" /> VND
+                        </div>
+                        <button @click="handlePlaceBid" :disabled="!biddable" :class="[biddable ? 'bg-green-500' : 'bg-gray-500']"
+                            class="text-white p-2 rounded mt-4 w-full">
+                            Place Bid
+                        </button>
                     </div>
-                    <button @click="handlePlaceBid" :disabled="!biddable" :class="[biddable ? 'bg-green-500' : 'bg-gray-500']"
-                        class="text-white p-2 rounded mt-4 w-full">
-                        Place Bid
-                    </button>
+                    
                 </div>
             </div>
             <div class="h-full w-px bg-gray-300 ml-4"></div>
-            <div class="w-1/2">
+            <div class="relative w-1/2">
                 <div class="p-2">
                     <a-card v-for="(noti, index) in notifications" :key="index" hoverable
                         class="h-auto bg-white shadow-lg rounded-lg mb-2">
@@ -64,29 +67,31 @@
                         <a-card-meta :title="index + 1" :description="noti.content"></a-card-meta>
                     </a-card>
                 </div>
-                <div></div>
-                <a-list item-layout="horizontal" :data-source="comments"
-                    class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
-                    <template #renderItem="{ item }">
-                        <a-list-item :key="item.id">
-                            <a-list-item-meta :description="item.content">
-                                <template #title>
-                                    <a class="font-bold" href="https://www.antdv.com/">{{ item.name }}</a>
-                                </template>
-                                <template #avatar>
-                                    <a-avatar src="image1" />
-                                </template>
-                            </a-list-item-meta>
-                        </a-list-item>
-                    </template>
-                </a-list>
-                <div class="mt-4 flex rounded space-x-2">
-                    <input v-model="myCommentInput" type="text" placeholder="Enter your comment..."
-                        class="flex-1 ml-3 border p-2 rounded-lg" />
-                    <button @click="handleComment" class="bg-green-300 text-white p-2 rounded-lg hover:bg-green-400">
-                        <img src="../../../../assets/icon/send.svg" alt="Next" class="w-6 h-6" />
-                    </button>
+                <div class="">
+                    <a-list item-layout="horizontal" :data-source="comments"
+                        class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
+                        <template #renderItem="{ item }">
+                            <a-list-item :key="item.id">
+                                <a-list-item-meta :description="item.content">
+                                    <template #title>
+                                        <a class="font-bold">{{ item.name }}</a>
+                                    </template>
+                                    <template #avatar>
+                                        <a-avatar :src="item.avatar" />
+                                    </template>
+                                </a-list-item-meta>
+                            </a-list-item>
+                        </template>
+                    </a-list>
+                    <div class="absolute w-full bottom-[0] mt-4 flex rounded space-x-2">
+                        <input v-model="myCommentInput" @keydown.enter="handleComment" type="text" placeholder="Enter your comment..."
+                            class="flex-1 w-full ml-3 border p-2 rounded-lg" />
+                        <button @click="handleComment" class="bg-green-300 text-white p-2 rounded-lg hover:bg-green-400">
+                            <img src="../../../../assets/icon/send.svg" alt="Next" class="w-6 h-6" />
+                        </button>
+                    </div>
                 </div>
+                
             </div>
         </div>
     </div>
@@ -102,6 +107,8 @@ import stompApi from '../../../../api/stomp';
 import sessionApi from '../../../../api/auctionSession';
 import auctionApi from '../../../../api/auctions';
 import productApi from '../../../../api/products';
+
+const IMAGE_PREFIX = import.meta.env.VITE_IMAGE_PREFIX;
 
 const store = useStore();
 
@@ -132,13 +139,15 @@ const goBack = () => {
 import image1 from '../../../../assets/images/image1.jpg';
 import image2 from '../../../../assets/images/image2.jpg';
 import image3 from '../../../../assets/images/image3.jpg';
+import authApi from '../../../../api/auths';
 const images = computed(() => {
-    return (false && !product.value?.image?.split(/,(\s)?/).map((src) => ({ src }))) ||
-    [
-        { src: image1 },
-        { src: image2 },
-        { src: image3 },
-    ];
+    const raw = product.value?.image?.split(", ");
+    console.log(raw);
+    const img = raw?.map((src) => ({ 
+        src: IMAGE_PREFIX + src
+    })) || [];
+    console.log(img);
+    return img;
 });
 
 const currentImageIndex = ref(0);
@@ -227,10 +236,14 @@ const formattedCurrentPrice = computed(() => {
 //     return formatPrice(yourPrice.value);
 // });
 
+const minimumPrice = computed(() => {
+    return Math.max(startingPrice.value, 
+        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
+});
+
 const biddable = computed(() => {
-    const minimumPrice = currentPrice.value + steppingPrice.value;
     const yourPrice = parsePrice(yourPriceInput.value);
-    return sessionState.value === "IN_PROGRESS" && yourPrice >= minimumPrice;
+    return sessionState.value === "IN_PROGRESS" && yourPrice >= minimumPrice.value;
 });
 
 function adjustYourPrice(event) {
@@ -262,14 +275,9 @@ function increasePrice() {
     }
     const yourPrice = parsePrice(yourPriceInput.value);
     const addedPrice = yourPrice + steppingPrice.value;
-    const minimumPrice = Math.max(startingPrice.value, 
-        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
 
-    if (addedPrice < minimumPrice) {
-        yourPriceInput.value = formatPrice(minimumPrice);
-    } else {
-        yourPriceInput.value = formatPrice(addedPrice);
-    }
+    const editedPrice = Math.max(minimumPrice.value, addedPrice);
+    yourPriceInput.value = formatPrice(editedPrice);
 }
 
 function decreasePrice() {
@@ -278,14 +286,9 @@ function decreasePrice() {
     }
     const yourPrice = parsePrice(yourPriceInput.value);
     const decreasedPrice = yourPrice - steppingPrice.value;
-    const minimumPrice = Math.max(0, startingPrice.value, 
-        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
-
-    if (decreasedPrice < minimumPrice) {
-        yourPriceInput.value = formatPrice(minimumPrice);
-    } else {
-        yourPriceInput.value = formatPrice(decreasedPrice);
-    }
+    
+    const editedPrice = Math.max(minimumPrice.value, decreasedPrice);
+    yourPriceInput.value = formatPrice(editedPrice);
 }
 
 function handlePlaceBid() {
@@ -365,10 +368,20 @@ onMounted(() => {
         },
         onBid: updateBid,
         onComment: (data) => {
-            const { commentId, userId, content } = data;
+            let { commentId, userId, content } = data;
             // TODO: get user name using api
-            Promise.resolve({ name: "NPC" }).then((user) => {
-                comments.value.push({ id: commentId, userId, name: user.name, content });
+            content = JSON.parse(content);
+            comments.value.push({ content });
+            const index = comments.value.length - 1;
+            // const entry = comments.value[comments.value.length - 1];
+            Promise.resolve(authApi.getAnotherInfo(userId)).then((user) => {
+                comments.value[index] = { 
+                    id: commentId, 
+                    userId, 
+                    name: user.fullName, 
+                    content,
+                    avatar: user.avatar
+                };
             })
         },
         onNotification: (data) => {
