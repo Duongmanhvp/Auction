@@ -227,10 +227,14 @@ const formattedCurrentPrice = computed(() => {
 //     return formatPrice(yourPrice.value);
 // });
 
+const minimumPrice = computed(() => {
+    return Math.max(startingPrice.value, 
+        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
+});
+
 const biddable = computed(() => {
-    const minimumPrice = currentPrice.value + steppingPrice.value;
     const yourPrice = parsePrice(yourPriceInput.value);
-    return sessionState.value === "IN_PROGRESS" && yourPrice >= minimumPrice;
+    return sessionState.value === "IN_PROGRESS" && yourPrice >= minimumPrice.value;
 });
 
 function adjustYourPrice(event) {
@@ -262,14 +266,9 @@ function increasePrice() {
     }
     const yourPrice = parsePrice(yourPriceInput.value);
     const addedPrice = yourPrice + steppingPrice.value;
-    const minimumPrice = Math.max(startingPrice.value, 
-        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
 
-    if (addedPrice < minimumPrice) {
-        yourPriceInput.value = formatPrice(minimumPrice);
-    } else {
-        yourPriceInput.value = formatPrice(addedPrice);
-    }
+    const editedPrice = Math.max(minimumPrice.value, addedPrice);
+    yourPriceInput.value = formatPrice(editedPrice);
 }
 
 function decreasePrice() {
@@ -278,14 +277,9 @@ function decreasePrice() {
     }
     const yourPrice = parsePrice(yourPriceInput.value);
     const decreasedPrice = yourPrice - steppingPrice.value;
-    const minimumPrice = Math.max(0, startingPrice.value, 
-        currentPrice.value ? currentPrice.value + steppingPrice.value : 0);
-
-    if (decreasedPrice < minimumPrice) {
-        yourPriceInput.value = formatPrice(minimumPrice);
-    } else {
-        yourPriceInput.value = formatPrice(decreasedPrice);
-    }
+    
+    const editedPrice = Math.max(minimumPrice.value, decreasedPrice);
+    yourPriceInput.value = formatPrice(editedPrice);
 }
 
 function handlePlaceBid() {
