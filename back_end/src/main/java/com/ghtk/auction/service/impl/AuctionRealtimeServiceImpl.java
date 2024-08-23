@@ -363,7 +363,7 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
 
   private void saveBids(Long auctionId, List<BidMessage> bids) {
     userAuctionHistoryRepository.saveAll(
-        bids.stream().map(auctionBid -> {
+        bids.reversed().stream().map(auctionBid -> {
             UserAuction ua = userAuctionRepository.findByUserIdAndAuctionId(auctionBid.getUserId(), auctionId);
             return UserAuctionHistory.builder()
                 .userAuction(ua)
