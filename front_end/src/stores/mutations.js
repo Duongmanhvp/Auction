@@ -70,5 +70,8 @@ export default {
    },
    setSessions(state, sessions) {
       state.sessions = sessions;
+   },
+   setFilterAuctions(state, filterAuctions){
+      state.filterAuctions = filterAuctions;
    }
 }

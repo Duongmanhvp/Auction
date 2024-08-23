@@ -104,6 +104,17 @@ import auctionApi from '../../../../api/auctions';
 import productApi from '../../../../api/products';
 
 const store = useStore();
+import { ref, computed, onMounted, onUnmounted, watchEffect, defineProps } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { differenceInMilliseconds, differenceInSeconds, formatDistance, parse, parseISO } from 'date-fns';
+import { useStore } from 'vuex';
+import { jwtDecode } from 'jwt-decode';
+import stompApi from '../../../../api/stomp';
+import sessionApi from '../../../../api/auctionSession';
+import auctionApi from '../../../../api/auctions';
+import productApi from '../../../../api/products';
+
+const store = useStore();
 
 const route = useRoute();
 const router = useRouter();
@@ -121,6 +132,22 @@ const auctionId = route.params.id;
 const userId = jwtDecode(localStorage.getItem('token')).id;
 console.log(userId);
 
+// const props = defineProps({
+//     auctionId: {
+//         type: Number,
+//         required: true,
+//     }
+// });
+
+// const { auctionId } = props;
+
+const auctionId = route.params.id;
+const userId = jwtDecode(localStorage.getItem('token')).id;
+console.log(userId);
+
+const auctionInfoRef = ref(null);
+const auction = computed(() => auctionInfoRef.value || {});
+const product = computed(() => auction.value.product || {});
 const auctionInfoRef = ref(null);
 const auction = computed(() => auctionInfoRef.value || {});
 const product = computed(() => auction.value.product || {});
@@ -402,6 +429,10 @@ onUnmounted(() => {
 });
 
 
+
+
 </script>
+
+<style lang="scss" src="./style.scss" scoped />
 
 <style lang="scss" src="./style.scss" scoped />

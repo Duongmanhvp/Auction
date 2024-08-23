@@ -7,7 +7,6 @@ import PublicLayout from "../layouts/PublicLayout.vue";
 import Default from "../views/home/default/index.vue";
 import Product from "../views/home/product/index.vue";
 import Session from "../views/home/session/index.vue";
-import History from "../views/home/history/index.vue";
 import News from "../views/home/news/index.vue";
 import Introduction from "../views/home/introduction/index.vue";
 import Contact from "../views/home/contact/index.vue";
@@ -42,11 +41,6 @@ const routes = [
         component: News,
       },
       {
-        path: "history",
-        name: "home-history",
-        component: History,
-      },
-      {
         path: "introduction",
         name: "home-introduction",
         component: Introduction,
@@ -70,29 +64,29 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
 
-    const store = useStore();
-    const token = localStorage.getItem('token');
-    const isAdmin = store.getters.getIsAdmin;
+  const store = useStore();
+  const token = localStorage.getItem('token');
+  const isAdmin = store.getters.getIsAdmin;
 
-    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-    const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
-  
-    const requiresVerification = to.matched.some(record => record.meta.requiresVerification);
-  
-      if (requiresAuth && !token) {
-          next({ path: '/login', query: { redirect: to.fullPath } });
-      } else if (requiresAdmin && !isAdmin) {
-          next('/user/default');
-      // } else if (requiresVerification && !email) {
-      //     next({ path: '/login/verify2', query: { redirect: to.fullPath } });
-      } else if (token && (to.path.startsWith('/login') || to.path === '/register' || to.path === '/home/default')) {
-          next(isAdmin ? '/admin/auctionManagement' : '/user/default');
-      } else if (token && isAdmin && to.path.startsWith('/user')) {
-          next('/admin/auctionManagement');
-      } else {
-          next();
-      }
-  });
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  const requiresAdmin = to.matched.some(record => record.meta.requiresAdmin);
+
+  const requiresVerification = to.matched.some(record => record.meta.requiresVerification);
+
+  if (requiresAuth && !token) {
+    next({ path: '/login', query: { redirect: to.fullPath } });
+  } else if (requiresAdmin && !isAdmin) {
+    next('/user/default');
+    // } else if (requiresVerification && !email) {
+    //     next({ path: '/login/verify2', query: { redirect: to.fullPath } });
+  } else if (token && (to.path.startsWith('/login') || to.path === '/register' || to.path === '/home/default')) {
+    next(isAdmin ? '/admin/auctionManagement' : '/user/default');
+  } else if (token && isAdmin && to.path.startsWith('/user')) {
+    next('/admin/auctionManagement');
+  } else {
+    next();
+  }
+});
 
 
 export default router;

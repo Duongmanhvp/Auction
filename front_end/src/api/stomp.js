@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 
 const WS_URL = import.meta.env.VITE_WS_URL;
 
-let stompState = null;
+let stompState = null; 
 // {
 //     connection: null,
 //     receiptCallbackRegistry: null,

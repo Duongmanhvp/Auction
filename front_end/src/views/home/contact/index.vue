@@ -1,6 +1,5 @@
 <template>
-    <div class="relative mt-20">
-        This is contact page
-        <a-empty />
-    </div>
+  <div class="relative mt-20">
+    <a-empty />
+  </div>
 </template>

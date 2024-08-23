@@ -5,6 +5,7 @@ import stompApi from "../api/stomp.js";
 import productApi from "../api/products.js";
 import auctionSessionApi from "../api/auctionSession.js";
 import auctionApi from "../api/auctions.js";
+import auctionSessionApi from "../api/auctionSession.js";
 import { jwtDecode } from "jwt-decode";
 
 export default {
@@ -49,7 +50,11 @@ export default {
       });
       commit("setLoginState", false);
       commit("setAdmin", false);
+      commit("setProducts", []);
+      commit("setAuction",[]);
+      commit("setSessions", []);
       localStorage.removeItem("token");
+      sessionStorage.clear();
       stompApi.teardown();
       return promise;
     } catch (error) {
@@ -115,7 +120,7 @@ export default {
   async updateMyInfo({ commit }, data) {
     try {
       const response = await authApi.updateMyInfo(data);
-      commit("setUser",response);
+      commit("setUser",response); 
     } catch (error) {
       throw error;
     }
