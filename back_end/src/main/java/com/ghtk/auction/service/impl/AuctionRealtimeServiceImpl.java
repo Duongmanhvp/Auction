@@ -297,10 +297,8 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
         .build();
     auctionSessionRepository.setAuctionRoom(auctionId, room);
 
-    userAuctionRepository.findAllByAuction(auction).stream()
-        .map(ua -> ua.getUser().getId())
-        .forEach(userId
-            -> auctionSessionRepository.addJoinable(auctionId, userId)); 
+    Long[] userIds = userAuctionRepository.findUserIdsByAuctionId(auctionId).toArray(Long[]::new);
+    auctionSessionRepository.addJoinable(auctionId, userIds); 
 
     eventPublisher.publishEvent(new AuctionRoomOpenEvent(auctionId));
   }

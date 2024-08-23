@@ -41,12 +41,23 @@ public class AuctionSessionRepositoryImpl implements AuctionSessionRepository {
             .toList();
     }
     @Override
-    public void addJoinable(Long auctionId, Long userId) {
-        String userKey = getUserJoinableKey(userId);
-        redisTemplate.opsForSet().add(userKey, auctionId.toString());
+    public List<Long> getJoinableByAuction(Long auctionId) {
+        String key = getAuctionJoinableKey(auctionId);
+        return redisTemplate.opsForSet().members(key).stream()
+            .map(Long::parseLong)
+            .toList();
+    }
+    @Override
+    public void addJoinable(Long auctionId, Long... userId) {
+        String[] idStrings = new String[userId.length];
+        for (int i = 0; i < userId.length; i++) {
+            String userKey = getUserJoinableKey(userId[i]);
+            redisTemplate.opsForSet().add(userKey, auctionId.toString());
+            idStrings[i] = userId[i].toString();
+        }
 
         String auctionKey = getAuctionJoinableKey(auctionId);
-        redisTemplate.opsForSet().add(auctionKey, userId.toString());
+        redisTemplate.opsForSet().add(auctionKey, idStrings);
     }
     @Override
     public void deleteAllJoinableByAuction(Long auctionId) {

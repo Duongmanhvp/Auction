@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 public interface AuctionSessionRepository {
     boolean existsJoinable(Long auctionId, Long userId);
     List<Long> getJoinableByUser(Long userId);
-    void addJoinable(Long auctionId, Long userId);
+    List<Long> getJoinableByAuction(Long auctionId);
+    void addJoinable(Long auctionId, Long... userId);
     void deleteAllJoinableByAuction(Long auctionId);
 
     Optional<AuctionRoom> getAuctionRoom(Long auctionId);
