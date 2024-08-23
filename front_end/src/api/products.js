@@ -40,7 +40,7 @@ const productApi = {
   },
   async getTopProducts() {
     try {
-      const response = await api.get("/v1/products/top-popular");
+      const response = await api.get("/v1/products/top-popular?limit=4");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
