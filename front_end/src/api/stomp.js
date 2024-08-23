@@ -8,13 +8,11 @@ import { jwtDecode } from 'jwt-decode';
 
 const WS_URL = import.meta.env.VITE_WS_URL;
 
-let stompState = null;
-// {
-//     connection: null,
-//     receiptCallbackRegistry: null,
-//     reconnectInterval: null,
-//     userId: null
-// };
+/**
+ * @type {StompSession | null}
+ */
+let stompSession = null;
+
 const controlCallbacks = {};
 const connectCallbacks = [];
 const disconnectCallbacks = [];
@@ -34,20 +32,22 @@ function setOnDisconnect(callback) {
 };
 
 async function setup() {
-    stompState = {};
     const token = localStorage.getItem('token');
     if (!token) {
         throw new Error('No token found');
     }
-    stompState.userId = jwtDecode(token).id;
-    stompState.receiptCallbackRegistry = {};
-    await setupConnection();
+    stompSession = new StompSession({
+      tokenProvider: () => localStorage.getItem('token'),
+      connectCallbacks,
+      disconnectCallbacks,
+      controlCallbacks
+    });
+    await stompSession.init();
 };
 
 async function teardown() {
-    teardownConnection();
-    clearInterval(stompState.reconnectInterval);
-    stompState = null;
+    stompSession.deactivate();
+    stompSession = null;
 };
 
 function onControlMessage(type, callback) {
@@ -56,68 +56,30 @@ function onControlMessage(type, callback) {
 
 /// if callback is not provided, the function should return a promise
 function subscribe(destination, onMessage, callback, errorCallback) {
-    if (!stompState.connection?.client.connected) {
-        throw new Error('Not connected');
-    }
-    const { client, subscriptionRegistry } = stompState.connection;
-
-    const headers = generateHeaders();
-    const subscription = client.subscribe(destination, onMessage, headers);
-    
-    const messageId = headers['receipt'];
-    if (callback !== undefined) {
-        registerReceiptCallback(messageId,
-            (message) => {
-                subscriptionRegistry[messageId] = subscription;
-                callback?.(message);
-            }, 
-            errorCallback);
-    } else {
-        return new Promise((resolve, reject) => {
-            registerReceiptCallback(messageId, 
-                (message) => {
-                    subscriptionRegistry[messageId] = subscription;
-                    resolve(message);
-                },    
-                reject);
-        });
+    const currentSession = stompSession;
+    const toWait = currentSession.reconnect?.promise ?? Promise.resolve();
+    const promise = toWait.then(() => {
+        return currentSession.subscribe(destination, onMessage, callback, errorCallback)
+    });
+    if (callback === undefined) {
+        return promise;
     }
 }
 
 // return if the destination was subscribed (and thus unsubscribed)
 function unsubscribe(destination) {
-    if (!stompState.connection?.client.connected) {
-        throw new Error('Not connected');
-    }
-    const { subscriptionRegistry } = stompState.connection;
-    const subscription = subscriptionRegistry[destination];
-    if (subscription) {
-        subscription.unsubscribe();
-        delete subscriptionRegistry[destination];
-    }
-    return !!subscription;
+    stompSession.unsubscribe(destination);
 }
 
 /// if callback is not provided, the function should return a promise
 function send(destination, payload, callback, errorCallback) {
-    if (!stompState.connection?.client.connected) {
-        throw new Error('Not connected');
-    }
-
-    const headers = generateHeaders();
-    stompState.connection.client.publish({ 
-        destination, 
-        body: JSON.stringify(payload), 
-        headers 
+    const currentSession = stompSession;
+    const toWait = currentSession.reconnect?.promise ?? Promise.resolve();
+    const promise = toWait.then(() => {
+        return currentSession.send(destination, payload, callback, errorCallback)
     });
-    
-    const messageId = headers['receipt'];
-    if (callback !== undefined) {
-        registerReceiptCallback(messageId, callback, errorCallback);
-    } else {
-        return new Promise((resolve, reject) => {
-            registerReceiptCallback(messageId, resolve, reject);
-        });
+    if (callback === undefined) {
+        return promise;
     }
 }
 
@@ -133,53 +95,326 @@ export default {
 };
 
 
+class StompSession {
+    /**
+     * @typedef {Object} Config
+     * @property {Function} tokenProvider
+     * @property {Array} connectCallbacks
+     * @property {Array} disconnectCallbacks
+     * @property {Object} controlCallbacks
+     */
 
-async function setupConnection() {
-    const connection = await createConnection(localStorage.getItem('token'));
-    if (stompState && !stompState.connection) {
-        stompState.connection = connection;  
-        setupErrorHandler();
-        setupSubscriptions();
-        callConnectCallbacks();
-    } else {
-      connection.deactivate();
+    /**
+     * @type {Config}
+     */
+    #config;
+    #isActive;
+    #userId;
+    #connection;
+    #receiptCallbackRegistry;
+    
+    /**
+     * @typedef {Object} Reconnect
+     * @property {Promise<Void>} promise
+     * @property {Function} abort 
+     */
+
+    /**
+     * @type {Reconnect?}
+     */
+    reconnect;
+
+    static async create(config) {
+        const instance = new StompSession(config);
+        await instance.init();
+        return instance;
     }
-}
 
-function teardownConnection() {
-    if (stompState.connection) {
-        if (stompState.connection.client.connected) {
-            stompState.connection.client.deactivate();
-            callDisconnectCallbacks();
+    deactivate() {
+        this.#isActive = false;
+        this.reconnect?.abort();
+        this.#teardownConnection();
+    }
+
+    constructor(config) {
+        this.#config = config;
+    }
+
+    async init() {
+        const token = this.#config.tokenProvider();
+        if (!token) {
+            throw new Error('No token found');
         }
-        stompState.connection = null;
+        this.#isActive = true;
+        this.#userId = jwtDecode(token).id;  
+        this.#receiptCallbackRegistry = {};
+        this.#attemptConnect();
     }
-}
 
-function generateHeaders() {
-    return {
-        "receipt": uuidv4(),
-        "Authorization": `Bearer ${localStorage.getItem('token')}`
+    get isActive() {
+        return this.#isActive;
     }
-}
 
-function registerReceiptCallback(messageId, callback, errorCallback) {
-    stompState.receiptCallbackRegistry[messageId] = [callback, errorCallback];
+    get isConnected() {
+        return !!this.#connection?.client.connected;
+    }
 
-    /// not the same as reading `stompState.connection.client.active` directly, see function for details
-    const isStillActive = getSessionChecker();
-    if (errorCallback) {
-      setTimeout(() => {
-            if (isStillActive()) {
-                if (stompState.receiptCallbackRegistry[messageId]) {
-                    delete stompState.receiptCallbackRegistry[messageId];
+    
+    /// if callback is not provided, the function should return a promise
+    subscribe(destination, onMessage, callback, errorCallback) {
+        if (!this.isConnected) {
+            throw new Error('Not connected');
+        }
+        const { client, subscriptionRegistry } = this.#connection;
+
+        const headers = this.#generateHeaders();
+        const subscription = client.subscribe(destination, onMessage, headers);
+        
+        const messageId = headers['receipt'];
+        if (callback !== undefined) {
+            this.#registerReceiptCallback(messageId,
+                (message) => {
+                    subscriptionRegistry[messageId] = subscription;
+                    callback?.(message);
+                }, 
+                errorCallback);
+        } else {
+            return new Promise((resolve, reject) => {
+                this.#registerReceiptCallback(messageId, 
+                    (message) => {
+                        subscriptionRegistry[messageId] = subscription;
+                        resolve(message);
+                    },    
+                    reject);
+            });
+        }
+    }
+
+    // return if the destination was subscribed (and thus unsubscribed)
+    unsubscribe(destination) {
+        if (!this.isConnected) {
+            throw new Error('Not connected');
+        }
+        const { subscriptionRegistry } = this.#connection;
+        const subscription = subscriptionRegistry[destination];
+        if (subscription) {
+            subscription.unsubscribe();
+            delete subscriptionRegistry[destination];
+        }
+        return !!subscription;
+    }
+
+    /// if callback is not provided, the function should return a promise
+    send(destination, payload, callback, errorCallback) {
+        if (!this.isConnected) {
+            throw new Error('Not connected');
+        }
+
+        const headers = this.#generateHeaders();
+        this.#connection.client.publish({ 
+            destination, 
+            body: JSON.stringify(payload), 
+            headers 
+        });
+        
+        const messageId = headers['receipt'];
+        if (callback !== undefined) {
+            this.#registerReceiptCallback(messageId, callback, errorCallback);
+        } else {
+            return new Promise((resolve, reject) => {
+                this.#registerReceiptCallback(messageId, resolve, reject);
+            });
+        }
+    }
+
+
+
+    async #attemptConnect() {
+        let resolve, reject;
+        this.reconnect = {
+            promise: new Promise((res, rej) => {
+                resolve = res;
+                reject = rej;
+            }),
+            abort: () => reject(new Error('Connection aborted'))
+        };
+        while (this.isActive) {
+            try {
+                await this.#setupConnection();
+                if (!this.isActive) {
+                    return;
+                }
+                resolve();
+                this.reconnect = undefined;
+                return;
+            } catch (error) {
+                console.error('Failed to connect', error);
+                await new Promise((res) => setTimeout(res, 5000));
+            }
+        }
+    }
+
+    async #setupConnection() {
+        if (!this.isActive) {
+            return;
+        }
+        this.#connection = await createConnection(this.#config.tokenProvider());
+        if (!this.isActive) {
+            return;
+        }
+        this.#setupErrorHandler();
+        await this.#setupSubscriptions();
+        if (!this.isActive) {
+            return;
+        }
+        this.#callConnectCallbacks();
+    }
+
+    #teardownConnection() {
+        if (this.#connection) {
+            if (this.#connection.client.connected) {
+                this.#connection.client.deactivate();
+            }
+            this.#connection = null;
+        }
+    }
+
+    
+    #generateHeaders() {
+        return {
+            "receipt": uuidv4(),
+            "Authorization": `Bearer ${this.#config.tokenProvider()}`
+        }
+    }
+
+    
+    #setupErrorHandler() {
+        if (!this.isConnected) {
+            throw new Error('Not connected');
+        }
+
+        const client = this.#connection.client;
+        client.onStompError = (frame) => {
+            console.error('STOMP error', frame);
+            this.#onDisconnect();
+        };
+        client.onWebSocketClose = (event) => {
+            console.log('WebSocket closed', event);
+            this.#onDisconnect();
+        };
+        client.onWebSocketError = (error) => {
+            console.error('WebSocket error', error);
+            this.#onDisconnect();
+        }
+        client.onDisconnect = () => {
+            console.log('Disconnected from WebSocket');
+            this.#onDisconnect();
+        };
+    }
+
+    async #setupSubscriptions() {
+        if (!this.isConnected) {
+            throw new Error('Not connected');
+        }
+    
+        // this is a workaround for spring STOMP's lack of support for RECEIPT frame
+        // this call must be placed before any other subscribe calls,
+        // as this is what enables receiving responses to other requests,
+        // including `subscribe` itself
+        try {
+            await this.subscribe(
+                `/user/${this.#userId}/queue/receipts`, 
+                (message) => {
+                    this.#handleReceipt(message);
+                }
+            );
+            console.log('subscribed to receipts');
+        } catch (e) {
+            console.log('Failed to subscribe to receipts', e);
+            throw e;
+        }
+        
+        try {
+            await this.subscribe(
+                `/user/${this.#userId}/queue/control`, 
+                (message) => {
+                    this.#handleControlMessage(message);
+                }
+            );
+            console.log('subscribed to control');
+        } catch (e) {
+            console.log('Failed to subscribe to control', e);
+            throw e;
+        }
+    }
+  
+    
+    #registerReceiptCallback(messageId, callback, errorCallback) {
+        this.#receiptCallbackRegistry[messageId] = [callback, errorCallback];
+        if (errorCallback) {
+            setTimeout(() => {
+                if (this.isActive && this.#receiptCallbackRegistry[messageId]) {
+                    delete this.#receiptCallbackRegistry[messageId];
                     errorCallback(new Error('Request timed out'));
                 }
+            }, 5000);
+        }
+    }
+
+    #onDisconnect() {
+        this.#teardownConnection();
+        this.#callDisconnectCallbacks();
+        this.#attemptConnect();
+    }
+
+  
+    #handleReceipt(message) {
+        const messageId = message.headers['receipt-id'];
+        const response = JSON.parse(message.body);
+        const callbackEntry = this.#receiptCallbackRegistry[messageId];
+        delete this.#receiptCallbackRegistry[messageId];  
+        if (!callbackEntry) {
+            return;
+        }
+      
+        const { success } = response;
+        const [callback, errorCallback] = callbackEntry;
+        (success ? callback : errorCallback)?.(response);
+    }
+
+    #handleControlMessage(message) {
+        const body = JSON.parse(message.body);
+        const type = body['type'];
+        const payload = body['data'];
+        const callback = this.#config.controlCallbacks[type];
+        if (callback !== undefined) {
+            callback?.(payload);
+        } else {
+            console.log('Unhandled control message:', type, payload);
+        }
+    }
+
+    
+    #callConnectCallbacks() {
+        this.#config.connectCallbacks.forEach(callback => {
+            try {
+                callback();
+            } catch (error) {
+                console.error('Error in connect callback', error);
             }
-        }, 5000);
+        });
+    }
+
+    #callDisconnectCallbacks() {
+        this.#config.disconnectCallbacks.forEach(callback => {
+            try {
+                callback();
+            } catch (error) {
+                console.error('Error in disconnect callback', error);
+            }
+        });
     }
 }
-
 
 
 const createConnection = async (token) => {
@@ -187,130 +422,6 @@ const createConnection = async (token) => {
     const subscriptionRegistry = {};
     return { client, subscriptionRegistry };
 }
-
-function setupErrorHandler() {
-    if (!stompState.connection?.client.connected) {
-        throw new Error('Not connected');
-    }
-
-    const client = stompState.connection.client;
-    client.onStompError = (frame) => {
-      console.error('STOMP error', frame);
-      onDisconnect();
-    };
-    client.onWebSocketClose = (event) => {
-      console.log('WebSocket closed', event);
-      onDisconnect();
-    };
-    client.onWebSocketError = (error) => {
-      console.error('WebSocket error', error);
-      onDisconnect();
-    }
-    client.onDisconnect = () => {
-      console.log('Disconnected from WebSocket');
-      onDisconnect();
-    };
-}
-
-function setupSubscriptions() {
-    if (!stompState.connection?.client.connected) {
-        throw new Error('Not connected');
-    }
-
-    // this is a workaround for spring STOMP's lack of support for RECEIPT frame
-    // this call must be placed before any other subscribe calls,
-    // as this is what enables receiving responses to other requests,
-    // including `subscribe` itself
-    subscribe(
-        `/user/${stompState.userId}/queue/receipts`, 
-        (message) => {
-            handleReceipt(message);
-        },
-        () => console.log('subscribed to receipts'), 
-        () => {throw new Error('Failed to subscribe to receipts')}
-    );
-    // actually placing this first is fine too, as both are in the same function call (js's async rules)
-    subscribe(
-        `/user/${stompState.userId}/queue/control`, 
-        (message) => {
-            handleControlMessage(message);
-        },
-        () => console.log('subscribed to control'),
-        () => {throw new Error('Failed to subscribe to control')}
-    );
-}
-
-
-function onDisconnect() {
-    if (stompState && !stompState.reconnectInterval) {
-        teardownConnection(); 
-        stompState.reconnectInterval = setInterval(async function() {
-            await setupConnection();
-            clearInterval(stompState.reconnectInterval);
-            stompState.reconnectInterval = null;
-            connectCallbacks.forEach(callback => callback());
-        }, 5000);
-    }
-}
-
-function callConnectCallbacks() {
-    connectCallbacks.forEach(callback => {
-        try {
-            callback();
-        } catch (error) {
-            console.error('Error in connect callback', error);
-        }
-    });
-}
-
-function callDisconnectCallbacks() {
-    disconnectCallbacks.forEach(callback => {
-        try {
-            callback();
-        } catch (error) {
-            console.error('Error in disconnect callback', error);
-        }
-    });
-}
-
-
-function handleControlMessage(message) {
-    const body = JSON.parse(message.body);
-    const type = body['type'];
-    const payload = body['data'];
-    const callback = controlCallbacks[type];
-    if (callback !== undefined) {
-        callback?.(payload);
-    }
-    else {
-        console.log('Unhandled control message:', type, payload);
-    }
-}
-
-function handleReceipt(message) {
-    const messageId = message.headers['receipt-id'];
-    const response = JSON.parse(message.body);
-    const callbackEntry = stompState.receiptCallbackRegistry[messageId];
-    delete stompState.receiptCallbackRegistry[messageId];  
-    if (!callbackEntry) {
-        return;
-    }
-
-    const { success } = response;
-    const [callback, errorCallback] = callbackEntry;
-    (success ? callback : errorCallback)?.(response);
-}
-
-// this creates a stateful function that reference the session at the time this function is called
-// use to check if the session is still active when callbacks are 
-// this is not quite the same as reading `stompState.session.active` directly
-function getSessionChecker() {
-  // note that extracting the session into a variable is necessary
-  // because the session object may be updated by the time the callback is called
-  const currentConnection = stompState.connection?.client
-  return () => stompState && currentConnection?.connected;
-}
-
 
 
 const createWebSocket = (token) => {
