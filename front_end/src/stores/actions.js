@@ -3,7 +3,6 @@ import authApi from "../api/auths.js";
 import imageApi from "../api/images.js";
 import stompApi from "../api/stomp.js";
 import productApi from "../api/products.js";
-import auctionSessionApi from "../api/auctionSession.js";
 import auctionApi from "../api/auctions.js";
 import auctionSessionApi from "../api/auctionSession.js";
 import { jwtDecode } from "jwt-decode";
