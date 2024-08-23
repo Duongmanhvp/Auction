@@ -34,6 +34,10 @@
         </h1>
         <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
       </div>
+
+      <div v-if="loading" class="flex items-center justify-center">
+        <a-spin size="large" />
+      </div>
       <div class="grid grid-cols-4 gap-4 p-4">
         <button @click="prevSlide"
           class="absolute top-3/4 left-1/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
@@ -44,7 +48,8 @@
           <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
         </button>
         <div v-for="auction in paginatedAuctions" :key="auction.id"
-          class="bg-white shadow-lg rounded-lg relative hover:cursor-pointer" @click="goToAuction(auction.id)">
+          class="bg-white shadow-lg rounded-lg relative hover:cursor-pointer transform hover:scale-105 transition duration-300 ease-in-out"
+          @click="goToAuction(auction.id)">
           <a-card hoverable>
             <template #cover>
               <img class="h-56" :src="getUrlImage(auction.product.image)" alt="Auction_Image" />
@@ -69,6 +74,8 @@ import MenuSessionManagement from '../../../../components/MenuSessionManagement/
 import { ref, computed, watch, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
+
+const loading = ref(true);
 
 const router = useRouter();
 const store = useStore();
@@ -96,7 +103,7 @@ const filterByTag = (tag) => {
   } else {
     selectedTags.value = tag;
   }
- 
+
 };
 
 watch(selectedTags, (newValue, oldValue) => {
@@ -156,6 +163,7 @@ const goToAuction = (auctionId) => {
 };
 
 const renderAuction = async () => {
+  loading.value = true;
   try {
     const response = await store.dispatch('getMyJoined');
     auctions.value = store.getters.getAuction;
@@ -165,22 +173,13 @@ const renderAuction = async () => {
     //   auction.product.avatarUrl = avatarUrl;
     // }
   } catch (error) {
-    console.log(error);
-
+    console.error(error);
+  } finally {
+    loading.value = false;
   }
 }
 onBeforeMount(() => renderAuction());
 
 </script>
 
-<style scoped>
-.auction-list {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 1rem;
-}
-
-.auction-item {
-  position: relative;
-}
-</style>
+<style lang="scss" src="./style.scss" scoped />

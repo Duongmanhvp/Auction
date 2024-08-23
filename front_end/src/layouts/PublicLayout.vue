@@ -1,18 +1,14 @@
 <template>
-    <TheHeader />
-    <div class="w-full h-full bg-blue-50">
-        <div class="p-4">
-            <router-view></router-view>
-        </div>
+  <TheHeader />
+  <div class="w-full h-full bg-blue-50">
+    <div class="p-4">
+      <router-view></router-view>
     </div>
+  </div>
+  <TheChevron />
 </template>
 
-<script>
+<script setup>
 import TheHeader from '../components/Header/index.vue';
-
-export default {
-    components: {
-        TheHeader
-    }
-}
+import TheChevron from '../components/Chevron/index.vue';
 </script>

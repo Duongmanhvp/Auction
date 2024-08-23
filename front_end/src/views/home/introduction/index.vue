@@ -1,6 +1,9 @@
 <template>
-    <div class="relative mt-20">
-        This is introduction page
-        <a-empty />
-    </div>
+  <div class="relative mt-20">
+    <Oops />
+  </div>
 </template>
+
+<script setup>
+import Oops from '../../../components/Oops/index.vue';
+</script>

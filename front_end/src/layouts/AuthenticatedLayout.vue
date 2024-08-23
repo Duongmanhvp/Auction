@@ -1,18 +1,14 @@
 <template>
-    <TheUserHeader />
-    <div class="w-full h-full ">
-        <div class="p-4">
-            <router-view></router-view>
-        </div>
+  <TheUserHeader />
+  <div class="w-full h-full ">
+    <div class="p-4">
+      <router-view></router-view>
     </div>
+  </div>
+  <TheChevron />
 </template>
 
-<script>
+<script setup>
 import TheUserHeader from '../components/UserHeader/index.vue';
-
-export default {
-    components: {
-        TheUserHeader
-    }
-}
+import TheChevron from '../components/Chevron/index.vue';
 </script>

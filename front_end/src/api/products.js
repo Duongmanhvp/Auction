@@ -8,7 +8,6 @@ const productApi = {
       const response = await api.post("/v1/products", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      message.success(response.data.message);
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -64,10 +63,10 @@ const productApi = {
     try {
       const response = await api.get(
         "/v1/products/get-all-product-by-category?category=" +
-          category +
-          "&pageSize=4" +
-          "&pageNo=" +
-          pageNo
+        category +
+        "&pageSize=4" +
+        "&pageNo=" +
+        pageNo
       );
       return response.data.data;
     } catch (error) {
@@ -94,7 +93,7 @@ const productApi = {
     } catch (error) {
       message.error(error.response.data.message);
       // return error.response.data.message;
-       throw error;
+      throw error;
     }
   },
 };

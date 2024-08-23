@@ -5,7 +5,7 @@ import components from './components/index.js';
 import store from './stores/store.js';
 
 import 'ant-design-vue/dist/reset.css';
-import './assets/css/tailwind.css';
+import './assets/css/tailwind.scss';
 
 const app = createApp(App);
 
@@ -14,5 +14,5 @@ app.use(store);
 app.mount('#app');
 
 Object.values(components).forEach(component => {
-    app.use(component);
+  app.use(component);
 });

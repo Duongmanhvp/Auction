@@ -1,18 +1,14 @@
 <template>
-    <TheAdminHeader />
-    <div class="w-full h-full ">
-        <div class="p-4">
-            <router-view></router-view>
-        </div>
+  <TheAdminHeader />
+  <div class="w-full h-full ">
+    <div class="p-4">
+      <router-view></router-view>
     </div>
+  </div>
+  <TheChevron />
 </template>
 
-<script>
+<script setup>
 import TheAdminHeader from '../components/AdminHeader/index.vue';
-
-export default {
-    components: {
-        TheAdminHeader
-    }
-}
+import TheChevron from '../components/Chevron/index.vue';
 </script>
