@@ -19,16 +19,15 @@
         </div>
         <div class="flex w-2/3 p-4 bg-white max-h-screen">
             <div class="w-1/2">
-                <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ auction.title }}</h1>
+                <h1 class="text-2xl font-bold text-gray-800 mb-4 min-h-[1.5em]">{{ auction.title }}</h1>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
-                <div v-if="sessionState === 'PENDING'" class="mb-4">
-                    <h2 class="text-md font-semibold text-blue-400-600 mb-2">Auction start after: {{ timeUntilStart }} </h2>
-                </div>
-                <div v-else-if="sessionState === 'IN_PROGRESS'" class="mb-4">
-                    <h2 class="text-md font-semibold text-green-600 mb-2">Time remaining: {{ timeLeft }}</h2>
-                </div>
-                <div v-else-if="sessionState === 'ENDED'" class="mb-4">
-                    <h2 class="text-md font-semibold text-red-600 mb-2">Auction has ended</h2>
+                <div class="mb-4 min-h-[1.5em]">
+                    <h2 v-if="sessionState === 'PENDING'" class="text-md font-semibold text-blue-400-600 mb-2">Auction start
+                        after: {{ timeUntilStart }} </h2>
+                    <h2 v-else-if="sessionState === 'IN_PROGRESS'" class="text-md font-semibold text-green-600 mb-2">Time
+                        remaining: {{ timeLeft }}</h2>
+                    <h2 v-else-if="sessionState === 'FINISHED'" class="text-md font-semibold text-red-600 mb-2">Auction has ended
+                    </h2>
                 </div>
                 <div class="border-b-2 border-gray-300 mb-4"></div>
                 <div class="mb-4">
@@ -39,33 +38,30 @@
                     <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ auction.startTime ?? '?' }}</p>
                     <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ auction.endTime ?? '?' }}</p>
                     <div class="border-b-2 border-gray-300 my-8"></div>
-                    <p :class="{'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours}" 
+                    <p :class="{ 'text-orange-500': isCurrentPriceYours, 'text-gray-700': !isCurrentPriceYours }"
                             class="text-gray-700 mb-2 text-xl">
                         <strong>Current Price:</strong> {{ formattedCurrentPrice }} VND
                     </p>
                     <div class="flex items-center mb-4 text-xl">
                         <span class="text-gray-700 mr-2"><strong>Your Price:</strong></span>
-                        <input v-model="yourPriceInput" type="text" 
-                            @input="adjustYourPrice" 
-                            @keydown.enter="handlePlaceBid" 
-                            @keydown.up="increasePrice"
-                            @keydown.down="decreasePrice"
-                                class="border p-2 rounded w-44 text-right font-mono" :step="steppingPrice" /> VND
+                        <input v-model="yourPriceInput" type="text" @input="adjustYourPrice" @keydown.enter="handlePlaceBid"
+                            @keydown.up="increasePrice" @keydown.down="decreasePrice"
+                            class="border p-2 rounded w-44 text-right font-mono" :step="steppingPrice" /> VND
                     </div>
-                    <button @click="handlePlaceBid" :disabled="!biddable" 
-                            :class="[biddable ? 'bg-green-500' : 'bg-gray-500']" 
-                            class="text-white p-2 rounded mt-4 w-full" >
+                    <button @click="handlePlaceBid" :disabled="!biddable" :class="[biddable ? 'bg-green-500' : 'bg-gray-500']"
+                        class="text-white p-2 rounded mt-4 w-full">
                         Place Bid
                     </button>
                 </div>
             </div>
             <div class="h-full w-px bg-gray-300 ml-4"></div>
             <div class="w-1/2">
-                <div class="p-4">
-                    <a-card v-for="(noti, index) in notifications" :key="index" hoverable class="h-auto bg-white shadow-lg rounded-lg mb-2">
+                <div class="p-2">
+                    <a-card v-for="(noti, index) in notifications" :key="index" hoverable
+                        class="h-auto bg-white shadow-lg rounded-lg mb-2">
                         <template #actions>
                         </template>
-                        <a-card-meta :title="index+1" :description="noti.content"></a-card-meta>
+                        <a-card-meta :title="index + 1" :description="noti.content"></a-card-meta>
                     </a-card>
                 </div>
                 <div></div>
@@ -73,8 +69,7 @@
                     class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
                     <template #renderItem="{ item }">
                         <a-list-item :key="item.id">
-                            <a-list-item-meta
-                                :description="item.content">
+                            <a-list-item-meta :description="item.content">
                                 <template #title>
                                     <a class="font-bold" href="https://www.antdv.com/">{{ item.name }}</a>
                                 </template>
@@ -85,6 +80,13 @@
                         </a-list-item>
                     </template>
                 </a-list>
+                <div class="mt-4 flex rounded space-x-2">
+                    <input v-model="myCommentInput" type="text" placeholder="Enter your comment..."
+                        class="flex-1 ml-3 border p-2 rounded-lg" />
+                    <button @click="handleComment" class="bg-green-300 text-white p-2 rounded-lg hover:bg-green-400">
+                        <img src="../../../../assets/icon/send.svg" alt="Next" class="w-6 h-6" />
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -311,9 +313,20 @@ function formatPrice(priceNum) {
 
 
 const comments = ref([]);
+
+const myCommentInput = ref('');
+
+function handleComment() {
+    if (!myCommentInput.value) {
+        return;
+    }
+    sessionApi.comment(auctionId, myCommentInput.value);
+    myCommentInput.value = '';
+};
+
+
 const notifications = ref([]);
 
-const data = [];
 
 function handleUnload() {
     console.log('leaving room');
@@ -325,7 +338,8 @@ onMounted(() => {
     .then((res) => {
         console.log(res)
         auctionInfoRef.value = res;
-        sessionState.value = res.status === "CLOSED" ? "PENDING" : res.status;
+        sessionState.value = 
+            ["IN_PROGRESS", "FINISHED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
         if (sessionState.value === "IN_PROGRESS") {
             sessionApi.getCurrentPrice(auctionId).then((res) => {
                 updateBid(res.data);
@@ -336,7 +350,8 @@ onMounted(() => {
         console.error(err);
     });
 
-    sessionApi.joinAuctionRoom(auctionId, {
+
+    const callbacks = {
         onStart: () => {
             sessionState.value = "IN_PROGRESS";
             console.log('auction started');
@@ -345,7 +360,7 @@ onMounted(() => {
             });
         },
         onEnd: () => {
-            sessionState.value = "ENDED";
+            sessionState.value = "FINISHED";
             console.log('auction ended');
         },
         onBid: updateBid,
@@ -360,9 +375,20 @@ onMounted(() => {
             console.log('notification', data);
             notifications.value.push(data);
         },
-    }).catch((err) => {
+    };
+
+    const join = () => sessionApi.joinAuctionRoom(auctionId, callbacks)
+    .catch((err) => {
+        if (err.isAxiosError && err.response) {
+            if (err.response.data?.message === 'da tham gia dau gia') {
+                sessionApi.leaveAuctionRoom(auctionId).finally(() => {
+                    setTimeout(join, 1000);
+                });
+            }
+        }
         console.error(err);
     });
+    join();
 
     countdownInterval = setInterval(updateCountdown, 100);
     window.addEventListener('beforeunload', handleUnload);
