@@ -109,8 +109,8 @@ const filterByTag = (tag) => {
 watch(selectedTags, (newValue, oldValue) => {
   console.log('Selected tags:', newValue);
 
-  const products = store.getters.getAuction.filter(auction => auction.status === newValue);
-  store.commit('setFilterAuctions', products);
+  const auctionFilter = store.getters.getAuction.filter(auction => auction.status === newValue);
+  store.commit('setFilterAuctions', auctionFilter);
   //store.state.filterProducts = products;
   //console.log('Filtered products:', products);
 });
