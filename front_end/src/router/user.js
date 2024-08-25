@@ -18,6 +18,8 @@ import JoinAuction from "../views/user/auctionManagement/joinAuction/index.vue";
 import ViewProduct from "../views/user/productManagement/productDetail/index.vue";
 import EditProduct from "../views/user/productManagement/editProduct/index.vue";
 
+import SearchProduct from "../views/searchProduct/index.vue";
+
 const userRoutes = [
   {
     path: "/user",
@@ -115,6 +117,11 @@ const userRoutes = [
         path: "contact",
         name: "user-contact",
         component: Contact
+      },
+      {
+        path: "search",
+        name: "user-search",
+        component: SearchProduct
       },
     ]
   }

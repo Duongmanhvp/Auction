@@ -45,9 +45,15 @@
           </div>
         </div>
         <div class="flex justify-center mt-4">
-          <a-pagination v-model="currentPage" :total="products.totalElements" :pageSize="pageSize"
-            @change="handlePageChange" />
-        </div>
+          <a-pagination 
+            v-model="currentPage" 
+            :page-size="pageSizeRef"
+            :total="products.totalElements" 
+            show-size-changer
+            :page-size-options="['8', '16', '32', '64']"
+            @change="handlePageChange" 
+            />
+      </div> 
         <CardDetailModal :visible="viewModalVisible" :product="selectedProduct" @close="closeProductDetailModal" />
       </div>
     </div>
@@ -55,11 +61,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, reactive } from "vue";
+import { ref, computed, onMounted, watch, reactive, onBeforeMount } from "vue";
 import CardDetailModal from "../CardProductDetail/index.vue";
 import productApi from "../../api/products";
 import Heart from '../../assets/icon/heart.svg';
 import HeartFilled from '../../assets/icon/heart-filled.svg';
+import { onUpdated } from "vue";
 
 const loading = ref(true);
 
@@ -67,7 +74,7 @@ const icons = ref([
   { src: Heart },
   { src: HeartFilled }
 ])
-
+const pageSizeRef = ref(8);
 const props = defineProps({
   category: String,
   require: true,
@@ -80,7 +87,6 @@ let products = reactive({
 });
 
 const currentPage = ref(1);
-const pageSize = 4;
 const selectedProduct = ref(null);
 const viewModalVisible = ref(false);
 
@@ -93,29 +99,55 @@ const closeProductDetailModal = () => {
   viewModalVisible.value = false;
 };
 
-const handlePageChange = async (page) => {
+
+const handlePageChange = async (page,pageSize) => {
   currentPage.value = page;
+  pageSizeRef.value=pageSize;
   const pageCurrent = page - 1;
-  renderProduct(pageCurrent);
+  await renderProduct(pageCurrent,pageSize);
 };
 
-const renderProduct = async (pageCurrent) => {
+const renderProduct = async (pageCurrent,pageSize) => {
   loading.value = true;
+  if(!pageSize) pageSize=8;
   try {
     const response = await productApi.getAllProductByCategory(
       props.category,
-      pageCurrent
+      pageCurrent,pageSize
     );
     products.content = response.content;
     products.totalElements = response.totalElements;
-    console.log(products);
+    // console.log(products);
   } catch (error) {
     console.error(error);
   } finally {
     loading.value = false;
   }
 };
-onMounted(() => renderProduct(0));
+onBeforeMount(() =>renderProduct(0))
+onUpdated(() => {
+  listProductFavorite();
+});
+
+const listProductFavorite = async() => {
+  const res = await productApi.favoriteProduct();
+  console.log(products.content)
+  products.content.forEach(product => {
+    if(res.includes(product.productId)){
+      product.isFavorite=true;
+      console.log(product.isFavorite)
+    }
+  }
+  )
+}
+
+onUpdated(() => {
+  const a =document.getElementsByClassName(`ant-pagination-item ant-pagination-item-${Math.ceil(products.totalElements/pageSizeRef.value)}`)
+  if(a.length >0){
+    a[0].style.display='none'
+  }
+
+})
 
 const checkFavorite = async (product) => {
   try {

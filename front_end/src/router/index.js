@@ -11,6 +11,8 @@ import News from "../views/home/news/index.vue";
 import Introduction from "../views/home/introduction/index.vue";
 import Contact from "../views/home/contact/index.vue";
 
+import SearchProduct from "../views/searchProduct/index.vue";
+
 const routes = [
   {
     path: "/",
