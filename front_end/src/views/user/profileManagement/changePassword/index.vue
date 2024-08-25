@@ -1,9 +1,10 @@
 <template>
-  <div class="flex mt-8 mx-5 space-x-5">
-    <div class="w-1/5 ml-4 mr-4">
+  <div class="flex flex-col md:flex-row mt-8 mx-5 space-y-5 md:space-y-0 md:space-x-5">
+    <div class="w-full md:w-1/5 ml-4 mr-4">
       <Profile />
     </div>
-    <div class="w-4/5 container border-l mx-auto p-10 mt-6">
+
+    <div class="w-full md:w-4/5 container border-l mx-auto md:p-10 mt-4 md:mt-12">
       <div class="container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
         <div class="relative w-full max-w-md mx-auto">
           <h1 class="text-2xl font-bold text-center text-gray-800">
@@ -56,6 +57,9 @@
               <span v-if="validation.confirmPassword" class="text-red-500">{{ validation.confirmPassword }}</span>
             </div>
 
+            <div v-if="loading" class="flex items-center justify-center">
+              <a-spin size="large" />
+            </div>
             <button type="submit"
               class="btn btn-primary w-full bg-teal-400 hover:bg-green-500 text-white font-bold py-2 px-4 rounded">
               Change Password
@@ -73,6 +77,8 @@ import { useRouter } from 'vue-router';
 import Profile from '../../../../components/Profile/index.vue';
 import { useStore } from 'vuex';
 
+
+const loading = ref(false);
 const currentPassword = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
@@ -124,6 +130,7 @@ const handleChangePassword = async () => {
 
   if (!isValid) return;
 
+  loading.value = true;
   try {
     const response = await store.dispatch('changePassword', {
       oldPassword: currentPassword.value,
@@ -132,6 +139,8 @@ const handleChangePassword = async () => {
     router.push('/user/profile');
   } catch (error) {
     console.log(error);
+  } finally {
+    loading.value = false;
   }
 }
 

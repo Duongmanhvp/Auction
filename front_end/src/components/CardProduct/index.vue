@@ -12,13 +12,13 @@
         <div v-if="loading" class="flex items-center justify-center">
           <a-spin size="large" />
         </div>
-        <div class="product-list grid grid-cols-4 gap-4">
+        <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div v-for="(product, index) in products.content" :key="index"
             class="product-item bg-white shadow-lg rounded-lg h-96">
             <a-card hoverable @click="selectProduct(product)"
               class="h-full transform hover:scale-105 transition duration-300 ease-in-out">
               <span
-                class="absolute top-4 left-4 flex justify-center items-center w-auto text-black font-bold py-1 px-1 rounded">
+                class="absolute top-4 left-4 flex justify-center items-center bg-white w-auto text-black font-bold p-2 rounded">
                 <img :src="product.isFavorite
                   ? HeartFilled
                   : Heart

@@ -1,38 +1,30 @@
 <template>
-  <div v-if="visible" class="fixed z-20 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+  <div v-if="visible" class="fixed mt-20 z-20 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
     @click="closeModal">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 relative" @click.stop>
+    <div class="bg-white rounded-lg shadow-lg p-6 w-5/6 relative h-[80vh] overflow-y-auto" @click.stop>
       <button @click="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
         <img src="../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
       </button>
       <h1 class="text-2xl font-bold text-center text-gray-800">{{ auction.title }}</h1>
       <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
-      <div class="flex space-x-8">
-        <div class="w-1/2 relative">
+      <div class="lg:flex space-x-8">
+        <div class="w-full lg:w-1/2 relative">
           <div class="w-full h-auto overflow-hidden rounded-md">
             <div class="flex-1">
               <img v-for="(image, index) in arrayImage" :key="index" :src="image" alt="Image"
                 v-show="index === currentImageIndex" class="h-max w-max" />
               <button @click="prevImage"
-                class="absolute left-2 top-1/3 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
                 <img src="../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
               </button>
               <button @click="nextImage"
-                class="absolute right-0 top-1/3 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full">
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full">
                 <img src="../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
               </button>
             </div>
           </div>
-          <button v-if="auction.status === 'OPENING'" @click="handleRegister(auction.id)"
-            class="bg-green-500 text-white p-2 rounded mt-2 w-full">
-            Register Auction
-          </button>
-          <button v-if="auction.status === 'IN_PROGRESS'" @click="handleJoin(auction.id)"
-            class="bg-green-500 text-white p-2 rounded mt-2 w-full">
-            Join Auction
-          </button>
         </div>
-        <div class="w-1/2 p-4 border-l border-gray-300">
+        <div class="w-full lg:w-1/2 p-4 border-l border-gray-300">
           <p class="text-gray-700 mb-2"><strong>Description: </strong> {{ auction.description }}</p>
           <p class="text-gray-700 mb-2"><strong>Start Bid: </strong> {{ auction.start_bid }}</p>
           <p class="text-gray-700 mb-2"><strong>Price per Step: </strong> {{ auction.price_per_step }}</p>
@@ -45,6 +37,15 @@
           <p class="text-gray-700 mb-1"><strong>Description: </strong>{{ auction.product.description }}</p>
           <p class="text-gray-700 mb-1"><strong>Owner: </strong> tên người tạo </p>
           <p class="text-gray-700 mb-1"><strong>Category: </strong>{{ auction.product.category }}</p>
+
+          <button v-if="auction.status === 'OPENING'" @click="handleRegister(auction.id)"
+            class="bg-green-500 text-white p-2 rounded mt-8 w-full">
+            Register Auction
+          </button>
+          <button v-if="auction.status === 'IN_PROGRESS'" @click="handleJoin(auction.id)"
+            class="bg-green-500 text-white p-2 rounded mt-8 w-full">
+            Join Auction
+          </button>
         </div>
       </div>
     </div>

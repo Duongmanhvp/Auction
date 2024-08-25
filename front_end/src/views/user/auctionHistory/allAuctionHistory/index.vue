@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col md:flex-row mt-20 mx-5 space-y-5 md:space-y-0 md:space-x-5">
     <div class="w-full md:w-1/5 mr-4">
-      <MenuSessionManagement />
+      <MenuAuctionHistory />
     </div>
     <div class="relative w-full md:w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
       <div class="w-full max-w-md mx-auto">
         <h1 class="text-2xl font-bold text-center text-gray-800">
-          All Sessions
+          Auctions you have participated in
         </h1>
         <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
       </div>
@@ -48,8 +48,8 @@
 </template>
 
 <script setup>
-import MenuSessionManagement from '../../../../components/MenuSessionManagement/index.vue';
-import SessionModal from '../sessionDetail/index.vue';
+import MenuAuctionHistory from '../../../../components/MenuAuctionHistory/index.vue';
+import SessionModal from '../historyAuctionDetail/index.vue';
 import { ref, computed, reactive, onBeforeMount, watch } from 'vue';
 import { useStore } from 'vuex';
 
