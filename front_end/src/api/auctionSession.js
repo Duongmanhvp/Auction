@@ -113,10 +113,6 @@ async function joinAuctionRoom(auctionId, callbacks) {
 }
       
 async function leaveAuctionRoom(auctionId) {
-    console.log('registry: ', auctionJoinRegistry[auctionId]);
-    // if (!auctionJoinRegistry[auctionId]) {
-    //     return;
-    // }
     stompApi.unsubscribe(`/topic/auction/${auctionId}/bids`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/comments`);
     stompApi.unsubscribe(`/topic/auction/${auctionId}/notifications`);

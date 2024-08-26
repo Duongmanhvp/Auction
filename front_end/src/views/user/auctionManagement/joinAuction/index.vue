@@ -335,6 +335,9 @@ const bids = ref([]);
 
 async function updateBid(bid) {
   currentPrice.value = bid.bid;
+  if (!bid.userId) {
+    return;
+  }
   bids.value.push({name: "xxx", price: bid.bid});
   const index = bids.value.length - 1;
   
@@ -426,6 +429,7 @@ onMounted(() => {
             });
         },
         onEnd: (winnerId) => {
+            console.log(winnerId);
             sessionState.value = "FINISHED";
             console.log('auction ended');
             message.success(`Auction has ended`);
