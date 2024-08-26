@@ -20,24 +20,47 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class AuctionListResponse {
     Long id;
-    Long product_id;
+    Long productId;
     String title;
     String description;
     String image;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    Timestamp created_at;
+    LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime confirm_date;
+    LocalDateTime confirmDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime end_registration;
+    LocalDateTime endRegistration;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime start_time;
+    LocalDateTime startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime end_time;
+    LocalDateTime endTime;
+    Long startBid;
+    Long pricePerStep;
+    Long endBid;
     Long start_bid;
     Long price_per_step;
     Long end_bid;
 
     @Enumerated(EnumType.STRING)
     AuctionStatus status;
+
+    public AuctionListResponse(Long id, Long productId, String title, String description, String image,
+                               LocalDateTime createdAt, LocalDateTime confirmDate, LocalDateTime endRegistration,
+                               LocalDateTime startTime, LocalDateTime endTime, Long startBid, Long pricePerStep,
+                               Long endBid, String status) {
+        this.id = id;
+        this.productId = productId;
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.createdAt = createdAt;
+        this.confirmDate = confirmDate;
+        this.endRegistration = endRegistration;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.startBid = startBid;
+        this.pricePerStep = pricePerStep;
+        this.endBid = endBid;
+        this.status = AuctionStatus.valueOf(status); // Convert string to Enum
+    }
 }
