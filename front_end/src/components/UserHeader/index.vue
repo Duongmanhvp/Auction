@@ -77,6 +77,33 @@
                 Profile
               </a>
             </a-menu-item>
+            <a-menu-item @click="auctionHistory">
+              <a class="font-bold flex items-center">
+                <img src="../../assets/icon/history.svg" alt="Asset Management" class="h-5 w-5 inline-block mr-2" />
+                Auction History
+              </a>
+            </a-menu-item>
+            <a-menu-item @click="auctionManagement">
+              <a class="font-bold flex items-center">
+                <img src="../../assets/icon/auction-management.svg" alt="Auction Management"
+                  class="h-5 w-5 inline-block mr-2" />
+                Registered Auction
+              </a>
+            </a-menu-item>
+            <a-menu-item @click="productManagement">
+              <a class="font-bold flex items-center">
+                <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
+                  class="h-5 w-5 inline-block mr-2" />
+                Auction Asset
+              </a>
+            </a-menu-item>
+            <a-menu-item @click="auctionSessionManagement">
+              <a class="font-bold flex items-center">
+                <img src="../../assets/icon/auction-session-management.svg" alt="Auction Session Management"
+                  class="h-5 w-5 inline-block mr-2" />
+                Auction Session
+              </a>
+            </a-menu-item>
             <a-menu-item>
               <button @click="handleLogout" class="font-bold flex items-center">
                 <img src="../../assets/icon/logout.svg" alt="Logout" class="h-5 w-5 inline-block mr-2" />
