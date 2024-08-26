@@ -46,13 +46,9 @@ const auctionApi = {
     return response.data.data;
   },
 
-  async getAllAuctionByStatus(status, pageNo) {
+  async getAllAuctionByStatus(status, pageNo,pageSize) {
     const response = await api.get(
-      "/v1/auctions/get-all-auction-by-status?statusAuction=" +
-        status +
-        "&pageSize=4" +
-        "&pageNo=" +
-        pageNo
+      `/v1/auctions/get-all-auction-by-status?statusAuction=${status}&pageNo=${pageNo}&pageSize=${pageSize}`
     );
     return response.data.data;
   },
