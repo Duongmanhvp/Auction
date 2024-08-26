@@ -317,7 +317,9 @@ function handlePlaceBid() {
     return;
   }
   const newPrice = parsePrice(yourPriceInput.value);
-  sessionApi.bid(auction.value.id, newPrice);
+  sessionApi.bid(auction.value.id, newPrice).catch((err) => {
+    message.error(err.message);
+  });
 };
 
 function parsePrice(priceStr) {
@@ -366,7 +368,9 @@ function handleComment() {
   if (!myCommentInput.value) {
     return;
   }
-  sessionApi.comment(auctionId, myCommentInput.value);
+  sessionApi.comment(auctionId, myCommentInput.value).catch((err) => {
+    message.error(err.message);
+  });
   myCommentInput.value = '';
 };
 
@@ -453,6 +457,8 @@ onMounted(() => {
           sessionApi.leaveAuctionRoom(auctionId).finally(() => {
             setTimeout(join, 1000);
           });
+        } else {
+          message.error('loi tham gia phong dau gia');
         }
       }
       console.error(err);
