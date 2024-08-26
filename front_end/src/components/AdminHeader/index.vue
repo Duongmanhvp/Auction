@@ -14,7 +14,7 @@
               active-class="text-green-600">
               <div class="w-full h-full p-5 flex items-center justify-center">
                 <img src="../../assets/icon/auction-management.svg" alt="Chevron Down" class="h-5 w-5 mr-2" />
-                Auction Management
+                Registered Auctions
               </div>
             </router-link>
           </a>
@@ -54,8 +54,8 @@
     </div>
     <div>
       <a-drawer v-model:open="open" title="Dashboard" placement="left">
-        <p>Auction products ...</p>
-        <p>Auction sessions ...</p>
+        <p>Productss ...</p>
+        <p>Auctions ...</p>
         <p>News ...</p>
         <p>Introduction ...</p>
         <p>Contact ...</p>

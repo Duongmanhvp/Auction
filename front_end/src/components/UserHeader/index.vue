@@ -23,7 +23,7 @@
               <router-link to="/user/product" class="block w-full h-full hover:text-green-600 rounded"
                 active-class="text-green-600">
                 <div class="w-full h-full p-5 flex items-center justify-center">
-                  Auction Product
+                  Products
                   <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
                 </div>
               </router-link>
@@ -59,7 +59,7 @@
               <router-link to="/user/session" class="block w-full h-full hover:text-green-600 rounded"
                 active-class="text-green-600">
                 <div class="w-full h-full p-5 flex items-center justify-center">
-                  Auction Session
+                  Auction
                   <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
                 </div>
               </router-link>
@@ -137,9 +137,9 @@
             </a-menu-item>
             <a-menu-item @click="auctionManagement">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/auction-management.svg" alt="Auction Management"
+                <img src="../../assets/icon/auction-management.svg" alt="Registered Auctions"
                   class="h-5 w-5 inline-block mr-2" />
-                Auction Management
+                Registered Auctions
               </a>
             </a-menu-item>
             <a-menu-item @click="productManagement">
@@ -151,9 +151,9 @@
             </a-menu-item>
             <a-menu-item @click="auctionSessionManagement">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/auction-session-management.svg" alt="Auction Session Management"
+                <img src="../../assets/icon/auction-session-management.svg" alt="Auction Management"
                   class="h-5 w-5 inline-block mr-2" />
-                Auction Session Management
+                Auction Management
               </a>
             </a-menu-item>
             <a-menu-item>
@@ -169,8 +169,8 @@
     </div>
     <div>
       <a-drawer v-model:open="open" title="Dashboard" placement="left">
-        <p>Auction products ...</p>
-        <p>Auction sessions ...</p>
+        <p>Productss ...</p>
+        <p>Auctions ...</p>
         <p>News ...</p>
         <p>Introduction ...</p>
         <p>Contact ...</p>

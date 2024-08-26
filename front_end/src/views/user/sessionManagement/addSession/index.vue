@@ -5,7 +5,7 @@
         </div>
         <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
             <div class="relative w-full max-w-md mx-auto">
-                <h1 class="text-2xl font-bold text-center text-gray-800">Add Auction Session</h1>
+                <h1 class="text-2xl font-bold text-center text-gray-800">Add Auction</h1>
                 <div class="border-b-2 border-white mt-2 mb-8"></div>
             </div>
             <router-link to="/user/allProduct"
@@ -14,33 +14,30 @@
                 <span>Back to Product</span>
             </router-link>
             <form @submit.prevent="submitAuction" class="flex space-x-8 ">
-                <div v-if="product.id === ''" class="w-1/3">
+                <div v-if="product.id === ''" class="w-2/5">
                     <p class="text-red-500 mb-4">Please select product before creating auction!!</p>
                     <router-link to="/user/allProduct"
                         class="bg-slate-400 text-white px-4 py-2 rounded hover:bg-slate-500">Select product
                         now
                     </router-link>
                 </div>
-                <div v-if="product.id !== ''" class="w-1/3">
-                    <h1 class="text-xl font-bold text-gray-800 mb-4">Product Infor</h1>
+                <div v-if="product.id !== ''" class="w-2/5">
+                    <h1 class="text-xl font-bold text-gray-800 mb-4">Product Information</h1>
                     <div class="flex mb-1 ">
-                        <label for="productId" class="block text-gray-700 text-lg font-semibold mr-2">Product
-                            ID:</label>
+                        <span class="text-gray-700 text-lg font-semibold mr-2">Product ID:</span>
                         <p id="productId" class="text-gray-800 text-lg font-thin "> {{ product.id }}</p>
                     </div>
                     <div class="flex mb-1">
-                        <label for="category" class="block text-gray-700 text-lg font-semibold mr-2">Product
-                            Name:</label>
-                        <p id="category" class="text-gray-800">{{ product.name }}</p>
+                        <span class="text-gray-700 text-lg font-semibold mr-2">Product Name:</span>
+                        <p id="productName" class="text-gray-800 text-lg">{{ product.name }}</p>
                     </div>
                     <div class="flex mb-1">
-                        <label for="category" class="block text-gray-700 text-lg font-semibold mr-2">Category:</label>
-                        <p id="category" class="text-gray-800">{{ product.category }}</p>
+                        <span class="ext-gray-700 text-lg font-semibold mr-2">Category:</span>
+                        <p id="category" class="text-gray-800 text-lg">{{ product.category }}</p>
                     </div>
                     <div class="flex mb-1">
-                        <label for="productDescription"
-                            class="block text-gray-700 text-lg font-semibold mr-2">Description:</label>
-                        <p id="productDescription" class="text-gray-800">{{ product.description }}</p>
+                        <span class="ext-gray-700 text-lg font-semibold mr-2">Description:</span>
+                        <p id="productDescription" class="text-gray-800 text-lg">{{ product.description }}</p>
                     </div>
                     <!-- <div v-if="imagePreview" class="mb-4">
                         <img :src="imagePreview" alt="Product Image"
@@ -48,7 +45,7 @@
                     </div> -->
                 </div>
 
-                <div class="w-2/3">
+                <div class="w-3/5">
                     <div class="mb-5">
                         <label for="title" class="block text-gray-700 mb-3 font-semibold">Title</label>
                         <input type="text" id="title" v-model="auction.title"
@@ -68,7 +65,7 @@
                     </div>
 
                     <div class="mb-5">
-                        <label for="pricePerStep" class="block text-gray-700 mb-3 font-semibold">Price per Step</label>
+                        <label for="pricePerStep" class="block text-gray-700 mb-3 font-semibold">Stepping Price</label>
                         <input type="number" id="pricePerStep" v-model="auction.price_per_step"
                             class="form-input w-full border border-gray-300 rounded-md px-2 py-2" />
                     </div>

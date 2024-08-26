@@ -23,7 +23,7 @@
               <router-link to="/home/product" class="block w-full h-full hover:text-green-600 rounded"
                 active-class="text-green-600">
                 <div class="w-full h-full p-5 flex items-center justify-center">
-                  Auction Product
+                  Products
                   <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
                 </div>
               </router-link>
@@ -59,7 +59,7 @@
               <router-link to="/home/session" class="block w-full h-full hover:text-green-600 rounded"
                 active-class="text-green-600">
                 <div class="w-full h-full p-5 flex items-center justify-center">
-                  Auction Session
+                  Auctions
                   <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
                 </div>
               </router-link>
@@ -131,8 +131,8 @@
     </div>
     <div>
       <a-drawer v-model:open="open" title="Dashboard" placement="left">
-        <p>Auction products ...</p>
-        <p>Auction sessions ...</p>
+        <p>Productss ...</p>
+        <p>Auctions ...</p>
         <p>News ...</p>
         <p>Introduction ...</p>
         <p>Contact ...</p>

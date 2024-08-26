@@ -10,10 +10,10 @@
           <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
         </div>
 
-        <div class="product-list grid grid-cols-4 gap-4">
           <div v-if="loading" class="flex items-center justify-center">
             <a-spin size="large" />
           </div>
+        <div class="product-list grid grid-cols-4 gap-4">
           <div v-for="(auction, index1) in auctions.content" :key="index1"
             class="product-item bg-white shadow-lg rounded-lg">
             <a-card hoverable @click="selectAuction(auction)"
@@ -95,11 +95,14 @@ const renderAuction = async (pageCurrent) => {
     auctions.content = response.content;
     auctions.totalElements = response.totalElements;
     console.log(response)
+    const promises = [];
     for (let auction of auctions.content) {
-      const product = await productApi.getProductById(auction.product_id);
-      auction.product = product;
-      auction.productImage = `https://res.cloudinary.com/dorl0yxpe/image/upload/` + product.image.split(', ')[0];
+      promises.push(productApi.getProductById(auction.product_id).then((response) => {
+        auction.product = response;
+        auction.productImage = `https://res.cloudinary.com/dorl0yxpe/image/upload/` + response.image.split(', ')[0];
+      }));
     }
+    await Promise.all(promises);
   } catch (error) {
     console.error(error);
   } finally {

@@ -88,7 +88,7 @@ const columns = [
   { title: "Start Time", dataIndex: "start_time", key: "startTime", visible: isDetailsVisible },
   { title: "End Time", dataIndex: "end_time", key: "endTime", visible: isDetailsVisible },
   { title: "Start Bid", dataIndex: "start_bid", key: "startBid", visible: isDetailsVisible },
-  { title: "Price Per Step", dataIndex: "price_per_step", key: "pricePerStep", visible: isDetailsVisible, },
+  { title: "Stepping Price", dataIndex: "price_per_step", key: "pricePerStep", visible: isDetailsVisible, },
   { title: "End Bid", dataIndex: "end_bid", key: "endBid", visible: isDetailsVisible, },
   { title: "Status", dataIndex: "status", key: "status" },
   {

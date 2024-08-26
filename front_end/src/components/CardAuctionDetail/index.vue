@@ -35,7 +35,7 @@
         <div class="w-1/2 p-4 border-l border-gray-300">
           <p class="text-gray-700 mb-2"><strong>Description: </strong> {{ auction.description }}</p>
           <p class="text-gray-700 mb-2"><strong>Start Bid: </strong> {{ auction.start_bid }}</p>
-          <p class="text-gray-700 mb-2"><strong>Price per Step: </strong> {{ auction.price_per_step }}</p>
+          <p class="text-gray-700 mb-2"><strong>Stepping Price: </strong> {{ auction.price_per_step }}</p>
           <p class="text-gray-700 mb-2"><strong>End Registration Time: </strong> {{ auction.end_registration }}</p>
           <p class="text-gray-700 mb-2"><strong>Start Time: </strong> {{ auction.start_time }}</p>
           <p class="text-gray-700 mb-5"><strong>End Time: </strong> {{ auction.end_time }}</p>
