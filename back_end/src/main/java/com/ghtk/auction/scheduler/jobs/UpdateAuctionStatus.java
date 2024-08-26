@@ -37,6 +37,7 @@ public class UpdateAuctionStatus implements Job {
 //		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
 //				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 //		);
+		log.info("UpdateAuctionStatus: auctionId = {}", request.getAuctionId());
 		auctionService.updateStatus(request);
 	}
 

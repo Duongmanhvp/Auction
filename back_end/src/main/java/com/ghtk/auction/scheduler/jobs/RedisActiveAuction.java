@@ -22,6 +22,7 @@ public class RedisActiveAuction implements Job {
 
 		JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
 		Long auctionId = jobDataMap.getLong("auctionId");
+		log.info("RedisActiveAuction: auctionId = {}", auctionId);
 		auctionRealtimeService.startAuction(auctionId);
 	}
 

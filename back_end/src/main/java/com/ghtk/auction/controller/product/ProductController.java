@@ -32,10 +32,10 @@ public class ProductController {
 	
 	final ProductService productService;
 	
-	
+	@PreAuthorize("@userComponent.isActiveUser(#principal)")
 	@PostMapping
-	public ResponseEntity<ApiResponse<Product>> create(@RequestBody ProductCreationRequest request) {
-		return ResponseEntity.ok(ApiResponse.success(productService.createProduct(request)));
+	public ResponseEntity<ApiResponse<Product>> create(@AuthenticationPrincipal Jwt principal,@RequestBody ProductCreationRequest request) {
+		return ResponseEntity.ok(ApiResponse.success(productService.createProduct(principal,request)));
 	}
 	
 	@GetMapping("/get-my-all")

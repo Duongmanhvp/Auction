@@ -38,9 +38,12 @@ spring:
     jdbc:
       initialize-schema: never
     properties:
-      org.quartz.jobStore:
-        driverDelegateClass : org.quartz.impl.jdbcjobstore.StdJDBCDelegate
-
+      org:
+        quartz:
+          threadPool:
+            threadCount: 7
+          jobStore:
+            driverDelegateClass : org.quartz.impl.jdbcjobstore.StdJDBCDelegate
   jackson:
     serialization:
       FAIL_ON_EMPTY_BEANS: false
