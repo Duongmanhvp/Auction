@@ -43,7 +43,6 @@
           <h2 class="text-xl font-bold mb-2 ">Product Infor</h2>
           <p class="text-gray-700 mb-1"><strong>Name: </strong>{{ auction.product.name }}</p>
           <p class="text-gray-700 mb-1"><strong>Description: </strong>{{ auction.product.description }}</p>
-          <p class="text-gray-700 mb-1"><strong>Owner: </strong> tên người tạo </p>
           <p class="text-gray-700 mb-1"><strong>Category: </strong>{{ auction.product.category }}</p>
         </div>
       </div>
