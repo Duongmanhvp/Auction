@@ -8,8 +8,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,18 +23,18 @@ public class AuctionListResponse {
     String description;
     String image;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    Timestamp created_at;
+    LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime confirm_date;
+    LocalDateTime confirmDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime end_registration;
+    LocalDateTime endRegistration;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime start_time;
+    LocalDateTime startTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    LocalDateTime end_time;
-    Long start_bid;
-    Long price_per_step;
-    Long end_bid;
+    LocalDateTime endTime;
+    Long startBid;
+    Long pricePerStep;
+    Long endBid;
 
     @Enumerated(EnumType.STRING)
     AuctionStatus status;
