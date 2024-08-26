@@ -63,11 +63,11 @@
       <div class="w-full md:w-1/3 bg-white p-4 flex flex-col">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Latest auction updates</h2>
         <div class="border-b-2 border-gray-300 mb-4"></div>
-        <div class="overflow-y-scroll max-h-96 custom-scrollbar">
-          <a-card v-for="(history, index) in historyList" :key="index" hoverable
-            class="h-full bg-white shadow-lg rounded-lg mb-2">
-            <a-card-meta :title="history.title" :description="history.description"></a-card-meta>
-          </a-card>
+        <div class="overflow-y-scroll h-full custom-scrollbar p-2 flex justify-end flex-col">
+          <div v-for="(bid, index) in bids" :key="index" hoverable
+            class="h-10 text-sm w-full flex justify-start items-center shadow-md rounded-lg mb-2 p-2 ">
+            <a-card-meta :title="bid.name + ' bid ' + bid.price + ' VND'"></a-card-meta>
+          </div>
         </div>
       </div>
 
@@ -87,7 +87,7 @@
           </a-card>
         </div>
         <a-list item-layout="horizontal" :data-source="comments"
-          class="p-5 overflow-y-scroll max-h-96 custom-scrollbar">
+          class="p-5 overflow-y-scroll custom-scrollbar">
           <template #renderItem="{ item }">
             <a-list-item :key="item.id">
               <a-list-item-meta :description="item.content">
@@ -320,11 +320,6 @@ function handlePlaceBid() {
   sessionApi.bid(auction.value.id, newPrice);
 };
 
-function updateBid(bid) {
-  currentPrice.value = bid.bid;
-  isCurrentPriceYours.value = bid.userId === userId;
-}
-
 function parsePrice(priceStr) {
   return (parseInt(priceStr.replace(/\./g, '')) || 0);
 };
@@ -333,6 +328,30 @@ function formatPrice(priceNum) {
   return priceNum == null ? "" :
     `${priceNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
 };
+
+
+
+const bids = ref([]);
+
+async function updateBid(bid) {
+  currentPrice.value = bid.bid;
+  bids.value.push({name: "xxx", price: bid.bid});
+  const index = bids.value.length - 1;
+  
+  if (isCurrentPriceYours.value = bid.userId === userId) {
+    bids.value[index] = {
+      name: 'You',
+      price: bid.bid,
+    }
+  } else {
+    authApi.getAnotherInfo(bid.userId).then((user) => {
+      bids.value[index] = {
+        name: user.fullName,
+        price: bid.bid,
+      }
+    });
+  }
+}
 
 
 
