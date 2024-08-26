@@ -69,6 +69,6 @@ public class AuctionEventStompListener {
   @Async
   @EventListener
   public void handleAuctionEndEvent(AuctionEndEvent event) {
-    stompService.broadcastEndAuction(event.getAuctionId());
+    stompService.broadcastEndAuction(event.getAuctionId(), event.getWinnerId());
   }
 }

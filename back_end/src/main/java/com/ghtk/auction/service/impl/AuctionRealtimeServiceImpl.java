@@ -317,15 +317,18 @@ public class AuctionRealtimeServiceImpl implements AuctionRealtimeService {
   }
 
   @Override
-  public void endAuction(Long auctionId) {
+  public synchronized void endAuction(Long auctionId) {
     AuctionRoom room = auctionSessionRepository.getAuctionRoom(auctionId).orElseThrow(
         () -> new NotFoundException("Phong dau gia chua mo")
     );
     Auction auction = auctionRepository.findById(auctionId).orElseThrow(
         () -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
     );
+
+    Long winner = auctionSessionRepository.getLastBid(auctionId)
+        .map(BidMessage::getUserId).orElse(null);
     
-    eventPublisher.publishEvent(new AuctionEndEvent(auctionId));
+    eventPublisher.publishEvent(new AuctionEndEvent(auctionId, winner));
     leaveAllAuctionUser(auctionId);
     auctionSessionRepository.deleteAllJoinableByAuction(auctionId);
 
