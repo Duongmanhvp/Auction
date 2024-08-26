@@ -27,7 +27,7 @@
           <p><strong>Category:</strong> {{ product?.category }}</p>
           <p><strong>Description:</strong> {{ product?.description }}</p>
           <p><strong>Start Bid:</strong> {{ auction.start_bid }}</p>
-          <p><strong>Price Per Step:</strong> {{ auction.price_per_step }}</p>
+          <p><strong>Stepping Price:</strong> {{ auction.price_per_step }}</p>
           <span v-if="auction.status !== 'OPENING'">{{ auction.status }}</span>
           <select v-else v-model="selectedStatus" class="border border-gray-300 p-1 rounded-md">
             <option value="OPENING">OPENING</option>

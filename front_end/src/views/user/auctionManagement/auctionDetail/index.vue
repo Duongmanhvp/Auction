@@ -14,7 +14,7 @@
                     <h2 class="text-2xl font-bold mb-4">{{ session.title }}</h2>
                     <p class="text-gray-700 mb-2"><strong>Description:</strong> {{ session.description }}</p>
                     <p class="text-gray-700 mb-2"><strong>Start Bid:</strong> {{ session.startBid }}</p>
-                    <p class="text-gray-700 mb-2"><strong>Price per Step:</strong> {{ session.pricePerStep }}</p>
+                    <p class="text-gray-700 mb-2"><strong>Stepping Price:</strong> {{ session.pricePerStep }}</p>
                     <p class="text-gray-700 mb-2"><strong>Start Time:</strong> {{ session.startTime }}</p>
                     <p class="text-gray-700 mb-2"><strong>End Time:</strong> {{ session.endTime }}</p>
                     <button @click="goToAuction(session.id)" class="bg-green-500 text-white p-2 rounded mt-4 w-full">

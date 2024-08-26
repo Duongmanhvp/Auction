@@ -205,6 +205,7 @@ function formatTimeLeft(from, to) {
     const hours = Math.floor(inSeconds / 3600);
     const minutes = Math.floor(inSeconds / 60) % 60;
     const seconds = inSeconds % 60;
+    if (negative) return '00:00:00';
     return `${negative ? '-' : ''}${formatUnit(hours)}:${formatUnit(minutes)}:${formatUnit(seconds)}`;
 
     function formatUnit(unit) {
@@ -247,7 +248,8 @@ const biddable = computed(() => {
 });
 
 function adjustYourPrice(event) {
-    const newPrice = parsePrice(event.target.value);
+    const cleaned = event.target.value.replace(/\D/g, '');
+    const newPrice = parsePrice(cleaned);
     const oldCursorPos = event.target.selectionStart;
     const digitsToTheRight = event.target.value.substring(oldCursorPos).match(/\d/g)?.length || 0;
 
@@ -404,14 +406,11 @@ onMounted(() => {
     join();
 
     countdownInterval = setInterval(updateCountdown, 100);
-    window.addEventListener('beforeunload', handleUnload);
 });
 
 onUnmounted(() => {
     console.log('leaving room');
     clearInterval(countdownInterval);
-    sessionApi.leaveAuctionRoom(auctionId);
-    window.removeEventListener('beforeunload', handleUnload);
 });
 
 

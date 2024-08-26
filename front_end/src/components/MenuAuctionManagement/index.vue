@@ -1,7 +1,7 @@
 <template>
     <div class="z-10">
         <a-card hoverable class="h-auto bg-white shadow-lg rounded-md mt-6">
-            <h1 class="text-lg font-bold">Auction Management</h1>
+            <h1 class="text-lg font-bold">Registered Auctions</h1>
             <div class="flex flex-col items-center justify-center mt-4 space-y-4">
                 <router-link to="/user/allAuction" class="w-full">
                     <button

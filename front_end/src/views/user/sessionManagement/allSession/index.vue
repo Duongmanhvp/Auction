@@ -14,7 +14,7 @@
       <div v-if="loading" class="flex items-center justify-center">
         <a-spin size="large" />
       </div>
-      <div class="session-list grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-4 gap-4">
         <div v-for="session in paginatedSessions" :key="session.id"
           class="session-item bg-white shadow-lg rounded-lg cursor-pointer  transform hover:scale-105 transition duration-300 ease-in-out"
           @click="openModal(session)">
