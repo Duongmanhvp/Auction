@@ -326,6 +326,7 @@ import { useStore } from "vuex";
 import Heart from '../../../assets/icon/heart.svg';
 import HeartFilled from '../../../assets/icon/heart-filled.svg';
 import { useRouter } from 'vue-router';
+import { message } from "ant-design-vue";
 
 const router = useRouter();
 
@@ -430,17 +431,20 @@ const toggleFavorite = async(product) => {
     product.isFavorite = !product.isFavorite;
     product.quantity += 1;
    } catch (error) {
-    product.isFavorite = !product.isFavorite;
-    router.push('/login')
+    message.error("You must login!");
    }
  
  };
 
  const search = ref('');
  const searchProduct = () => {
-  
-  router.push({name : 'user-search', 
-  query: { keyword : search.value }})
+  const isLoggedIn = store.getters.getLoginState;
+
+  if (isLoggedIn) {
+  router.push({name : 'user-search', query: { keyword : search.value }})
+  }else {
+    router.push({ name: 'home-search', query: { keyword: search.value } });
+  }
 }
 
 onMounted(() => {

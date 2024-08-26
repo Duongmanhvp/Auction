@@ -52,6 +52,11 @@ const routes = [
         name: "home-contact",
         component: Contact,
       },
+      {
+        path: 'search',
+        name: "home-search",
+        component: SearchProduct,
+      }
     ],
   },
   ...authRoutes,

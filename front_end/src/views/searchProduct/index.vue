@@ -174,7 +174,7 @@
       <div v-if="loadingTop" class="flex items-center justify-center">
         <a-spin size="large" />
       </div>
-      <div class="product-list grid grid-cols-4 gap-4">
+      <div class="grid grid-cols-4 gap-4">
         <div
           v-for="(product, index) in productSearch.content"
           :key="index"

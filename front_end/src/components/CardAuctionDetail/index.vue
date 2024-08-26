@@ -106,8 +106,7 @@ const handleRegister = async (id) => {
     const response = await auctionApi.registerAuction(id);
     message.success("Register Successfully!")
   } catch (error) {
-    console.log(error)
-    message.error(error.response.data.message)
+    message.error("You must login !")
   }
 
 

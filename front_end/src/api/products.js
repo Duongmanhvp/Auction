@@ -89,8 +89,6 @@ const productApi = {
       console.log(response);
       return response.data;
     } catch (error) {
-      message.error(error.response.data.message);
-      // return error.response.data.message;
       throw error;
     }
   },
