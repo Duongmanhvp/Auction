@@ -55,12 +55,12 @@
             <div class="flex justify-center items-center space-x-6">
               <button type="submit"
                 class=" flex w-40 bg-teal-300 hover:bg-teal-400 outline-gray-400 shadow-lg text-black font-bold py-2 px-4 rounded">
-                <img src="../../../../assets/icon/send.svg" alt="Confirm" class="md:block hidden w-6 h-6 mr-4 ml-1" />
+                <img src="../../../../assets/icon/send.svg" class="md:block hidden w-6 h-6 mr-4 ml-1" />
                 Confirm
               </button>
               <button type="submit"
                 class=" flex w-36 bg-slate-200 text-black hover:bg-slate-300 outline-gray-600 shadow-lg font-bold py-2 px-4 rounded">
-                <img src="../../../../assets/icon/cancel.svg" alt="Cancel" class="md:block hidden w-6 h-6 mr-4" />
+                <img src="../../../../assets/icon/cancel.svg" class="md:block hidden w-6 h-6 mr-4" />
                 Cancel
               </button>
             </div>

@@ -16,12 +16,12 @@
       <div class="flex flex-col items-center justify-center mt-4 space-y-4">
         <button
           class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-          <img src="../../../assets/icon/accept.svg" alt="Accept Product" class="w-6 h-6 mr-3" />
+          <img src="../../../assets/icon/accept.svg" class="w-6 h-6 mr-3" />
           Accept Product
         </button>
         <button
           class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-          <img src="../../../assets/icon/delete.svg" alt="Delete Product" class="w-6 h-6 mr-3" />
+          <img src="../../../assets/icon/delete.svg" class="w-6 h-6 mr-3" />
           Delete Product
         </button>
       </div>

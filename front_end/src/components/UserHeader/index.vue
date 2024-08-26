@@ -12,7 +12,7 @@
           <ul class="hidden md:block navbar-item font-bold cursor-pointer">
             <router-link to="/user/default" active-class="text-green-600">
               <div class="w-full h-full p-5 flex items-center justify-center">
-                <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/home.svg" class="h-5 w-5 inline-block mr-2" />
                 Home
               </div>
             </router-link>
@@ -66,47 +66,47 @@
           <a-avatar class="bg-green-400">
             <img src="../../assets/icon/user.svg" alt="User" class="w-6 h-6" />
           </a-avatar>
-          <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
+          <img src="../../assets/icon/chevron-down.svg" alt="V" class="h-5 w-5" />
         </div>
         <div v-if="showDropdown"
           class="absolute right-5 top-10 w-56 bg-white border border-gray-200 rounded shadow-lg z-20">
           <a-menu>
             <a-menu-item @click="profileManagement">
               <a class="font-bold flex items-center" href="javascript:;">
-                <img src="../../assets/icon/profile.svg" alt="Profile" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/profile.svg" class="h-5 w-5 inline-block mr-2" />
                 Profile
               </a>
             </a-menu-item>
             <a-menu-item @click="auctionHistory">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/history.svg" alt="Asset Management" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/history.svg" class="h-5 w-5 inline-block mr-2" />
                 Auction History
               </a>
             </a-menu-item>
             <a-menu-item @click="auctionManagement">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/auction-management.svg" alt="Registered Auctions"
+                <img src="../../assets/icon/auction-management.svg"
                   class="h-5 w-5 inline-block mr-2" />
                 Registered Auctions
               </a>
             </a-menu-item>
             <a-menu-item @click="productManagement">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/asset-management.svg" alt="Asset Management"
+                <img src="../../assets/icon/asset-management.svg"
                   class="h-5 w-5 inline-block mr-2" />
                 Auction Asset
               </a>
             </a-menu-item>
             <a-menu-item @click="auctionSessionManagement">
               <a class="font-bold flex items-center">
-                <img src="../../assets/icon/auction-session-management.svg" alt="Auction Management"
+                <img src="../../assets/icon/auction-session-management.svg"
                   class="h-5 w-5 inline-block mr-2" />
                 Auction Management
               </a>
             </a-menu-item>
             <a-menu-item>
               <button @click="handleLogout" class="font-bold flex items-center">
-                <img src="../../assets/icon/logout.svg" alt="Logout" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/logout.svg" class="h-5 w-5 inline-block mr-2" />
                 Logout
               </button>
             </a-menu-item>
@@ -119,7 +119,7 @@
       <div class="space-y-2">
         <button @click="navigateTo('/user/default')"
           class="flex items-center p-4 w-full hover:bg-gray-200 rounded-md transition-colors">
-          <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 mr-3" />
+          <img src="../../assets/icon/home.svg" class="h-5 w-5 mr-3" />
           <span class="text-gray-800 font-bold">Home</span>
         </button>
         <button @click="navigateTo('/user/product')"

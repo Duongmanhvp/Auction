@@ -2,7 +2,7 @@
     <div class="container mx-auto max-w-sm p-10">
         <img src="../../../assets/images/logo.png" alt="Logo" class="h-130 h-130 -mt-10 flex items-center justify-center">
         <router-link to="/login" class=" flex items-center space-x-2 -ml-16 mb-4 text-gray-600 hover:text-gray-900">
-            <img src="../../../assets/icon/auth-back.svg" alt="Back" class="w-6 h-6" />
+            <img src="../../../assets/icon/auth-back.svg" class="w-6 h-6" />
             <span>Back</span>
         </router-link>
         <h1 class="flex items-center justify-center text-2xl font-bold mb-4">Forgot your password?</h1>

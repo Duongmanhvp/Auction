@@ -40,7 +40,7 @@
           <button @click.stop="toggleFavorite(product)" :disabled="isFavorited(product)"
             class="flex items-center justify-center p-2 rounded mt-4 w-full "
             :class="{ 'bg-pink-200 hover:bg-pink-400': !isFavorited(product), 'bg-gray-200 cursor-not-allowed': isFavorited(product) }">
-            <img src="../../assets/icon/like.svg" alt="Interested" class="w-6 h-6 mr-1" />
+            <img src="../../assets/icon/like.svg" class="w-6 h-6 mr-1" />
             Add to Favorites
           </button>
         </div>

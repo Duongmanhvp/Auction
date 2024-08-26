@@ -23,7 +23,7 @@
           <input :type="passwordType" id="password" v-model="password"
             class="form-input w-full border border-gray-300 rounded-md px-2 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-600" />
           <button type="button" @click="togglePasswordVisibility" class="absolute inset-y-0 right-2 flex items-center">
-            <img src="../../../assets/icon/eye-hide.svg" alt="Toggle password visibility"
+            <img src="../../../assets/icon/eye-hide.svg" alt="Eye hide"
               class="w-4 h-4 cursor-pointer" />
           </button>
         </div>

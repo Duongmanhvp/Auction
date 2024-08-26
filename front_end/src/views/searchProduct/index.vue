@@ -227,7 +227,6 @@
                >
                  <img
                    src="../../assets/icon/like.svg"
-                   alt="Interested"
                    class="w-6 h-6 mr-1"
                  />
                    Add to Favorites

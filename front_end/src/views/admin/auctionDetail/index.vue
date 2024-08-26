@@ -54,17 +54,17 @@
       </div>
       <button v-if="auction.status === 'PENDING'" @click="acceptAuction"
         class="my-4 w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-        <img src="../../../assets/icon/accept.svg" alt="Accept Auction" class="w-6 h-6 mr-3" />
+        <img src="../../../assets/icon/accept.svg" class="w-6 h-6 mr-3" />
         Accept Auction
       </button>
       <button v-if="auction.status !== 'PENDING'" @click="changeStatus"
         class="my-4 w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-        <img src="../../../assets/icon/change-status.svg" alt="Change Status" class="w-6 h-6 mr-3" />
+        <img src="../../../assets/icon/change-status.svg" class="w-6 h-6 mr-3" />
         Change Status
       </button>
       <button
         class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-        <img src="../../../assets/icon/delete.svg" alt="Delete Auction" class="w-6 h-6 mr-3" />
+        <img src="../../../assets/icon/delete.svg" class="w-6 h-6 mr-3" />
         Delete Auction
       </button>
     </div>

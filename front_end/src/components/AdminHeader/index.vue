@@ -13,7 +13,7 @@
             <router-link to="/admin/auctionManagement" class="block w-full h-full hover:text-green-600 rounded"
               active-class="text-green-600">
               <div class="w-full h-full p-5 flex items-center justify-center">
-                <img src="../../assets/icon/auction-management.svg" alt="Chevron Down" class="h-5 w-5 mr-2" />
+                <img src="../../assets/icon/auction-management.svg" alt="V" class="h-5 w-5 mr-2" />
                 Registered Auctions
               </div>
             </router-link>
@@ -22,7 +22,7 @@
             <router-link to="/admin/userManagement" class="block w-full h-full hover:text-green-600 rounded"
               active-class="text-green-600">
               <div class="w-full h-full p-5 flex items-center justify-center">
-                <img src="../../assets/icon/profile.svg" alt="Chevron Down" class="h-5 w-5 mr-2" />
+                <img src="../../assets/icon/profile.svg" alt="V" class="h-5 w-5 mr-2" />
                 User Management
               </div>
             </router-link>
@@ -36,14 +36,14 @@
           <a-avatar class="bg-green-400">
             <img src="../../assets/icon/user.svg" alt="User" class="w-6 h-6" />
           </a-avatar>
-          <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
+          <img src="../../assets/icon/chevron-down.svg" alt="V" class="h-5 w-5" />
         </div>
         <div v-if="showDropdown"
           class="absolute top-10 left-5 w-32 bg-white border border-gray-200 rounded shadow-lg z-20">
           <a-menu>
             <a-menu-item>
               <button @click="handleLogout" class="font-bold flex items-center">
-                <img src="../../assets/icon/logout.svg" alt="Logout" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/logout.svg" class="h-5 w-5 inline-block mr-2" />
                 Logout
               </button>
             </a-menu-item>

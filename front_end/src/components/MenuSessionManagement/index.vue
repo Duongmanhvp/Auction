@@ -6,14 +6,14 @@
         <router-link to="/user/allSession" class="w-full">
           <button
             class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
-            <img src="../../assets/icon/all.svg" alt="All Session" class="w-6 h-6 mr-3" />
+            <img src="../../assets/icon/all.svg" class="w-6 h-6 mr-3" />
             All Session
           </button>
         </router-link>
         <router-link to="/user/addSession" class="w-full">
           <button class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md
                     hover:bg-teal-200 outline-gray-400 shadow-lg">
-            <img src="../../assets/icon/add.svg" alt="Add Session" class="w-6 h-6 mr-3" />
+            <img src="../../assets/icon/add.svg" class="w-6 h-6 mr-3" />
             Add Session
           </button>
         </router-link>

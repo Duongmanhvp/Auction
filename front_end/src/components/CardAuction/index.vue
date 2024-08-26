@@ -20,7 +20,7 @@
               class="h-96 transform hover:scale-105 transition duration-300 ease-in-out">
 
               <template #cover>
-                <img :src="auction.productImage" alt="Auction" class="w-60 h-60 object-cover" />
+                <img :src="auction.productImage" alt="product image" class="w-60 h-60 object-cover" />
               </template>
               <a-card-meta :title="auction.title" :description="auction.description">
                 <template #avatar>

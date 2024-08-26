@@ -12,7 +12,7 @@
           <ul class="hidden md:block navbar-item font-bold cursor-pointer">
             <router-link to="/home/default" active-class="text-green-600">
               <div class="w-full h-full p-5 flex items-center justify-center">
-                <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 inline-block mr-2" />
+                <img src="../../assets/icon/home.svg" class="h-5 w-5 inline-block mr-2" />
                 Home
               </div>
             </router-link>
@@ -74,7 +74,7 @@
         <div class="space-y-2">
           <button @click="navigateTo('/home/default')"
             class="flex items-center p-4 w-full hover:bg-gray-200 rounded-md transition-colors">
-            <img src="../../assets/icon/home.svg" alt="Home" class="h-5 w-5 mr-3" />
+            <img src="../../assets/icon/home.svg" class="h-5 w-5 mr-3" />
             <span class="text-gray-800 font-bold">Home</span>
           </button>
           <button @click="navigateTo('/home/product')"
