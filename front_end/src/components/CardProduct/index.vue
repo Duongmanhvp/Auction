@@ -50,7 +50,7 @@
             :page-size="pageSizeRef"
             :total="products.totalElements" 
             show-size-changer
-            :page-size-options="['8', '16', '32', '64']"
+            :page-size-options="['8', '12', '16', '20']"
             @change="handlePageChange" 
             />
       </div> 

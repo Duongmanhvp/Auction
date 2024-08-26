@@ -31,8 +31,14 @@
           </div>
         </div>
         <div class="flex justify-center mt-4">
-          <a-pagination v-model="currentPage1" :total="auctions.totalElements" :pageSize="pageSize1"
-            @change="handlePageChange1" />
+          <a-pagination 
+            v-model="currentPage" 
+            :page-size="pageSizeRef"
+            :total="auctions.totalElements" 
+            show-size-changer
+            :page-size-options="['8', '12', '16', '20']"
+            @change="handlePageChange" 
+            />
         </div>
         <CardDetailModal :visible="viewModalVisible1" :auction="selectedAuction" @close="closeProductDetailModal1" />
       </div>
@@ -45,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, reactive } from 'vue';
+import { ref, computed, onMounted, watch, reactive, onBeforeMount } from 'vue';
 import CardDetailModal from '../CardAuctionDetail/index.vue';
 import auctionApi from '../../api/auctions';
 import productApi from '../../api/products';
@@ -66,10 +72,10 @@ let auctions = reactive(
   }
 )
 
-const currentPage1 = ref(1);
-const pageSize1 = 4;
+const currentPage = ref(1);
 const selectedAuction = ref(null);
 const viewModalVisible1 = ref(false);
+const pageSizeRef = ref(8);
 
 const selectAuction = (auction) => {
   selectedAuction.value = auction;
@@ -81,17 +87,20 @@ const closeProductDetailModal1 = () => {
   viewModalVisible1.value = false;
 };
 
-const handlePageChange1 = async (page1) => {
-  currentPage1.value = page1;
-  const pageCurrent = page1 - 1;
-  renderAuction(pageCurrent);
+const handlePageChange = async (page,pageSize) => {
+  currentPage.value = page;
+  pageSizeRef.value=pageSize;
+  const pageCurrent = page - 1;
+  await renderAuction(pageCurrent,pageSize);
 };
 
 
-const renderAuction = async (pageCurrent) => {
+const renderAuction = async (pageCurrent,pageSize) => {
   loading.value = true;
+  if(!pageSize) pageSize =8;
   try {
-    const response = await auctionApi.getAllAuctionByStatus(props.statusAuction, pageCurrent);
+    const response = await auctionApi.getAllAuctionByStatus(props.statusAuction, pageCurrent,pageSize);
+    pageSizeRef.value=pageSize;
     auctions.content = response.content;
     auctions.totalElements = response.totalElements;
     console.log(response)
@@ -110,7 +119,7 @@ const renderAuction = async (pageCurrent) => {
   }
 
 }
-onMounted(() => renderAuction(0))
+onBeforeMount(() => renderAuction(0))
 
 </script>
 
