@@ -69,7 +69,7 @@
           <img src="../../assets/icon/chevron-down.svg" alt="Chevron Down" class="h-5 w-5" />
         </div>
         <div v-if="showDropdown"
-          class="absolute right-14 top-2 w-56 bg-white border border-gray-200 rounded shadow-lg z-20">
+          class="absolute right-5 top-10 w-56 bg-white border border-gray-200 rounded shadow-lg z-20">
           <a-menu>
             <a-menu-item @click="profileManagement">
               <a class="font-bold flex items-center" href="javascript:;">
