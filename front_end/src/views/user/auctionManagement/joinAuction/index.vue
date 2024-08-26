@@ -123,6 +123,7 @@ import { jwtDecode } from 'jwt-decode';
 import sessionApi from '../../../../api/auctionSession';
 import auctionApi from '../../../../api/auctions';
 import authApi from '../../../../api/auths';
+import { message } from 'ant-design-vue';
 
 const IMAGE_PREFIX = import.meta.env.VITE_IMAGE_PREFIX;
 
@@ -366,6 +367,10 @@ function addComment(data) {
 
 const notifications = ref([]);
 
+const addNotification = (data) => {
+  notifications.value.push(data);
+};
+
 
 function handleUnload() {
   console.log('leaving room');
@@ -401,16 +406,21 @@ onMounted(() => {
                 updateBid(res.data);
             });
         },
-        onEnd: () => {
+        onEnd: (winnerId) => {
             sessionState.value = "FINISHED";
             console.log('auction ended');
+            message.success(`Auction has ended`);
+            if (winnerId === userId) {
+                message.success(`Congratulations! You have won the auction`);
+            } else if (winnerId != null) {
+                authApi.getAnotherInfo(winnerId).then((user) => {
+                    message.success(`${user.fullName} has won the auction`);
+                });
+            }
         },
         onBid: updateBid,
         onComment: addComment,
-        onNotification: (data) => {
-            console.log('notification', data);
-            notifications.value.push(data);
-        },
+        onNotification: addNotification
     };
 
     const join = () => sessionApi.joinAuctionRoom(auctionId, callbacks)

@@ -83,14 +83,14 @@ async function joinAuctionRoom(auctionId, callbacks) {
                         subscribeComment(auctionId, session);
                     }
                     sessionActive = true;
-                    session.onStart?.(body);
+                    session.onStart?.(body.data);
                 }
                 if (type === "end") {
                     sessionActive = false;
                     if (session.isJoined) {
                         session.leave();
                     }
-                    session.onEnd?.(body);
+                    session.onEnd?.(body.data);
                 }
             });
 
