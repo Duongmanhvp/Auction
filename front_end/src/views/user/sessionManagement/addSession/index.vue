@@ -32,11 +32,11 @@
                         <p id="productName" class="text-gray-800 text-lg">{{ product.name }}</p>
                     </div>
                     <div class="flex mb-1">
-                        <span class="ext-gray-700 text-lg font-semibold mr-2">Category:</span>
+                        <span class="text-gray-700 text-lg font-semibold mr-2">Category:</span>
                         <p id="category" class="text-gray-800 text-lg">{{ product.category }}</p>
                     </div>
                     <div class="flex mb-1">
-                        <span class="ext-gray-700 text-lg font-semibold mr-2">Description:</span>
+                        <span class="text-gray-700 text-lg font-semibold mr-2">Description:</span>
                         <p id="productDescription" class="text-gray-800 text-lg">{{ product.description }}</p>
                     </div>
                     <!-- <div v-if="imagePreview" class="mb-4">
