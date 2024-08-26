@@ -73,3 +73,9 @@ cloudinary:
   name: ${CLOUD_NAME:}
   key: ${API_KEY:}
   secret: ${API_SECRET:}
+
+auction:
+  schedule:
+    regis_duration: 2
+    start_delay: 3
+    auction_duration: 3
