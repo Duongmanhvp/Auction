@@ -64,7 +64,7 @@ export default {
   async registry({ commit }, data) {
     try {
       commit("setLoading", true);
-      commit("setEmail", data.email);
+      commit("setUser", {email : data.email}); 
       await authApi.registry(data);
       // commit('setUser', data.email);
     } catch (error) {

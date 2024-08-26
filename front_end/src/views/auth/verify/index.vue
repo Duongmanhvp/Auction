@@ -90,7 +90,7 @@ const startCountdown = () => {
 
 const resendCode = async () => {
     try {
-        const email = store.getters.getEmail;
+        const email = store.getters.getUser.email;
         await store.dispatch('resendOtp',{email});
         isResendDisabled.value = !isResendDisabled.value;
         message.success('Verification code resent successfully');
@@ -103,7 +103,7 @@ const resendCode = async () => {
 
 async function onSubmit() {
     const otp = codes.join('');
-    const email = store.getters.getEmail;
+    const email = store.getters.getUser.email;
     console.log(email);
 
     const data = {
