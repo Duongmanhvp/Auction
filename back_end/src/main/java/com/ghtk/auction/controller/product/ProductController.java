@@ -21,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -118,5 +119,10 @@ public class ProductController {
 			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
 	) {
 		return ResponseEntity.ok(ApiResponse.success(productService.getAllProduct(pageNo, pageSize)));
+	}
+
+	@GetMapping("/list-product-favorite")
+	public ResponseEntity<ApiResponse<List<Integer>>> getProduct(@AuthenticationPrincipal Jwt principal) {
+		return ResponseEntity.ok(ApiResponse.success(productService.listFavoriteProduct(principal)));
 	}
 }

@@ -249,24 +249,24 @@ public class AuctionServiceImpl implements AuctionService {
 				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
 		);
 		
-		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime endRegistration = now.plusDays(3);
-
-		LocalDateTime startTime;
-		if (endRegistration.getHour() >= 13) {
-			startTime = endRegistration.plusDays(1).withHour(9).withMinute(0).withSecond(0);
-		} else {
-			startTime = endRegistration.withHour(15).withMinute(0).withSecond(0);
-		}
-
-		LocalDateTime endTime = startTime.plusMinutes(60);
 //		LocalDateTime now = LocalDateTime.now();
+//		LocalDateTime endRegistration = now.plusDays(3);
 //
-//		LocalDateTime endRegistration = now.plusMinutes(1);
+//		LocalDateTime startTime;
+//		if (endRegistration.getHour() >= 13) {
+//			startTime = endRegistration.plusDays(1).withHour(9).withMinute(0).withSecond(0);
+//		} else {
+//			startTime = endRegistration.withHour(15).withMinute(0).withSecond(0);
+//		}
 //
-//		LocalDateTime startTime = now.plusMinutes(2);
-//
-//		LocalDateTime endTime = now.plusMinutes(3);
+//		LocalDateTime endTime = startTime.plusMinutes(60);
+		LocalDateTime now = LocalDateTime.now();
+
+		LocalDateTime endRegistration = now.plusMinutes(2);
+
+		LocalDateTime startTime = now.plusMinutes(5);
+
+		LocalDateTime endTime = now.plusMinutes(15);
 		
 		auction.setConfirmDate(now);
 		auction.setEndRegistration(endRegistration);
