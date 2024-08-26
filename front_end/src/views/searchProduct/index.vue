@@ -341,16 +341,18 @@ const toggleFavorite = async(product) => {
  };
  const search = ref('');
 const searchProduct = async() => {
-  router.push({name : 'user-search', 
-  query: { keyword : search.value }})
-  const response = await productApi.searchProduct(route.query.keyword);
+  
+  const response = await productApi.searchProduct(search.value);
   productSearch.content = response.content;
   productSearch.totalElements=response.totalElements;
   loadingTop.value=false;
 
 }
-onMounted(() => {
-  searchProduct(route.query.keyword); 
+onMounted(async() => {
+  const response = await productApi.searchProduct(route.query.keyword);
+  productSearch.content = response.content;
+  productSearch.totalElements=response.totalElements;
+  loadingTop.value=false;
   });
 
 onUpdated (() => {
