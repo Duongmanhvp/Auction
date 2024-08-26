@@ -2,38 +2,39 @@
   <div>
     <div class="relative mt-12">
       <a-carousel autoplay class="mb-8" ref="carouselRef">
-        <div class="h-72">
+        <div class="relative h-72">
           <img src="../../../assets/images/image1.jpg" alt="Auction 1" class="w-full h-full object-cover" />
           <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
-            <h3 class="text-sm sm:text-lg font-bold">Online Auction</h3>
-            <p class="text-xs sm:text-sm">
-              The community is strong, the opportunities are endless, total victory for everyone.
+            <h3 class="text-lg font-bold">Online Auction</h3>
+            <p class="text-sm">
+              The community is strong, the opportunities are endless, total
+              victory for everyone.
             </p>
           </div>
         </div>
-        <div class="h-72">
+        <div class="relative h-72">
           <img src="../../../assets/images/image2.jpg" alt="Auction 2" class="w-full h-full object-cover" />
           <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
-            <h3 class="text-sm sm:text-lg font-bold">Safe Auction</h3>
-            <p class="text-xs sm:text-sm">
+            <h3 class="text-lg font-bold">Safe Auction</h3>
+            <p class="text-sm">
               Ensuring fair competition and the most transparent results.
             </p>
           </div>
         </div>
-        <div class="h-72">
+        <div class="relative h-72">
           <img src="../../../assets/images/image3.jpg" alt="Auction 3" class="w-full h-full object-cover" />
           <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
-            <h3 class="text-sm sm:text-lg font-bold">Convenient Auction</h3>
-            <p class="text-xs sm:text-sm">
+            <h3 class="text-lg font-bold">Convenient Auction</h3>
+            <p class="text-sm">
               Simple auction, quick ownership of assets upon successful auction.
             </p>
           </div>
         </div>
-        <div class="h-72">
+        <div class="relative h-72">
           <img src="../../../assets/images/image4.jpg" alt="Auction 4" class="w-full h-full object-cover" />
           <div class="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
-            <h3 class="text-sm sm:text-lg font-bold">Auction Anytime Anywhere</h3>
-            <p class="text-xs sm:text-sm">
+            <h3 class="text-lg font-bold">Auction Anytime Anywhere</h3>
+            <p class="text-sm">
               Full updates on asset types, auctions are held 24/7
             </p>
           </div>
@@ -181,7 +182,7 @@
             <a-card hoverable @click="selectProduct(product, index)"
               class="h-full transform hover:scale-105 transition duration-300 ease-in-out">
               <span
-                class="absolute top-4 left-4 flex justify-center items-center w-auto text-black font-bold py-1 px-1 rounded">
+                class="absolute top-4 left-4 flex justify-center items-center bg-white w-auto text-black font-bold p-2 rounded">
                 <img :src="product.isFavorite
                   ? HeartFilled
                   : Heart

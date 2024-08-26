@@ -20,7 +20,7 @@
       </div>
     </a-card>
   </div>
-  <div class="z-10">
+  <!-- <div class="z-10">
     <a-card hoverable class="h-40 bg-white shadow-lg rounded-md mt-6">
       <h1 class="text-lg font-bold">Search</h1>
       <div class="flex items-center justify-center mt-4">
@@ -48,16 +48,16 @@
         </button>
       </div>
     </a-card>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
 
-const filterByDate = () => {
-  if (!startDate.value || !endDate.value) {
-    alert('Please select both start and end dates');
-    return;
-  }
-};
+// const filterByDate = () => {
+//   if (!startDate.value || !endDate.value) {
+//     alert('Please select both start and end dates');
+//     return;
+//   }
+// };
 
 </script>
