@@ -271,12 +271,8 @@ class StompSession {
     }
 
     #teardownConnection() {
-        if (this.#connection) {
-            if (this.#connection.client.connected) {
-                this.#connection.client.deactivate();
-            }
-            this.#connection = null;
-        }
+        this.#connection?.client?.deactivate();
+        this.#connection = null;
     }
 
     
