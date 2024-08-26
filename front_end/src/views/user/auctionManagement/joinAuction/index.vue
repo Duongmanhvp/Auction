@@ -329,6 +329,22 @@ function handleComment() {
     myCommentInput.value = '';
 };
 
+function addComment(data) {
+    let { commentId, userId, content } = data;
+    content = JSON.parse(content);
+    comments.value.push({ content });
+    const index = comments.value.length - 1;
+    Promise.resolve(authApi.getAnotherInfo(userId)).then((user) => {
+        comments.value[index] = { 
+            id: commentId, 
+            userId, 
+            name: user.fullName, 
+            content,
+            avatar: user.avatar
+        };
+    })
+}
+
 
 const notifications = ref([]);
 
@@ -348,6 +364,10 @@ onMounted(() => {
         if (sessionState.value === "IN_PROGRESS") {
             sessionApi.getCurrentPrice(auctionId).then((res) => {
                 updateBid(res.data);
+            });
+            sessionApi.getPastComments(auctionId).then((comments) => {
+                console.log(comments);
+                comments.forEach(addComment);
             });
         }
     })
@@ -369,23 +389,7 @@ onMounted(() => {
             console.log('auction ended');
         },
         onBid: updateBid,
-        onComment: (data) => {
-            let { commentId, userId, content } = data;
-            // TODO: get user name using api
-            content = JSON.parse(content);
-            comments.value.push({ content });
-            const index = comments.value.length - 1;
-            // const entry = comments.value[comments.value.length - 1];
-            Promise.resolve(authApi.getAnotherInfo(userId)).then((user) => {
-                comments.value[index] = { 
-                    id: commentId, 
-                    userId, 
-                    name: user.fullName, 
-                    content,
-                    avatar: user.avatar
-                };
-            })
-        },
+        onComment: addComment,
         onNotification: (data) => {
             console.log('notification', data);
             notifications.value.push(data);
