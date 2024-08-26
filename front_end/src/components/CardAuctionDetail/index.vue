@@ -32,7 +32,7 @@
           <p class="text-gray-700 mb-2"><strong>Start Time: </strong> {{ auction.start_time }}</p>
           <p class="text-gray-700 mb-5"><strong>End Time: </strong> {{ auction.end_time }}</p>
 
-          <h2 class="text-xl font-bold mb-2 ">Product Infor</h2>
+          <h2 class="text-xl font-bold mb-2 ">Product Information</h2>
           <p class="text-gray-700 mb-1"><strong>Name: </strong>{{ auction.product.name }}</p>
           <p class="text-gray-700 mb-1"><strong>Description: </strong>{{ auction.product.description }}</p>
           <p class="text-gray-700 mb-1"><strong>Category: </strong>{{ auction.product.category }}</p>

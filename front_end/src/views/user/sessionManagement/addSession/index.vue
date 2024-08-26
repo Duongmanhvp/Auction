@@ -21,7 +21,7 @@
           </button>
         </div>
         <div v-if="product.id !== ''" class="w-full mb-10 lg:w-1/3">
-          <h1 class="text-xl font-bold text-gray-800 mb-4">Product Infor</h1>
+          <h1 class="text-xl font-bold text-gray-800 mb-4">Product Information</h1>
           <div class="flex mb-1 ">
             <label for="productId" class="block text-gray-700 text-lg font-semibold mr-2">Product
               ID:</label>
