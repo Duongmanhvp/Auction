@@ -141,7 +141,7 @@ async function getCurrentPrice(auctionId) {
 
 async function getPastComments(auctionId, from) {
     const fromParam = from ? `?from=${from.toISOString()}` : '';
-    return httpApi.get(`/app/auction/${auctionId}/comments${fromParam}`);
+    return (await httpApi.get(`/v1/auctions/${auctionId}/comments${fromParam}`)).data.data;
 }
 
 const auctionSessionApi = {

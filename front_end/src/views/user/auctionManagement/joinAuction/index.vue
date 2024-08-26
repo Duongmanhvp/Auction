@@ -347,6 +347,22 @@ function handleComment() {
   myCommentInput.value = '';
 };
 
+function addComment(data) {
+    let { commentId, userId, content } = data;
+    content = JSON.parse(content);
+    comments.value.push({ content });
+    const index = comments.value.length - 1;
+    Promise.resolve(authApi.getAnotherInfo(userId)).then((user) => {
+        comments.value[index] = { 
+            id: commentId, 
+            userId, 
+            name: user.fullName, 
+            content,
+            avatar: user.avatar
+        };
+    })
+}
+
 
 const notifications = ref([]);
 
@@ -359,58 +375,45 @@ function handleUnload() {
 onMounted(() => {
   auctionApi.getAuctionById(auctionId)
     .then((res) => {
-      console.log(res)
-      auctionInfoRef.value = res;
-      sessionState.value =
-        ["IN_PROGRESS", "FINISHED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
-      if (sessionState.value === "IN_PROGRESS") {
-        sessionApi.getCurrentPrice(auctionId).then((res) => {
-          updateBid(res.data);
-        });
-      }
+        console.log(res)
+        auctionInfoRef.value = res;
+        sessionState.value = 
+            ["IN_PROGRESS", "FINISHED", "CANCELLED"].includes(res.status) ? res.status : "PENDING";
+        if (sessionState.value === "IN_PROGRESS") {
+            sessionApi.getCurrentPrice(auctionId).then((res) => {
+                updateBid(res.data);
+            });
+            sessionApi.getPastComments(auctionId).then((comments) => {
+                comments.forEach(addComment);
+            });
+        }
     })
     .catch((err) => {
       console.error(err);
     });
 
 
-  const callbacks = {
-    onStart: () => {
-      sessionState.value = "IN_PROGRESS";
-      console.log('auction started');
-      sessionApi.getCurrentPrice(auctionId).then((res) => {
-        updateBid(res.data);
-      });
-    },
-    onEnd: () => {
-      sessionState.value = "FINISHED";
-      console.log('auction ended');
-    },
-    onBid: updateBid,
-    onComment: (data) => {
-      let { commentId, userId, content } = data;
-      // TODO: get user name using api
-      content = JSON.parse(content);
-      comments.value.push({ content });
-      const index = comments.value.length - 1;
-      // const entry = comments.value[comments.value.length - 1];
-      Promise.resolve(authApi.getAnotherInfo(userId)).then((user) => {
-        comments.value[index] = {
-          id: commentId,
-          userId,
-          name: user.fullName,
-          content,
-          avatar: user.avatar
-        };
-      })
-    },
-    onNotification: (data) => {
-      console.log('notification', data);
-      notifications.value.push(data);
-    },
-  };
+    const callbacks = {
+        onStart: () => {
+            sessionState.value = "IN_PROGRESS";
+            console.log('auction started');
+            sessionApi.getCurrentPrice(auctionId).then((res) => {
+                updateBid(res.data);
+            });
+        },
+        onEnd: () => {
+            sessionState.value = "FINISHED";
+            console.log('auction ended');
+        },
+        onBid: updateBid,
+        onComment: addComment,
+        onNotification: (data) => {
+            console.log('notification', data);
+            notifications.value.push(data);
+        },
+    };
 
-  const join = () => sessionApi.joinAuctionRoom(auctionId, callbacks)
+    const join = () => sessionApi.joinAuctionRoom(auctionId, callbacks)
     .catch((err) => {
       if (err.isAxiosError && err.response) {
         if (err.response.data?.message === 'da tham gia dau gia') {
