@@ -3,8 +3,9 @@ package com.ghtk.auction.scheduler.jobs;
 
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.enums.AuctionStatus;
-import com.ghtk.auction.repository.AuctionRepository;
+import com.ghtk.auction.service.AuctionRealtimeService;
 import com.ghtk.auction.service.AuctionService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
@@ -16,27 +17,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class UpdateAuctionStatus implements Job {
-	
+public class CloseAuction implements Job {
 	private final AuctionService auctionService;
-	private final AuctionRepository auctionRepository;
+	private final AuctionRealtimeService auctionRealtimeService;
 	
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		log.info("Updating status of auction");
-
+    System.out.println("CloseAuction");
 		JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
-
-		AuctionUpdateStatusRequest request = new AuctionUpdateStatusRequest();
-
-		request.setAuctionId(jobDataMap.getLong("auctionId")) ;
-		request.setAuctionStatus(AuctionStatus.valueOf(jobDataMap.getString("auctionStatus")));
-		
-//		Auction auction = auctionRepository.findById(request.getAuctionId()).orElseThrow(
-//				() -> new NotFoundException("Khong tim thay phien dau gia nao trung voi Id")
-//		);
-		auctionService.updateStatus(request);
+		Long auctionId = jobDataMap.getLong("auctionId");
+    auctionService.updateStatus(new AuctionUpdateStatusRequest(auctionId, AuctionStatus.CLOSED));
 	}
-
-	
 }

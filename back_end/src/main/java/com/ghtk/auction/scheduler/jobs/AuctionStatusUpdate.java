@@ -1,5 +1,5 @@
 package com.ghtk.auction.scheduler.jobs;
 
-public class RedisActiveAuction {
+public class AuctionStatusUpdate {
   
 }

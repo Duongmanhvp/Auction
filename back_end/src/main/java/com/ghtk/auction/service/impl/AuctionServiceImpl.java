@@ -1,5 +1,6 @@
 package com.ghtk.auction.service.impl;
 
+import com.ghtk.auction.component.ScheduleCalculator;
 import com.ghtk.auction.dto.request.auction.AuctionCreationRequest;
 import com.ghtk.auction.dto.request.auction.AuctionUpdateStatusRequest;
 import com.ghtk.auction.dto.response.auction.AuctionCreationResponse;
@@ -13,16 +14,16 @@ import com.ghtk.auction.exception.ForbiddenException;
 import com.ghtk.auction.exception.NotFoundException;
 import com.ghtk.auction.mapper.AuctionMapper;
 import com.ghtk.auction.repository.*;
+import com.ghtk.auction.scheduler.AuctionSchedule;
 import com.ghtk.auction.service.AuctionService;
 import com.ghtk.auction.service.JobSchedulerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.quartz.*;
-import org.springframework.data.domain.Page;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,8 @@ public class AuctionServiceImpl implements AuctionService {
 	final TimeHistoryRepository timeHistoryRepository;
 	final Scheduler scheduler;
 	final JobSchedulerService jobSchedulerService;
+  @Qualifier("${auction.schedule.policy}ScheduleCalculator")
+  final ScheduleCalculator auctionScheduleCalculator;
 	
 	@PreAuthorize("@productComponent.isProductOwner(#request.productId, principal)")
 	@Override
@@ -250,35 +253,20 @@ public class AuctionServiceImpl implements AuctionService {
 		);
 		
 		LocalDateTime now = LocalDateTime.now();
-		LocalDateTime endRegistration = now.plusDays(3);
 
-		LocalDateTime startTime;
-		if (endRegistration.getHour() >= 13) {
-			startTime = endRegistration.plusDays(1).withHour(9).withMinute(0).withSecond(0);
-		} else {
-			startTime = endRegistration.withHour(15).withMinute(0).withSecond(0);
-		}
+    auction.setConfirmDate(now);
 
-		LocalDateTime endTime = startTime.plusMinutes(60);
-//		LocalDateTime now = LocalDateTime.now();
-//
-//		LocalDateTime endRegistration = now.plusMinutes(1);
-//
-//		LocalDateTime startTime = now.plusMinutes(2);
-//
-//		LocalDateTime endTime = now.plusMinutes(3);
+    AuctionSchedule schedule = auctionScheduleCalculator.getSchedule(auction);
 		
-		auction.setConfirmDate(now);
-		auction.setEndRegistration(endRegistration);
-		auction.setStartTime(startTime);
-		auction.setEndTime(endTime);
+		auction.setEndRegistration(schedule.getEndRegistration());
+		auction.setStartTime(schedule.getStartTime());
+		auction.setEndTime(schedule.getEndTime());
 		auction.setStatus(AuctionStatus.OPENING);
 		
 		auctionRepository.save(auction);
 		
 		// Lên lịch cho các trạng thái tiếp theo
-		jobSchedulerService.scheduleStatusUpdates(auction);
-		jobSchedulerService.scheduleRedisAuction(auction);
+		jobSchedulerService.scheduleAuction(auction, schedule);
 		
 		return auction;
 	}

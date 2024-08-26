@@ -6,7 +6,6 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageDeliveryException;
 import org.springframework.stereotype.Component;
 
-import com.ghtk.auction.component.StompSessionManager;
 import com.ghtk.auction.dto.response.ApiResponse;
 
 import jakarta.validation.ValidationException;
@@ -37,8 +36,7 @@ public class StompExceptionHandler {
   }
 
   @Bean
-  public static ExceptionMatchHandler<?> unauthenticatedHandler(
-      StompSessionManager sessionManager) {
+  public static ExceptionMatchHandler<?> unauthenticatedHandler() {
     return new ExceptionMatchHandler<>(
         UnauthenticatedStompMessageException.class,
         (e, m) -> {
