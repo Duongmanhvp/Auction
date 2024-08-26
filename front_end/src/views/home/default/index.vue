@@ -181,9 +181,9 @@
         <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div v-for="(product, index) in newProducts" :key="index" class="bg-white shadow-lg rounded-lg p-5">
             <a-card hoverable @click="selectProduct(product, index)"
-              class="h-full transform hover:scale-105 transition duration-300 bg-white w-auto ease-in-out">
+              class="h-full transform hover:scale-105 transition duration-300 ease-in-out">
               <span
-                class="absolute top-4 left-4 flex justify-center items-center w-auto text-black font-bold py-1 px-1 rounded">
+                class="absolute top-4 left-4 flex justify-center items-center  bg-white w-auto text-black font-bold py-1 px-1 rounded">
                 <img :src="product.isFavorite
                   ? HeartFilled
                   : Heart
