@@ -80,7 +80,8 @@ const updateStatus = async () => {
     if (status.value !== props.user.statusAccount) {
       data.newStatus = status.value;
       console.log(data);
-      const response = adminApi.updateStatusUser(data);
+      const response = await adminApi.updateStatusUser(data);
+      window.location.reload();
     }
   } catch (error) {
     console.log(error);

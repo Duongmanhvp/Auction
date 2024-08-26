@@ -8,7 +8,10 @@ const authApi = {
       //  message.success(response.data.message);
       return response.data.data;
     } catch (error) {
-      message.error(error.response.data.message);
+      if(error.response.data.message === "You do not have access") {
+        message.error("Your account was banned!");
+      }
+      else {message.error(error.response.data.message)};
       throw error;
     }
   },

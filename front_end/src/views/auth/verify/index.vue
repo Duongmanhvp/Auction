@@ -113,7 +113,7 @@ async function onSubmit() {
     
     try {
         await store.dispatch('verify', data);
-        router.push('/');
+        router.push('/login');
     } catch (error) {
         console.error('Verification error:', error);
         message.error('Verification failed. Please try again.');
