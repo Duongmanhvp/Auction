@@ -171,17 +171,17 @@ public class AuctionController {
   }
 	@GetMapping("/get-all-auction")
 	public ResponseEntity<ApiResponse<PageResponse<AuctionListResponse>>> getAllAuction(
-			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
 	){
 		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllList(pageNo, pageSize)));
 	}
 	
 	@GetMapping("/get-all-auction-by-status")
 	public ResponseEntity<ApiResponse<PageResponse<AuctionListResponse>>> getAllAuctionByStatus(
-			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-			@RequestParam(value ="status_auction") AuctionStatus status
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value ="statusAuction") AuctionStatus status
 	){
 		return ResponseEntity.ok(ApiResponse.success(auctionService.getAllAuctionByStatus(status,pageNo, pageSize)));
 	}

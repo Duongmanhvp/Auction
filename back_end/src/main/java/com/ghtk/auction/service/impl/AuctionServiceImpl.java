@@ -231,10 +231,12 @@ public class AuctionServiceImpl implements AuctionService {
     // TODO:
 		Pageable pageable = PageRequest.of(pageNo,pageSize);
 
+		Long total = auctionRepository.count();
 		List<AuctionListResponse> auctions = auctionRepository.getAllAuctionListResponse(pageable,null);
 		PageResponse<AuctionListResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
+		pageAuctionResponse.setTotalElements(total);
 		pageAuctionResponse.setLast(true);
 		pageAuctionResponse.setContent(auctions);
 
@@ -305,10 +307,13 @@ public class AuctionServiceImpl implements AuctionService {
 		
 		Pageable pageable = PageRequest.of(pageNo,pageSize);
 		
+		Long total = auctionRepository.countByStatus(auctionStatus);
+		
 		List<AuctionListResponse> auctions = auctionRepository.getAllAuctionListResponse(pageable,auctionStatus);
 		PageResponse<AuctionListResponse> pageAuctionResponse = new PageResponse<>();
 		pageAuctionResponse.setPageNo(pageNo);
 		pageAuctionResponse.setPageSize(pageSize);
+		pageAuctionResponse.setTotalElements(total);
 		pageAuctionResponse.setLast(true);
 		pageAuctionResponse.setContent(auctions);
 		

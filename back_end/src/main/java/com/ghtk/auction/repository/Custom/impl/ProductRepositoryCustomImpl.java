@@ -58,7 +58,24 @@ public class ProductRepositoryCustomImpl implements ProductRepositoryCustom {
 
         return responses;
     }
-
+    
+    @Override
+    public long countTotalProducts(String key, ProductCategory category) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(p.id) FROM product p ");
+        StringBuilder where = new StringBuilder("WHERE 1=1 ");
+        sql.append("JOIN user u on u.id = p.owner_id ");
+        sql.append("LEFT JOIN user_product up on up.product_id = p.id ");
+        if(key != null && !key.equals("")) {
+            where.append("AND p.name like " + "'" + key + "%' ");
+        }
+        if(category != null) {
+            where.append("AND p.category = " + "'" + category.toString() + "' ");
+        }
+        sql.append(where);
+        Query query = entityManager.createNativeQuery(sql.toString());
+        return ((Number) query.getSingleResult()).longValue();
+    }
+    
     @Override
     public List<ProductListResponse> getInterestProductTop(Long limit) {
         StringBuilder sql = new StringBuilder("SELECT p.id, u.full_name, p.name, p.category, p.description, p.image, COUNT(up.user_id) AS quantity FROM product p ");

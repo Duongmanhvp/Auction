@@ -3,8 +3,6 @@ package com.ghtk.auction.repository;
 import com.ghtk.auction.entity.Product;
 import com.ghtk.auction.enums.ProductCategory;
 import com.ghtk.auction.repository.Custom.ProductRepositoryCustom;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,4 +42,16 @@ public interface ProductRepository extends JpaRepository<Product,Long>, ProductR
 	List<Product> findAllByOwnerIdAndCategory(Long userId, ProductCategory category);
 	
 	List<Product> findAllByCategory(ProductCategory productCategory);
+	
+	@Query(value =
+			"""
+			SELECT
+         	COUNT(*)
+   		FROM
+       		`product`
+				""", nativeQuery = true
+	)
+	Long countAll();
+	
+	Long countByCategory(ProductCategory category);
 }

@@ -40,4 +40,6 @@ public interface AuctionRepository extends JpaRepository<Auction,Long>, AuctionR
 	List<Object[]> findMyByProductOwnerId(@Param("ownerId") Long ownerId);
 	
 	Page<Auction> findAllByStatus(AuctionStatus status, Pageable pageable);
+	
+	Long countByStatus(AuctionStatus auctionStatus);
 }

@@ -105,8 +105,8 @@ public class ProductController {
 	
 	@GetMapping("/get-all-product-by-category")
 	public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getProductsByCategory(
-			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
 			@RequestParam(value = "category") ProductCategory category
 	) {
 		return ResponseEntity.ok(ApiResponse.success(productService.getAllProductByCategory(category, pageNo, pageSize)));
@@ -114,8 +114,8 @@ public class ProductController {
 	
 	@GetMapping("/get-all-product")
 	public ResponseEntity<ApiResponse<PageResponse<ProductResponse>>> getAllProduct(
-			@RequestParam(value = "page_no", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-			@RequestParam(value = "page_size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
+			@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+			@RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
 	) {
 		return ResponseEntity.ok(ApiResponse.success(productService.getAllProduct(pageNo, pageSize)));
 	}

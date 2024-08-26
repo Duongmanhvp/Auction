@@ -260,12 +260,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public PageResponse<UserResponse> getAllUserByStatus(UserStatus statusAccount, int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo,pageSize);
+		
+		Long total = userRepository.countByStatusAccount(statusAccount);
+		
 		List<UserResponse> content = userRepository.findUsersAll(pageable, statusAccount);
 		PageResponse<UserResponse> pageUserResponse = new PageResponse<>();
 		pageUserResponse.setPageNo(pageNo);
 		pageUserResponse.setPageSize(pageSize);
+		pageUserResponse.setTotalElements(total);
 		pageUserResponse.setLast(true);
 		pageUserResponse.setContent(content);
+		
 		return pageUserResponse;
 	}
 	
