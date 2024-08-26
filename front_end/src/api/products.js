@@ -59,15 +59,13 @@ const productApi = {
     }
   },
 
-  async getAllProductByCategory(category, pageNo) {
+  async getAllProductByCategory(category, pageNo,pageSize) {
     try {
       const response = await api.get(
-        "/v1/products/get-all-product-by-category?category=" +
-        category +
-        "&pageSize=4" +
-        "&pageNo=" +
-        pageNo
+        `/v1/products/get-all-product-by-category?category=${category}&pageNo=${pageNo}&pageSize=${pageSize}`
       );
+
+      if(!response ) return [];
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -96,5 +94,22 @@ const productApi = {
       throw error;
     }
   },
+  async searchProduct(keyword) {
+    try {
+      const response = await api.get(`/v1/products/search?key=${keyword}&page_size=8`);
+      return response.data.data;
+    }catch(error) {
+      throw error;
+
+    }
+  },
+  async favoriteProduct(){
+    try {
+       const res = await api.get(`/v1/products/list-product-favorite`); 
+      return res.data.data;
+    }catch(error) {
+      throw error;
+    }
+  }
 };
 export default productApi;

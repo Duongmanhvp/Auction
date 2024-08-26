@@ -4,7 +4,7 @@
     <a-carousel autoplay class="mb-8" ref="carouselRef">
       <div class="relative h-72">
         <img
-          src="../../../assets/images/image1.jpg"
+          src="../../assets/images/image1.jpg"
           alt="Auction 1"
           class="w-full h-full object-cover"
         />
@@ -20,7 +20,7 @@
       </div>
       <div class="relative h-72">
         <img
-          src="../../../assets/images/image2.jpg"
+          src="../../assets/images/image2.jpg"
           alt="Auction 2"
           class="w-full h-full object-cover"
         />
@@ -35,7 +35,7 @@
       </div>
       <div class="relative h-72">
         <img
-          src="../../../assets/images/image3.jpg"
+          src="../../assets/images/image3.jpg"
           alt="Auction 3"
           class="w-full h-full object-cover"
         />
@@ -50,7 +50,7 @@
       </div>
       <div class="relative h-72">
         <img
-          src="../../../assets/images/image4.jpg"
+          src="../../assets/images/image4.jpg"
           alt="Auction 4"
           class="w-full h-full object-cover"
         />
@@ -70,7 +70,7 @@
       class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
     >
       <img
-        src="../../../assets/icon/prev-arrow-slide.svg"
+        src="../../assets/icon/prev-arrow-slide.svg"
         alt="Previous"
         class="w-6 h-6"
       />
@@ -80,7 +80,7 @@
       class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full"
     >
       <img
-        src="../../../assets/icon/next-arrow-slide.svg"
+        src="../../assets/icon/next-arrow-slide.svg"
         alt="Next"
         class="w-6 h-6"
       />
@@ -104,7 +104,7 @@
               class="ml-2 p-2 bg-blue-50 hover:bg-teal-200 rounded-full outline-gray-400 shadow-lg"
             >
               <img
-                src="../../../assets/icon/search.svg"
+                src="../../assets/icon/search.svg"
                 alt="Search"
                 class="w-5 h-5"
               />
@@ -166,7 +166,7 @@
     <div class="w-4/5 rounded-md">
       <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold text-center text-gray-800">
-          Most Popular Products
+          Result Search
         </h1>
         <div class="border-b-2 border-blue-300 mt-2 mb-6"></div>
       </div>
@@ -176,7 +176,7 @@
       </div>
       <div class="product-list grid grid-cols-4 gap-4">
         <div
-          v-for="(product, index) in topProducts"
+          v-for="(product, index) in productSearch.content"
           :key="index"
           class="bg-white shadow-lg rounded-lg p-5"
         >
@@ -226,7 +226,7 @@
                  :class="{'bg-pink-200 hover:bg-pink-400': !isFavorited(product), 'bg-gray-200 cursor-not-allowed': isFavorited(product)}"
                >
                  <img
-                   src="../../../assets/icon/like.svg"
+                   src="../../assets/icon/like.svg"
                    alt="Interested"
                    class="w-6 h-6 mr-1"
                  />
@@ -235,75 +235,14 @@
           </a-card>
         </div>
       </div>
-      <div class="max-w-md mx-auto mt-14">
-        <h1 class="text-2xl font-bold text-center text-gray-800">
-          New Products
-        </h1>
-        <div class="border-b-2 border-blue-300 mt-2 mb-6"></div>
-      </div>
-
-      <div v-if="loadingNew" class="flex items-center justify-center">
-        <a-spin size="large" />
-      </div>
-      <div class="product-list grid grid-cols-4 gap-4">
-        <div
-          v-for="(product, index) in newProducts"
-          :key="index"
-          class="bg-white shadow-lg rounded-lg p-5"
-        >
-          <a-card
-            hoverable
-            @click="selectProduct(product, index)"
-            class="h-full transform hover:scale-105 transition duration-300 ease-in-out"
-          >
-            <span
-                 class="absolute top-4 left-4 flex justify-center items-center w-auto text-black font-bold py-1 px-1 rounded"
-               >
-                 <img
-                   :src="
-                     product.isFavorite
-                       ? HeartFilled
-                       : Heart
-                   "
-                   alt="Interested"
-                   class="w-4 h-4 mr-1"
-                 />
-                 {{ product.quantity }}
-            </span>
-            <template #cover>
-              <img
-                class="h-52 w-52"
-                alt="example"
-                :src="
-                  `https://res.cloudinary.com/dorl0yxpe/image/upload/` +
-                  product.image.split(', ')[0]
-                "
-              />
-            </template>
-            <div class="h-20">
-              <a-card-meta
-                :title="product.name"
-                :description="product.description"
-              >
-                <template #avatar>
-                  <a-avatar :src="product.avatar" />
-                </template>
-              </a-card-meta>
-            </div>
-            <button
-                 @click.stop="toggleFavorite(product)" :disabled="isFavorited(product)"
-                 class="flex items-center justify-center p-2 rounded mt-4 w-full "
-                 :class="{'bg-pink-200 hover:bg-pink-400': !isFavorited(product), 'bg-gray-200 cursor-not-allowed': isFavorited(product)}"
-               >
-                 <img
-                   src="../../../assets/icon/like.svg"
-                   alt="Interested"
-                   class="w-6 h-6 mr-1"
-                 />
-                   Add to Favorites
-               </button>
-          </a-card>
-        </div>
+      <div class="flex justify-center mt-4">
+          <a-pagination 
+            :current="1"
+            :page-size=8
+            :total=productSearch.totalElements
+            show-less-items
+            :page-size-options="['8', '16', '32', '64']"
+            />
       </div>
 
       <TheChevron />
@@ -318,57 +257,32 @@
 </template>
 
 <script setup>
-import TheChevron from "../../../components/Chevron/index.vue";
-import CardDetailModal from "../../../components/CardProductDetail/index.vue";
+import TheChevron from "../../components/Chevron/index.vue";
+import CardDetailModal from "../../components/CardProductDetail/index.vue";
 import { reactive, ref, onMounted, watch, onUpdated } from "vue";
-import productApi from "../../../api/products.js";
+import productApi from "../../api/products.js";
 import { useStore } from "vuex";
-import Heart from '../../../assets/icon/heart.svg';
-import HeartFilled from '../../../assets/icon/heart-filled.svg';
-import { useRouter } from 'vue-router';
+import Heart from '../../assets/icon/heart.svg';
+import HeartFilled from '../../assets/icon/heart-filled.svg';
+import { useRouter,useRoute } from 'vue-router';
 
 const router = useRouter();
+const route = useRoute();
 
 const store = useStore();
 const carouselRef = ref(null);
-let topProducts = reactive([]);
-let newProducts = reactive([]);
 const selectedProduct = ref(null);
 const viewModalVisible = ref(false);
 const a = ref(1000);
 const loadingTop = ref(true);
 const loadingNew = ref(true);
+const productSearch = reactive({
+  totalElements : 0,
+  content: [],
+})
 
-const getTopProducts = async () => {
-  loadingTop.value = true;
-  try {
-    const response = await productApi.getTopProducts();
-    console.log(response);
-    // topProducts = response;
-    topProducts.length = 0;
-    topProducts.push(...response);
-    //topProducts.splice(0, topProducts.length, ...response);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loadingTop.value = false;
-  }
-};
 
-const getNewProducts = async () => {
-  loadingNew.value = true;
-  try {
-    const response = await productApi.getNewProducts();
-    console.log(response.content);
-    newProducts.length = 0;
-    newProducts.push(...response.content);
-    console.log(newProducts);
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loadingNew.value = false;
-  }
-};
+
 
 const prevSlide = () => {
   if (carouselRef.value) {
@@ -415,57 +329,45 @@ const isFavorited = (product) => {
 }
 
 const toggleFavorite = async(product) => {
-  //  product.isFavorite = !product.isFavorite;
-  //  if (product.isFavorite) {
-  //      product.quantity += 1; 
-  //      await productApi.interestProduct(product.productId);
-       
-  //    } else {
-  //      product.quantity -= 1; 
-  //      // await productApi.UnInterestProduct(product.productId);
-  //    }
-   
    try {
     const response = await productApi.interestProduct(product.productId);
     product.isFavorite = !product.isFavorite;
     product.quantity += 1;
    } catch (error) {
     product.isFavorite = !product.isFavorite;
-    router.push('/login')
+     router.push('/login')
    }
  
  };
-
  const search = ref('');
- const searchProduct = () => {
+const searchProduct = async() => {
   
-  router.push({name : 'user-search', 
-  query: { keyword : search.value }})
+  const response = await productApi.searchProduct(search.value);
+  productSearch.content = response.content;
+  productSearch.totalElements=response.totalElements;
+  loadingTop.value=false;
+
 }
+onMounted(async() => {
+  const response = await productApi.searchProduct(route.query.keyword);
+  productSearch.content = response.content;
+  productSearch.totalElements=response.totalElements;
+  loadingTop.value=false;
+  });
 
-onMounted(() => {
-  getTopProducts();
-  getNewProducts();
-});
-
-onUpdated(() => {
+onUpdated (() => {
   listProductFavorite();
 });
 
 const listProductFavorite = async() => {
   const res = await productApi.favoriteProduct();
-  topProducts.forEach(product => {
-    if(res.includes(product.productId)){
+  console.log(productSearch)
+  productSearch.content.forEach(product => {
+    if(res.includes(product.id)){
       product.isFavorite=true;
-      console.log(product.isFavorite)
     }
   })
-  newProducts.forEach(product => {
-    if(res.includes(product.productId)){
-      product.isFavorite=true;
-      console.log(product.isFavorite)
-    }
-  })
+  
   
 }
 </script>
