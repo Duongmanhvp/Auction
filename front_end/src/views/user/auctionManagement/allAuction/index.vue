@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col md:flex-row mt-20 mx-5 space-y-5 md:space-y-0 md:space-x-5">
     <div class="w-full md:w-1/5 mr-4">
-      <div class="z-10">
+      <!-- <div class="z-10">
         <a-card hoverable class="h-40 bg-white shadow-lg rounded-md mt-6">
           <h1 class="text-lg font-bold">Search</h1>
           <div class="flex items-center justify-center mt-4">
@@ -12,7 +12,7 @@
             </button>
           </div>
         </a-card>
-      </div>
+      </div> -->
       <div class="z-10">
         <a-card hoverable class="h-50 bg-white shadow-lg rounded-md mt-6">
           <h1 class="text-lg font-bold">Status</h1>

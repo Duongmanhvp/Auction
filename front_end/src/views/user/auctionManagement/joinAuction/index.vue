@@ -77,7 +77,7 @@
         <img v-else src="../../../../assets/icon/hide-comment.svg" alt="Toggle" class="w-6 h-6" />
       </button>
       <div v-if="showComments"
-        class="fixed top-24 right-0 w-96 h-5/6 bg-white p-4 shadow-lg rounded-lg transition-transform transform"
+        class="z-40 fixed top-24 right-0 w-96 h-5/6 bg-white p-4 shadow-lg rounded-lg transition-transform transform"
         :class="{ 'translate-x-0': showComments, 'translate-x-full': !showComments }">
         <div class="p-2">
           <a-card v-for="(noti, index) in notifications" :key="index" hoverable
