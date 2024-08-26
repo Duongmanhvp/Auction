@@ -1,7 +1,7 @@
 <template>
-  <div class="flex mt-20 mx-5 space-x-5">
-    <div class="w-1/5 ml-4 mr-4">
-      <div class="z-10">
+  <div class="flex flex-col md:flex-row mt-20 mx-5 space-y-5 md:space-y-0 md:space-x-5">
+    <div class="w-full md:w-1/5 mr-4">
+      <!-- <div class="z-10">
         <a-card hoverable class="h-40 bg-white shadow-lg rounded-md mt-6">
           <h1 class="text-lg font-bold">Search</h1>
           <div class="flex items-center justify-center mt-4">
@@ -12,7 +12,7 @@
             </button>
           </div>
         </a-card>
-      </div>
+      </div> -->
       <div class="z-10">
         <a-card hoverable class="h-50 bg-white shadow-lg rounded-md mt-6">
           <h1 class="text-lg font-bold">Status</h1>
@@ -27,8 +27,8 @@
         </a-card>
       </div>
     </div>
-    <div class="w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
-      <div class="relative w-full max-w-md mx-auto">
+    <div class="relative w-full md:w-4/5 container border-l bg-white mx-auto p-10 rounded-md shadow-lg mt-6">
+      <div class="w-full max-w-md mx-auto">
         <h1 class="text-2xl font-bold text-center text-gray-800">
           All Auctions
         </h1>
@@ -38,13 +38,13 @@
       <div v-if="loading" class="flex items-center justify-center">
         <a-spin size="large" />
       </div>
-      <div class="grid grid-cols-4 gap-4 p-4">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
         <button @click="prevSlide"
-          class="absolute top-3/4 left-1/4 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+          class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
           <img src="../../../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
         </button>
         <button @click="nextSlide"
-          class="absolute top-3/4 right-12 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
+          class="absolute top-1/2 right-0 transform -translate-y-1/2 bg-slate-300 bg-opacity-50 p-2 rounded-full">
           <img src="../../../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
         </button>
         <div v-for="auction in paginatedAuctions" :key="auction.id"

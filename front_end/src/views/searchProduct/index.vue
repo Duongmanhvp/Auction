@@ -87,8 +87,8 @@
     </button>
   </div>
 
-  <div class="flex">
-    <div class="w-1/5 ml-4 mr-4">
+  <div class="flex flex-col sm:flex-row">
+    <div class="w-80 lg:w-1/5 md:w-1/5 ml-4 mr-4 mb-10">
       <div class="z-10">
         <a-card hoverable class="h-40 bg-white shadow-lg rounded-md mt-6">
           <h1 class="text-lg font-bold">Search</h1>
@@ -163,7 +163,7 @@
       </div>
     </div>
 
-    <div class="w-4/5 rounded-md">
+    <div class="w-80 md:w-4/5 ml-3 rounded-md">
       <div class="max-w-md mx-auto">
         <h1 class="text-2xl font-bold text-center text-gray-800">
           Result Search
@@ -174,7 +174,7 @@
       <div v-if="loadingTop" class="flex items-center justify-center">
         <a-spin size="large" />
       </div>
-      <div class="grid grid-cols-4 gap-4">
+      <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div
           v-for="(product, index) in productSearch.content"
           :key="index"

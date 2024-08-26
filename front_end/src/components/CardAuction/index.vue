@@ -10,10 +10,11 @@
           <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
         </div>
 
+
           <div v-if="loading" class="flex items-center justify-center">
             <a-spin size="large" />
           </div>
-        <div class="product-list grid grid-cols-4 gap-4">
+          <div class="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <div v-for="(auction, index1) in auctions.content" :key="index1"
             class="product-item bg-white shadow-lg rounded-lg">
             <a-card hoverable @click="selectAuction(auction)"

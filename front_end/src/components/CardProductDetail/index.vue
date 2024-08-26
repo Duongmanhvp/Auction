@@ -1,7 +1,7 @@
 <template>
-  <div v-if="visible" class="fixed z-20 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
+  <div v-if="visible" class="fixed mt-20 z-20 inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
     @click="closeModal">
-    <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 relative" @click.stop>
+    <div class="bg-white rounded-lg shadow-lg p-6 w-5/6 relative h-[80vh] overflow-y-auto" @click.stop>
       <button @click="closeModal" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
         <img src="../../assets/icon/cancel.svg" alt="Close" class="w-6 h-6" />
       </button>
@@ -9,24 +9,24 @@
         {{ product.name }}
       </h1>
       <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
-      <div class="flex space-x-8">
-        <div class="flex-1 relative">
+      <div class="lg:flex">
+        <div class="w-full lg:w-1/2 relative">
           <div class="w-full h-full overflow-hidden rounded-md">
-            <div class="flex-1">
+            <div class="relative mr-10">
               <img v-for="(image, index) in arrayImage" :key="index" :src="image" alt="Image"
                 v-show="index === currentImageIndex" class="h-max w-max" />
               <button @click="prevImage"
-                class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
+                class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full">
                 <img src="../../assets/icon/prev-arrow-slide.svg" alt="Previous" class="w-6 h-6" />
               </button>
               <button @click="nextImage"
-                class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full">
+                class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 mr-4 rounded-full">
                 <img src="../../assets/icon/next-arrow-slide.svg" alt="Next" class="w-6 h-6" />
               </button>
             </div>
           </div>
         </div>
-        <div class="flex-1">
+        <div class="w-full lg:w-1/2">
           <div class="mb-5">
             <label for="category" class="block text-gray-700 mb-3 text-lg font-bold">Category</label>
             <p id="category" class="text-gray-800">{{ product.category }}</p>
@@ -48,7 +48,7 @@
     </div>
   </div>
 </template>
- 
+
 <script setup>
 import { defineProps, defineEmits, ref, computed, watch } from "vue";
 import productApi from "../../api/products";
@@ -120,4 +120,3 @@ const toggleFavorite = async (product) => {
   }
 };
 </script>
- 

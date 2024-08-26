@@ -13,10 +13,10 @@ import Profile from "../views/user/profileManagement/profile/index.vue";
 import EditProfile from "../views/user/profileManagement/editProfile/index.vue";
 import ChangePassword from "../views/user/profileManagement/changePassword/index.vue";
 import AllAuction from "../views/user/auctionManagement/allAuction/index.vue";
-import MyAuction from "../views/user/auctionManagement/myAuction/index.vue";
 import JoinAuction from "../views/user/auctionManagement/joinAuction/index.vue";
 import ViewProduct from "../views/user/productManagement/productDetail/index.vue";
-import EditProduct from "../views/user/productManagement/editProduct/index.vue";
+import History from "../views/user/auctionHistory/allAuctionHistory/index.vue";
+import AuctionWon from "../views/user/auctionHistory/auctionWon/index.vue";
 
 import SearchProduct from "../views/searchProduct/index.vue";
 
@@ -48,14 +48,19 @@ const userRoutes = [
         component: Profile
       },
       {
+        path: "allAuctionHistory",
+        name: "user-history",
+        component: History
+      },
+      {
+        path: "auctionWon",
+        name: "auction-won",
+        component: AuctionWon
+      },
+      {
         path: "allAuction",
         name: "all-auction",
         component: AllAuction
-      },
-      {
-        path: "myAuction",
-        name: "my-auction",
-        component: MyAuction
       },
       {
         path: '/auction/:id',
@@ -77,11 +82,6 @@ const userRoutes = [
         path: '/product/:id',
         name: 'ProductDetail',
         component: ViewProduct
-      },
-      {
-        path: '/editProduct/:id',
-        name: 'EditProduct',
-        component: EditProduct
       },
       {
         path: "allProduct",
