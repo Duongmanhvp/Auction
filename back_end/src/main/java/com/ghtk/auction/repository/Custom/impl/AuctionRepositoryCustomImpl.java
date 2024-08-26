@@ -42,26 +42,7 @@ public class AuctionRepositoryCustomImpl implements AuctionRepositoryCustom {
         sql.append(" OFFSET ").append(pageable.getOffset());
         Query query = entityManager.createNativeQuery(sql.toString(), "AuctionListProjectionMapping");
         List<AuctionListResponse> projections = query.getResultList();
-
         return projections;
     }
 
-//    private AuctionListResponse mapToAuctionListResponse(AuctionListProjection projection) {
-//        return AuctionListResponse.builder()
-//                .id(projection.getId())
-//                .productId(projection.getProductId()) // Changed to CamelCase
-//                .title(projection.getTitle())
-//                .description(projection.getDescription())
-//                .image(projection.getImage())
-//                .createdAt(projection.getCreatedAt() != null ? projection.getCreatedAt() : null) // Changed to CamelCase
-//                .confirmDate(projection.getCreatedAt() != null ? projection.getConfirmDate() : null) // Changed to CamelCase
-//                .endRegistration(projection.getCreatedAt() != null ? projection.getEndRegistration() : null) // Changed to CamelCase
-//                .startTime(projection.getCreatedAt() != null ? projection.getStartTime() : null) // Changed to CamelCase
-//                .endTime(projection.getCreatedAt() != null ? projection.getEndTime() : null) // Changed to CamelCase
-//                .startBid(projection.getStartBid()) // Changed to CamelCase
-//                .pricePerStep(projection.getPricePerStep()) // Changed to CamelCase
-//                .endBid(projection.getEndBid()) // Changed to CamelCase
-//                .status(projection.getStatus())
-//                .build();
-//    }
 }

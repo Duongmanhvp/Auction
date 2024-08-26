@@ -8,8 +8,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
@@ -37,9 +35,6 @@ public class AuctionListResponse {
     Long startBid;
     Long pricePerStep;
     Long endBid;
-    Long start_bid;
-    Long price_per_step;
-    Long end_bid;
 
     @Enumerated(EnumType.STRING)
     AuctionStatus status;
@@ -61,6 +56,6 @@ public class AuctionListResponse {
         this.startBid = startBid;
         this.pricePerStep = pricePerStep;
         this.endBid = endBid;
-        this.status = AuctionStatus.valueOf(status); // Convert string to Enum
+        this.status = (AuctionStatus.valueOf(status)); // Convert string to Enum
     }
 }
