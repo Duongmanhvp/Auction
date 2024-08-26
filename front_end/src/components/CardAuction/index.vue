@@ -9,8 +9,7 @@
           </h1>
           <div class="border-b-2 border-zinc-400 mt-2 mb-8"></div>
         </div>
-
-
+        
           <div v-if="loading" class="flex items-center justify-center">
             <a-spin size="large" />
           </div>

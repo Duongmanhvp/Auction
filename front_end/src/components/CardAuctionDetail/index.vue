@@ -37,13 +37,12 @@
           <p class="text-gray-700 mb-1"><strong>Description: </strong>{{ auction.product.description }}</p>
           <p class="text-gray-700 mb-1"><strong>Category: </strong>{{ auction.product.category }}</p>
 
+          <div v-if="loading" class="flex items-center justify-center">
+            <a-spin size="large" />
+          </div>
           <button v-if="auction.status === 'OPENING'" @click="handleRegister(auction.id)"
             class="bg-green-500 text-white p-2 rounded mt-8 w-full">
             Register Auction
-          </button>
-          <button v-if="auction.status === 'IN_PROGRESS'" @click="handleJoin(auction.id)"
-            class="bg-green-500 text-white p-2 rounded mt-8 w-full">
-            Join Auction
           </button>
         </div>
       </div>
@@ -56,6 +55,7 @@ import { defineProps, defineEmits, ref, computed, watch } from 'vue';
 import auctionApi from '../../api/auctions';
 import { message } from 'ant-design-vue';
 
+const loading = ref(false);
 
 const props = defineProps({
   visible: {
@@ -101,15 +101,17 @@ const nextImage = () => {
 };
 
 const handleRegister = async (id) => {
+  loading.value = true;
   try {
-    emit('close');
+    
     const response = await auctionApi.registerAuction(id);
+    emit('close');
     message.success("Register Successfully!")
   } catch (error) {
-    message.error("You must login !")
+    message.error("You can not register!")
+  } finally {
+    loading.value = false;
   }
-
-
 }
 
 const closeModal = () => {
