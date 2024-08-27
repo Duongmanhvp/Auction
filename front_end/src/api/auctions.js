@@ -8,7 +8,7 @@ const auctionApi = {
       const response = await api.post("/v1/auctions/", data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      message.success(response.data.message);
+      message.success("Đấu giá đã được tạo thành công. Vui lòng chờ duyệt.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);

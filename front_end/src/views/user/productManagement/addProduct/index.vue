@@ -132,8 +132,6 @@ const onUpload = async () => {
     imagePreview.value.push(response);
 
     console.log(imagePreview.value);
-
-    message.success('Upload image successfully');
   } catch (error) {
     console.log(error);
     message.error('Upload image failed');
@@ -160,10 +158,10 @@ const submitProduct = async () => {
     product.description = '';
     product.image = '';
     imagePreview.value = [];
-    message.success('Add product successfully');
+    message.success('Bạn đã thêm sản phẩm thành công');
   } catch (error) {
     console.log(error);
-    message.error('Add product failed');
+    message.error('Vui lòng thử lại');
   }
   finally {
     loadingProduct.value = false;

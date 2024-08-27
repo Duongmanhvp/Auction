@@ -436,12 +436,12 @@ onMounted(() => {
             console.log(winnerId);
             sessionState.value = "FINISHED";
             console.log('auction ended');
-            message.success(`Auction has ended`);
+            message.success('Đấu giá đã kết thúc');
             if (winnerId === userId) {
-                message.success(`Congratulations! You have won the auction`);
+                message.success(`Xin chúc mưng bạn đã thắng đấu giá`);
             } else if (winnerId != null) {
                 authApi.getAnotherInfo(winnerId).then((user) => {
-                    message.success(`${user.fullName} has won the auction`);
+                    message.success(`${user.fullName} đã chiến thắng đấu giá`);
                 });
             }
         },

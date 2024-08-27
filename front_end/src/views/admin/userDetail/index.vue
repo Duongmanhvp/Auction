@@ -29,16 +29,16 @@
           <img src="../../../assets/icon/accept.svg" class="w-6 h-6 mr-3" />
           Update
         </button>
-        <button
+        <!-- <button
           class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
           <img src="../../../assets/icon/delete-account.svg" class="w-6 h-6 mr-3" />
           Add to blacklist
-        </button>
-        <button
+        </button> -->
+        <!-- <button
           class="w-full flex items-center justify-center p-2 bg-blue-50 text-black font-bold rounded-md hover:bg-teal-200 outline-gray-400 shadow-lg">
           <img src="../../../assets/icon/delete.svg" class="w-6 h-6 mr-3" />
           Delete User
-        </button>
+        </button> -->
       </div>
     </div>
   </div>

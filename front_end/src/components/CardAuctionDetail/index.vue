@@ -106,7 +106,6 @@ const handleRegister = async (id) => {
     
     const response = await auctionApi.registerAuction(id);
     emit('close');
-    message.success("Register Successfully!")
   } catch (error) {
     message.error("You can not register!")
   } finally {

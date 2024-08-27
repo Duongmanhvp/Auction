@@ -9,9 +9,9 @@ const authApi = {
       return response.data.data;
     } catch (error) {
       if(error.response.data.message === "You do not have access") {
-        message.error("Your account was banned!");
+        message.error("Tài khoản của bạn đã bị khoá!!!");
       }
-      else {message.error(error.response.data.message)};
+      else {message.error("Tài khoản hoặc mật khẩu không đúng. Vui lòng thử lại.")};
       throw error;
     }
   },
@@ -31,8 +31,8 @@ const authApi = {
   async registry(data) {
     try {
       const response = await api.post('/v1/users/', data);
-      message.success(response.data.message);
-      console.log("Register Successfully");
+      message.success("Bạn đã đăng ký tài khoản thành công");
+      console.log("Bạn đã đăng ký tài khoản thành công");
       return response.data.data;
     } catch (error) {
       console.log("Register Failed");
@@ -44,7 +44,7 @@ const authApi = {
   async verify(data) {
     try {
       const response = await api.post('/v1/users/verify-otp?email=' + data.email + '&otp=' + data.otp);
-      message.success(response.data.message);
+      message.success("Xác thực thành công. Vui lòng đăng nhập để tiếp tục.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -55,7 +55,7 @@ const authApi = {
   async resendOtp(email) {
     try {
       const response = await api.post('/v1/users/resend-otp?email=' + email);
-      // message.success(response.data.message);
+      message.success("OTP đã được gửi lại. Vui lòng kiểm tra email.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -66,7 +66,7 @@ const authApi = {
   async forgotPassword(email) {
     try {
       const response = await api.post('/v1/users/forgot-password', { email });
-      // message.success(response.data.message);
+      message.success("Vui lòng kiểm tra email để đặt lại mật khẩu.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -77,7 +77,7 @@ const authApi = {
   async changePassword(old_password, new_password) {
     try {
       const response = await api.put('/v1/users/change-password', { old_password, new_password });
-      message.success(response.data.message);
+      message.success("Đổi mật khẩu thành công.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);
@@ -102,7 +102,7 @@ const authApi = {
       const token = localStorage.getItem('token');
       console.log(data);
       const response = await api.put('v1/users/update-my-info', data, { headers: { Authorization: `Bearer ${token}` } });
-      message.success(response.data.message);
+      message.success("Cập nhật thông tin thành công.");
       return response.data.data;
     } catch (error) {
       message.error(error.response.data.message);

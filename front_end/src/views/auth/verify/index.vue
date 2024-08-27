@@ -93,7 +93,6 @@ const resendCode = async () => {
         const email = store.getters.getUser.email;
         await store.dispatch('resendOtp',{email});
         isResendDisabled.value = !isResendDisabled.value;
-        message.success('Verification code resent successfully');
         startCountdown();
     } catch (error) {
         console.error('Resend error:', error);

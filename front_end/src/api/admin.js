@@ -38,7 +38,7 @@ const adminApi = {
     try {
       const token = localStorage.getItem('token');
       const response = await api.patch('/v1/users/update-status/' + data.UserId + '?status=' + data.newStatus, { headers: { Authorization: `Bearer ${token}` } });
-      message.success(response.data.message);
+      message.success("Đã cập nhật trạng thái thành công");
     } catch (error) {
       message.error(error.response.data.message);
       throw error;
@@ -79,7 +79,7 @@ const adminApi = {
     try {
       const token = localStorage.getItem('token');
       const response = await api.post('/v1/auctions/confirm/' + id, { headers: { Authorization: `Bearer ${token}` } });
-      message.success("Confirm successfully");
+      message.success("Đã xác nhận đấu giá thành công");
       //window.location.reload();
     } catch (error) {
       message.error(error.response.data.message);
